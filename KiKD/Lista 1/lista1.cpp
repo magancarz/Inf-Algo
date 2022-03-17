@@ -5,12 +5,15 @@
 double calculate_entropy(std::ifstream* file) {
 	int characters[256] = {0};
 	int size = 0;
-	char letter;
+	unsigned char letter = 0;
+	
+	while (!file -> eof()) {
+	    characters[letter]++;
 
-	while(file -> get(letter)) {
-		int value = letter + 127;
-		characters[value]++;
-		size++;
+	    // get the next character
+	    letter = file -> get();
+
+	    size++;
 	}
 
 	//calculate entropy
@@ -35,24 +38,26 @@ double calculate_conditional_entropy(std::ifstream* file) {
 	}
 
 	int characters[256] = {0};
-	char letter;
-	int previous = 127;
+	unsigned char letter = 0;
+	unsigned char previous = 0;
 	int character_amount = 0;
-	while(file -> get(letter)) {
-		int value = letter + 127;
-		characters[value]++;
-		double_characters[previous][value]++;
+        while (!file -> eof()) {
+            characters[letter]++;
+            double_characters[previous][letter]++;
 
-		previous = value;
-		character_amount++;
-	}
+            // get the next character
+            previous = letter;
+            letter = file -> get();
+
+            character_amount++;
+        }
 
 	double HYX = 0;
 	for(int x = 0; x < 256; x++) {
 		for(int y = 0; y < 256; y++) {
 			if(characters[x] != 0 && double_characters[x][y] != 0) {
 				double pxy = double_characters[x][y] / (double) character_amount;
-				double logpxypx = std::log2l(((double) double_characters[x][y]) / ((double) characters[x]));
+				double logpxypx = std::log2(((double) double_characters[x][y]) / ((double) characters[x]));
 				HYX += pxy * logpxypx;
 			}
 		}
