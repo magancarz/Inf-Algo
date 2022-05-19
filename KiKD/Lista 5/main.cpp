@@ -150,8 +150,6 @@ void DictionaryTree::setAverageDistance(Node* node, std::vector<Pixel> &pixels) 
 
 #pragma pack(push, 1)
 
-#include <cstdint>
-
 struct TGAHeader {
     uint8_t idLength;
     uint8_t colorMapType;
@@ -204,8 +202,8 @@ int main(int argc, char** argv) {
 
     double mse = double(valueToMse) / (header.height * header.width);
     double snr = (double(valueToSnr) / ((header.height * header.width))) / mse;
-    printf("MSE = %f\n", mse);
-    printf("SNR = %f (%fdB)\n", snr, 10 * log10(snr));
+    printf("Mean Square Error = %f\n", mse);
+    printf("Signal-To-Noise Ratio = %f (%fdB)\n", snr, 10 * log10(snr));
 }
 
 std::vector<std::vector<Pixel> > getImage(std::ifstream& dataFile, TGAHeader tgaHeader) {
