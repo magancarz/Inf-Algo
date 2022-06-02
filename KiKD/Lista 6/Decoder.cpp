@@ -87,9 +87,13 @@ std::vector<Pixel> Decoder::getImage(std::ifstream& file) {
     int blueLowValue;
     int blueHighValue;
 
-    uint8_t fileValue = 0;
-    while (file >> std::noskipws >> fileValue)
-        code.append(std::bitset<8>(fileValue).to_string());
+    int8_t fileValue = 0;
+    int8_t prevValue = 0;
+    while (file >> std::noskipws >> fileValue) {
+    	fileValue = std::bitset<8>(fileValue).to_string();
+        code.append(prevValue + fileValue);
+        prevValue = fileValue;
+    }
 
     for (int i = 0, j = 0; i < imageSize; i += 2) {
         redLowValue = this->redLowPassDict[code.substr(j, this->size)];

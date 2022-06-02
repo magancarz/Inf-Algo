@@ -95,10 +95,11 @@ void Encoder::writeCodeToFile(std::ofstream &file) {
         code.append("0");
         codeSize++;
     }
-
+	int8_t prevValue = 0;
     for (int i = 0; i < codeSize; i += 8) {
-        uint8_t value = std::bitset<8>(code.substr(i, 8)).to_ulong();
-        file << value;
+        int8_t value = std::bitset<8>(code.substr(i, 8)).to_ulong();
+        file << (value - prevValue);
+        prevValue = value;
     }
 }
 
