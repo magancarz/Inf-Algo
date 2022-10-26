@@ -1,0 +1,31 @@
+name: 'calculator.com'
+version: '1.0.0'
+author: 'Mateusz Gancarz'
+
+functions:
+  IO:
+  - name: "readInput()"
+    returns: "data to calculations"
+  - name: "showOutput()"
+    returns: "data to user"
+  calculations:
+    - name: "calculateSum(a, b)"
+      returns: "a + b"
+    - name: "calculateSubtraction(a, b)"
+      returns: "a - b"
+    - name: "calculateMult(a, b)"
+      returns: "a * b"
+    - name: "calculateDiv(a, b)"
+      returns: "a / b"
+    - name: "calculateSqrt(a, n)"
+      returns: "a^(1/n)"
+    - name: "calculatePow(a, n)"
+      returns: "a^n"
+    - name: "calculateLog(a, n)"
+      returns: "logn(a)"
+  data management:
+    - name: "createGraph(data)"
+      returns: "graph"
+  helping functions:
+    - name: "showSolution(equation)"
+      returns: "equationSolvingSteps"
