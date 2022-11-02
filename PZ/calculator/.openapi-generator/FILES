@@ -1,0 +1,13 @@
+.babelrc
+.gitignore
+.openapi-generator-ignore
+.travis.yml
+README.md
+docs/CalculationsApi.md
+git_push.sh
+mocha.opts
+package.json
+src/ApiClient.js
+src/api/CalculationsApi.js
+src/index.js
+test/api/CalculationsApi.spec.js
