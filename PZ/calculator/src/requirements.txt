@@ -1,0 +1,2 @@
+flask>=2.0.2
+jyserver>=0.0.1
