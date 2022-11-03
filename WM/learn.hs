@@ -1,6 +1,6 @@
 import Data.Char (toLower)
 import Data.Map (fromListWith, toList)
-import Data.List (nub, sort, delete)
+import Data.List (nub, sort, delete, genericLength)
 
 -- recursion
 fac :: Int -> Int
@@ -273,3 +273,61 @@ funcI x = x
 funcN :: Integer -> Integer
 funcN x = 1
 sitam f n = map f [1..n]
+
+--ex 42
+nondec' :: Ord a => [a] -> Bool
+nondec' xs = and (map leq (zip xs (tail xs)))
+						where leq (x, y) = x <= y
+
+--ex 43
+--foldl (-) 10 [1,2,3] (((10 - 1) - 2) - 3)
+-- 4
+--foldr (-) 10 [1,2,3] (1 - (2 - (3 - 10)))
+-- (-8)
+
+--ex 44
+
+
+--ex 45
+fnl [] x = [x]
+fnl xs x
+	| last xs == x = xs
+	| otherwise    = xs ++ [x]
+remdupl [] = []
+remdupl xs = foldl fnl [] xs
+
+--ex 46
+--to samo co 41
+
+--ex 47
+approxL :: Float -> Float
+approxL n = foldl (\x y -> x + (1 / (product [1..y]))) 0 [1..n]
+
+approxR :: Float -> Float
+approxR n = foldr (\x y -> (1 / (product [1..x])) + y) 0 [1..n]
+
+--ex 48
+sum48 :: (Num a) => [a] -> a
+sum48 [] = 0
+sum48 xs = foldl (\acc x -> acc + ((-1) ^ (fst x) * (snd x))) 0 (zip [2 .. (length xs + 1)] xs)
+
+--ex 49
+
+--ex 50
+takeWhile' f [] = []
+takeWhile' f (x:xs) =
+	if (f x) == True
+		then x:takeWhile' f xs
+	else []
+
+dropWhile' f [] = []
+dropWhile' f (x:xs) =
+	if (f x) == True
+		then dropWhile' f xs
+	else (x:xs)
+
+--ex 51
+average' :: (Real a, Fractional b) => [a] -> b
+average' xs = realToFrac (sum xs) / genericLength xs
+
+variance' xs avg = (foldl (\x y -> x + (y - avg) ^ 2) 0 xs) / genericLength xs 
