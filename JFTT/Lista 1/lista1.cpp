@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <streambuf>
 #include <string>
@@ -6,7 +7,38 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <bitset>
 #define NO_OF_CHARS 256
+
+int getPatternSize(std::string str) {
+    int s = 0;
+    for(int i = 0; i < str.size(); ) {
+        std::bitset<8> c{str[i]};
+        int bitCheck = 7;
+        while(c[bitCheck] == true) {
+            i++;
+            bitCheck--;
+        }
+        i++;
+        s++;
+    }
+
+    return s;
+}
+
+void increaseIndex(int& index, char currChar, int& charsToSkip) {
+    //polskie znaki diakrytyczne są zapisane na 2 bajtach, gdzie 2 bajt nie mieści się w poniższym zakresie, więc index zwiększy się tylko raz a nie 2 razy
+    index++;
+    std::bitset<8> c{currChar};
+    if(c[7] == 1) {
+
+        int i = 7;
+        while(c[i] == true) {
+            charsToSkip++;
+            i--;
+        }
+    }
+}
 
 int getNextState(std::string pat, int M, int state, int x) {
     if (state < M && x == pat[state])
@@ -69,11 +101,15 @@ std::vector<int> computePI(std::string& pattern) {
 }
 
 void KMPMatcher(std::string& pattern, std::string& text) {
-	int m = strlen(pattern.c_str());
-	int n = strlen(text.c_str());
+	int m = pattern.size();
+	int n = text.size();
+    int rps = getPatternSize(pattern);
+
 	std::vector<int> pi = computePI(pattern);
 	int q = 0;
 
+    int charsToSkip = 0;
+    int ri = 0;
 	for(int i = 0; i < n; i++) {
 		while(q > 0 && pattern[q] != text[i]) {
 			q = pi[q - 1];
@@ -82,20 +118,22 @@ void KMPMatcher(std::string& pattern, std::string& text) {
 		if(pattern[q] == text[i]) {
 			q += 1;
 		}
-
+        
 		if(q == m) {
-			std::cout << "Pattern found at index " << i - m + 1 << std::endl;
+			std::cout << "Pattern found at index " << ri - rps + 1 << std::endl;
 			q = pi[q - 1];
 		}
+        
+        if(charsToSkip == 0)
+            increaseIndex(ri, text[i], charsToSkip);
+        else
+            charsToSkip--;
 	}
 }
 
 int main(int argc, char** argv) {
 	std::string pattern = argv[2];
-
-	std::ifstream t(argv[3]);
-	std::string text((std::istreambuf_iterator<char>(t)),
-					std::istreambuf_iterator<char>());
+    std::string text = argv[3];
 
 	if(strcmp(argv[1], "FA") == 0) {
 		FAMatcher(pattern, text);
