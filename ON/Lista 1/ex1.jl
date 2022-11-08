@@ -1,3 +1,5 @@
+using Printf
+
 function macheps(type)
 	num = one(type)
 	while one(type) + num / 2 != one(type)
@@ -57,3 +59,10 @@ nextfloat: $(nextfloat(zero(Float64)))
    
    maxnum: $(maxnum(Float64))
  floatmax: $(floatmax(Float64))\n")
+
+@printf("Float16 myEta: %.3e
+ Float16 eta: %.3e\n", eta(Float16), nextfloat(zero(Float16)))
+@printf("Float32 myEta: %.3e
+ Float32 eta: %.3e\n", eta(Float32), nextfloat(zero(Float32)))
+@printf("Float64 myEta: %.3e
+ Float64 eta: %.3e\n", eta(Float64), nextfloat(zero(Float64)))
