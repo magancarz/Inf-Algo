@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Calculator
+  version: "1.0"
+servers:
+- url: https://localhost:8080
+tags:
+- name: calculate
+  description: Calculations on numbers
+paths:
+  /calculate/sum:
+    put:
+      tags:
+      - calculate
+      summary: Addition of two numbers
+      operationId: add_number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/operation'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/operation'
+        "400":
+          description: Incorrect input
+      x-openapi-router-controller: swagger_server.controllers.calculate_controller
+  /calculate/sub:
+    put:
+      tags:
+      - calculate
+      summary: Subtraction of two numbers
+      operationId: sub_number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/operation'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/operation'
+        "400":
+          description: Incorrect input
+      x-openapi-router-controller: swagger_server.controllers.calculate_controller
+  /calculate/mul:
+    put:
+      tags:
+      - calculate
+      summary: Multiplication of two numbers
+      operationId: mul_number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/operation'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/operation'
+        "400":
+          description: Incorrect input
+      x-openapi-router-controller: swagger_server.controllers.calculate_controller
+  /calculate/div:
+    put:
+      tags:
+      - calculate
+      summary: Division of two numbers
+      operationId: div_number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/operation'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/operation'
+        "400":
+          description: Incorrect input
+      x-openapi-router-controller: swagger_server.controllers.calculate_controller
+  /calculate/get:
+    get:
+      tags:
+      - calculate
+      summary: get result
+      operationId: get_res
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/result'
+      x-openapi-router-controller: swagger_server.controllers.calculate_controller
+components:
+  schemas:
+    operation:
+      required:
+      - num1
+      - num2
+      type: object
+      properties:
+        num1:
+          type: integer
+          format: int64
+          example: 20
+        num2:
+          type: integer
+          format: int64
+          example: 5
+      example:
+        num1: 20
+        num2: 5
+    result:
+      required:
+      - result
+      type: object
+      properties:
+        result:
+          type: integer
+          format: int64
+          example: 25
+      example:
+        result: 25
+
