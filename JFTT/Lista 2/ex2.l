@@ -7,9 +7,9 @@ int yylex();
 int lines_count = 0;
 int words_count = 0;
 
-bool allow_shebang = true;
-void shebang_done() {
-    allow_shebang = false;
+bool shebang = false;
+void shebang_found() {
+    shebang = true;
 }
 
 %}
@@ -17,21 +17,16 @@ void shebang_done() {
 %x string_mode
 %x documentation
 %%
-(?# allow the first line to contain shebang)
-#!.*\n                          {if(allow_shebang) {ECHO; shebang_done();};};
+#!.*\n                          {if(!shebang) {printf(yytext); shebang_found();};};
 
-(?# empty string - has to match an empty string with somethin preceding it otherwise it will be consumed bt string_mode condition)
-.?((\"\")|(\'\'))               {printf("%s", yytext);};
+.?((\"\")|(\'\'))               {printf(yytext);};
 
-(?# documentation [or long string] mode - dont remove anything)
-[^\\][\"\']{3}                  {printf("%s", yytext); BEGIN(documentation);};
-<documentation>[^\\][\"\']{3}   {printf("%s", yytext); BEGIN(0);};
+[^\\][\"\']{3}                  {printf(yytext); BEGIN(documentation);};
+<documentation>[^\\][\"\']{3}   {printf(yytext); BEGIN(0);};
 
-(?# string mode - dont remove anything)
-[^\\][\"\']                     {printf("%s", yytext); BEGIN(string_mode);};
-<string_mode>[^\\][\"\']        {printf("%s", yytext); BEGIN(0);};
+[^\\][\"\']                     {printf(yytext); BEGIN(string_mode);};
+<string_mode>[^\\][\"\']        {printf(yytext); BEGIN(0);};
 
-(?# delete comments)
 #.*\n?                          {};
 
 %%

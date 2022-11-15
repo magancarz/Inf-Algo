@@ -1,50 +1,34 @@
 %{
     #include <stdio.h>
+    
     int yylex();
     int yywrap();
 
     int docs = 0;
 %}
 
-%x IN_COMMENT
-%x IN_DOCS
-%x IN_STRING
-
-escapedNewline \\\n
-
-
-docSingleLine \/{escapedNewline}*\/(\/|!)({escapedNewline}|.)*
-docMultilineOpen \/\*(\*|!)
-
-singleLine \/{escapedNewline}*\/({escapedNewline}|.)*
-multilineOpen {escapedNewline}*\/{escapedNewline}*\*
-
-multilineClose {escapedNewline}*\*{escapedNewline}*\/
-include \#include[[:blank:]].*\n
+%x comment_mode
+%x documentation
+%x string_mode
 
 %%
 
-{include}               ECHO;
-\"                      { ECHO; BEGIN(IN_STRING); }
-{docSingleLine}         { if (docs) ECHO; }
-{singleLine}            ;
-{docMultilineOpen}      { if (docs) ECHO; BEGIN(IN_DOCS); }
-{multilineOpen}         { BEGIN(IN_COMMENT); }
+\#include[[:blank:]].*\n           	{printf(yytext);};
 
-<IN_STRING>{
-{escapedNewline}*\"     { ECHO; BEGIN(INITIAL); }
-.                       ECHO;
-}
+\"                      		{printf(yytext); BEGIN(string_mode);};
+<string_mode>.				{printf(yytext);};
+<string_mode>(\\\n)*\"			{printf(yytext); BEGIN(0);};
 
-<IN_DOCS>{
-.|\n                    { if(docs) ECHO; }
-{multilineClose}        { if(docs) ECHO; BEGIN(INITIAL); }
-}
+\/(\\\n)*\/(\/|!)((\\\n)|.)*         	{if (docs) printf(yytext);};
+\/(\\\n)*\/((\\\n)|.)*            	{};
 
-<IN_COMMENT>{
-.|\n                    ;
-{multilineClose}        { BEGIN(INITIAL); }
-}
+\/\*(\*|!)      			{if (docs) printf(yytext); BEGIN(documentation);};
+<documentation>.|\n			{if(docs) printf(yytext);};
+<documentation>(\\\n)*\*(\\\n)*\/	{if(docs) printf(yytext); BEGIN(0);};
+
+(\\\n)*\/(\\\n)*\*         		{BEGIN(comment_mode);};
+<comment_mode>.|\n			{};
+<comment_mode>(\\\n)*\*(\\\n)*\/	{BEGIN(0);};
 
 %%
 

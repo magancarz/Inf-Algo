@@ -473,9 +473,9 @@ int yylex();
 int lines_count = 0;
 int words_count = 0;
 
-bool allow_shebang = true;
-void shebang_done() {
-    allow_shebang = false;
+bool shebang = false;
+void shebang_found() {
+    shebang = true;
 }
 
 #line 482 "ex2.c"
@@ -761,54 +761,50 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 21 "ex2.l"
-{if(allow_shebang) {ECHO; shebang_done();};};
+#line 20 "ex2.l"
+{if(!shebang) {printf(yytext); shebang_found();};};
 	YY_BREAK
-
 case 2:
 YY_RULE_SETUP
-#line 24 "ex2.l"
-{printf("%s", yytext);};
+#line 22 "ex2.l"
+{printf(yytext);};
 	YY_BREAK
-
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 27 "ex2.l"
-{printf("%s", yytext); BEGIN(documentation);};
+#line 24 "ex2.l"
+{printf(yytext); BEGIN(documentation);};
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 28 "ex2.l"
-{printf("%s", yytext); BEGIN(0);};
+#line 25 "ex2.l"
+{printf(yytext); BEGIN(0);};
 	YY_BREAK
-
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 31 "ex2.l"
-{printf("%s", yytext); BEGIN(string_mode);};
+#line 27 "ex2.l"
+{printf(yytext); BEGIN(string_mode);};
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 32 "ex2.l"
-{printf("%s", yytext); BEGIN(0);};
+#line 28 "ex2.l"
+{printf(yytext); BEGIN(0);};
 	YY_BREAK
-
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 35 "ex2.l"
+#line 30 "ex2.l"
 {};
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 37 "ex2.l"
+#line 32 "ex2.l"
 ECHO;
 	YY_BREAK
-#line 812 "ex2.c"
+#line 808 "ex2.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(string_mode):
 case YY_STATE_EOF(documentation):
@@ -1815,7 +1811,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 37 "ex2.l"
+#line 32 "ex2.l"
 
 int yywrap() {
     return 1;
@@ -1824,3 +1820,4 @@ int yywrap() {
 int main() {
     return yylex();
 }
+

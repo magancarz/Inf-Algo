@@ -8,19 +8,12 @@ int lines_count = 1;
 int words_count = 0;
 %}
 %%
-(?#remove any unnecessary empty lines)
-^[[:blank:]\\]*\n {};
-(?# remove excess whitespace at the beginning of every line)
-^[[:blank:]]+     {};
-(?# remove excess whitespace at the end of every line)
-[[:blank:]]+$     {};
-(?# replace excess whitespace between words with one space character)
+^[[:blank:]]+(\n)? {};
+[[:blank:]]+(\n)?$     {};
 [[:blank:]]+      {printf(" ");};
 
-(?# count words and lines)
-([^[:blank:]\n])+/[[:blank:]] {ECHO; words_count++;};
-([^[:blank:]\n])+$            {ECHO; words_count++;};
-\n                            {ECHO; lines_count++;};
+[a-zA-Z]+                     {printf(yytext); words_count++;};
+\n                            {printf("\n"); lines_count++;};
 %%
 int yywrap() {
     return 1;
