@@ -15,6 +15,7 @@ int stack_pointer = 0;
 int* stack;
 char err[err_max_length] = "none";
 
+// every time a newline is encountered or an error occurred the stack is reset
 void reset() {
 	stack_pointer = 0;
 	stack[0] = 0;
@@ -84,16 +85,20 @@ void power() {
 }
 
 void output() {
+	// check if the stack is empty (contains only one last number)
 	if (stack_pointer != 1) {
 		strcpy(err, "Error: too few arguments");
 	}
 
+	// check for errors
 	if(strcmp("none", err) != 0) {
+		// error state is /= from 'none'
 		printf("%s\n", err);
 	} else {
+		// everything is good — print the output
 		printf("%d\n", stack[stack_pointer-1]);
 	}
-
+	// reset the stack
 	reset();
 }
 
@@ -114,6 +119,7 @@ void output() {
 \^							{power();};
 \n							{output();};
 
+(?# if one invalid character matched — invalidate whole line)
 [^[:blank:][:digit:]\+\-\*\/\%\^\n].*	{unrecognized_character(yytext);};
 
 %%
