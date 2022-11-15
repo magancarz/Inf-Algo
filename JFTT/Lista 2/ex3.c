@@ -364,11 +364,11 @@ struct yy_trans_info
 static const flex_int16_t yy_accept[66] =
     {   0,
         0,    0,    0,    0,    0,    0,    0,    0,   14,   13,
-        2,   13,   13,   13,   11,   11,   11,    8,    8,    8,
-        3,    3,    3,    0,   10,    6,    0,    0,   12,    0,
-        0,    9,    0,    0,    0,    0,    7,    6,    5,    6,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    4,
-        0,    0,    5,    5,   10,    0,    0,    0,    0,    0,
+        2,   13,   13,   13,   11,   11,   11,    9,    9,    9,
+        8,    7,    8,    0,    6,    4,    0,    0,   12,    0,
+        0,   10,    0,    0,    0,    0,    5,    4,    3,    4,
+        0,    0,    0,    0,    0,    0,    0,    0,    0,    7,
+        0,    0,    3,    3,    6,    0,    0,    0,    0,    0,
         0,    0,    0,    1,    0
     } ;
 
@@ -485,14 +485,13 @@ char *yytext;
 #line 1 "ex3.l"
 #line 2 "ex3.l"
     #include <stdio.h>
-    
     int yylex();
     int yywrap();
 
     int docs = 0;
-#line 494 "ex3.c"
+#line 493 "ex3.c"
 
-#line 496 "ex3.c"
+#line 495 "ex3.c"
 
 #define INITIAL 0
 #define comment_mode 1
@@ -712,10 +711,10 @@ YY_DECL
 		}
 
 	{
-#line 14 "ex3.l"
+#line 13 "ex3.l"
 
 
-#line 719 "ex3.c"
+#line 718 "ex3.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -775,78 +774,84 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 16 "ex3.l"
-{printf(yytext);};
+#line 15 "ex3.l"
+{ printf(yytext); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 18 "ex3.l"
-{printf(yytext); BEGIN(string_mode);};
+#line 16 "ex3.l"
+{ printf(yytext); BEGIN(string_mode); }
 	YY_BREAK
 case 3:
+/* rule 3 can match eol */
 YY_RULE_SETUP
-#line 19 "ex3.l"
-{printf(yytext);};
+#line 17 "ex3.l"
+{ if (docs) printf(yytext); }
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 20 "ex3.l"
-{printf(yytext); BEGIN(0);};
+#line 18 "ex3.l"
+{ };
 	YY_BREAK
 case 5:
-/* rule 5 can match eol */
 YY_RULE_SETUP
-#line 22 "ex3.l"
-{if (docs) printf(yytext);};
+#line 19 "ex3.l"
+{ if (docs) printf(yytext); BEGIN(documentation); }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 23 "ex3.l"
-{};
+#line 20 "ex3.l"
+{ BEGIN(comment_mode); }
 	YY_BREAK
+
 case 7:
+/* rule 7 can match eol */
 YY_RULE_SETUP
-#line 25 "ex3.l"
-{if (docs) printf(yytext); BEGIN(documentation);};
+#line 23 "ex3.l"
+{ printf(yytext); BEGIN(0); }
 	YY_BREAK
 case 8:
-/* rule 8 can match eol */
 YY_RULE_SETUP
-#line 26 "ex3.l"
-{if(docs) printf(yytext);};
+#line 24 "ex3.l"
+{ printf(yytext); }
 	YY_BREAK
+
+
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 27 "ex3.l"
-{if(docs) printf(yytext); BEGIN(0);};
+#line 28 "ex3.l"
+{ if(docs) printf(yytext); }
 	YY_BREAK
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
 #line 29 "ex3.l"
-{BEGIN(comment_mode);};
+{ if(docs) printf(yytext); BEGIN(0); }
 	YY_BREAK
+
+
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 30 "ex3.l"
-{};
+#line 33 "ex3.l"
+{ };
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 31 "ex3.l"
-{BEGIN(0);};
+#line 34 "ex3.l"
+{ BEGIN(0); }
 	YY_BREAK
+
 case 13:
 YY_RULE_SETUP
-#line 33 "ex3.l"
+#line 37 "ex3.l"
 ECHO;
 	YY_BREAK
-#line 850 "ex3.c"
+#line 855 "ex3.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comment_mode):
 case YY_STATE_EOF(documentation):
@@ -1854,7 +1859,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 33 "ex3.l"
+#line 37 "ex3.l"
 
 
 int yywrap() {

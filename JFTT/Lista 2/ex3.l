@@ -1,6 +1,5 @@
 %{
     #include <stdio.h>
-    
     int yylex();
     int yywrap();
 
@@ -13,22 +12,27 @@
 
 %%
 
-\#include[[:blank:]].*\n           	{printf(yytext);};
+\#include[[:blank:]].*\n               	{ printf(yytext); }
+\"                      				{ printf(yytext); BEGIN(string_mode); }
+\/(\\\n)*\/(\/|!)((\\\n)|.)*         	{ if (docs) printf(yytext); }
+\/(\\\n)*\/((\\\n)|.)*            		{ };
+\/\*(\*|!)      						{ if (docs) printf(yytext); BEGIN(documentation); }
+(\\\n)*\/(\\\n)*\*         				{ BEGIN(comment_mode); }
 
-\"                      		{printf(yytext); BEGIN(string_mode);};
-<string_mode>.				{printf(yytext);};
-<string_mode>(\\\n)*\"			{printf(yytext); BEGIN(0);};
+<string_mode>{
+(\\\n)*\"     							{ printf(yytext); BEGIN(0); }
+.                       				{ printf(yytext); }
+}
 
-\/(\\\n)*\/(\/|!)((\\\n)|.)*         	{if (docs) printf(yytext);};
-\/(\\\n)*\/((\\\n)|.)*            	{};
+<documentation>{
+.|\n                    				{ if(docs) printf(yytext); }
+(\\\n)*\*(\\\n)*\/        				{ if(docs) printf(yytext); BEGIN(0); }
+}
 
-\/\*(\*|!)      			{if (docs) printf(yytext); BEGIN(documentation);};
-<documentation>.|\n			{if(docs) printf(yytext);};
-<documentation>(\\\n)*\*(\\\n)*\/	{if(docs) printf(yytext); BEGIN(0);};
-
-(\\\n)*\/(\\\n)*\*         		{BEGIN(comment_mode);};
-<comment_mode>.|\n			{};
-<comment_mode>(\\\n)*\*(\\\n)*\/	{BEGIN(0);};
+<comment_mode>{
+.|\n                    				{ };
+(\\\n)*\*(\\\n)*\/        				{ BEGIN(0); }
+}
 
 %%
 
