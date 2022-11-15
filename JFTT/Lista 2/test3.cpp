@@ -1,6 +1,6 @@
-//#include "test/*asdf*/header.h"
+#include "test/*asdf*/header.h"
 #include <stdio.h>
-//#include "foo/*bar*/baz.h"
+#include <foo/*bar*/baz.h>
 
 /** \brief Java style Doc String - Foo function */
 int foo();
@@ -13,9 +13,7 @@ int g_global_var = 1;
 /* Hello
 /* World
 // */
-int baz() {
-	printf("mleko");
-}
+int baz();
 // */
 
 /*! Global variable

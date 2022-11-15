@@ -1,44 +1,56 @@
 %{
-    #include <stdio.h>
-    
-    int yylex();
-    int yywrap();
+#include <stdbool.h>
 
-    int docs = 0;
+bool print_doc = false;
 %}
 
-%x comment_mode
-%x documentation
 %x string_mode
-
+%x comment_single_line
+%x comment_multi_line
+%x docs_single_line
+%x docs_multi_lines
+ 
 %%
 
-\#include[[:blank:]].*\n           	{printf(yytext);};
+\#include[[:blank:]].*\n	{ ECHO; }
 
-\"                      		{printf(yytext); BEGIN(string_mode);};
-<string_mode>.				{printf(yytext);};
-<string_mode>(\\\n)*\"			{printf(yytext); BEGIN(0);};
+\"				{ ECHO; BEGIN(string_mode); }
+\/\/				BEGIN(comment_single_line);
+\/\*				BEGIN(comment_multi_line);
+\/\/\/|\/\/!			{ if(print_doc) ECHO; BEGIN(docs_single_line); }
+\/\*\*|\/\*!			{ if(print_doc) ECHO; BEGIN(docs_multi_lines); }
 
-\/(\\\n)*\/(\/|!)((\\\n)|.)*         	{if (docs) printf(yytext);};
-\/(\\\n)*\/((\\\n)|.)*            	{};
-
-\/\*(\*|!)      			{if (docs) printf(yytext); BEGIN(documentation);};
-<documentation>.|\n			{if(docs) printf(yytext);};
-<documentation>(\\\n)*\*(\\\n)*\/	{if(docs) printf(yytext); BEGIN(0);};
-
-(\\\n)*\/(\\\n)*\*         		{BEGIN(comment_mode);};
-<comment_mode>.|\n			{};
-<comment_mode>(\\\n)*\*(\\\n)*\/	{BEGIN(0);};
-
-%%
-
-int yywrap() {
-    return 1;
+<string_mode>{
+\\\"				{ECHO;}
+\"				{ ECHO; BEGIN(0); }
 }
 
-int main(int argc, char **argv) {
-    if (argc > 1) {
-        docs = 1;
-    }
-    return yylex();
+<comment_single_line>{
+.				{ };
+\n				{ ECHO; BEGIN(0); }
+}
+
+<comment_multi_line>{
+.				{ };
+\*\/				BEGIN(0);
+}
+
+<docs_single_line>{
+.				if(print_doc) ECHO;
+\n				{ ECHO; BEGIN(0); }
+}
+
+<docs_multi_lines>{
+.				if(print_doc) ECHO;
+\*\/				{ if(print_doc) ECHO; BEGIN(0); }
+}
+
+%%
+
+int yywrap() {}
+
+int main(int argc, char** argv) {
+	if (argc > 1)
+		print_doc = true;
+	yylex();
 }

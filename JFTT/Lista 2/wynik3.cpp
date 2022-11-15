@@ -10,9 +10,6 @@ int bar(); /**< Bar function */
 /// .NET Style Doc String
 int g_global_var = 1;
 
-
-
-
 int baz();
 
 
@@ -27,18 +24,10 @@ int main(int argc, const char* argv)
     
 
     
+    baz();
     
 
-
-    foo();
-    
-
-/\
-
-
-
-    foo();
-
+    baz();
 
     return 1;
 }

@@ -16,16 +16,17 @@ void shebang_found() {
 
 %x string_mode
 %x documentation
+
 %%
-#!.*\n                          {if(!shebang) {printf(yytext); shebang_found();};};
+#!.*\n                          {if(!shebang) {ECHO; shebang_found();}}
 
-.?((\"\")|(\'\'))               {printf(yytext);};
+.?((\"\")|(\'\'))               {ECHO;}
 
-[^\\][\"\']{3}                  {printf(yytext); BEGIN(documentation);};
-<documentation>[^\\][\"\']{3}   {printf(yytext); BEGIN(0);};
+[^\\][\"\']{3}                  {ECHO; BEGIN(documentation);};
+<documentation>[^\\][\"\']{3}   {ECHO; BEGIN(0);};
 
-[^\\][\"\']                     {printf(yytext); BEGIN(string_mode);};
-<string_mode>[^\\][\"\']        {printf(yytext); BEGIN(0);};
+[^\\][\"\']                     {ECHO; BEGIN(string_mode);};
+<string_mode>[^\\][\"\']        {ECHO; BEGIN(0);};
 
 #.*\n?                          {};
 

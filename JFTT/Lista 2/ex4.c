@@ -462,7 +462,6 @@ int stack_pointer = 0;
 int* stack;
 char err[err_max_length] = "none";
 
-// every time a newline is encountered or an error occurred the stack is reset
 void reset() {
 	stack_pointer = 0;
 	stack[0] = 0;
@@ -532,25 +531,21 @@ void power() {
 }
 
 void output() {
-	// check if the stack is empty (contains only one last number)
 	if (stack_pointer != 1) {
 		strcpy(err, "Error: too few arguments");
 	}
 
-	// check for errors
 	if(strcmp("none", err) != 0) {
-		// error state is /= from 'none'
 		printf("%s\n", err);
 	} else {
-		// everything is good — print the output
 		printf("%d\n", stack[stack_pointer-1]);
 	}
-	// reset the stack
+
 	reset();
 }
 
-#line 553 "ex4.c"
-#line 554 "ex4.c"
+#line 548 "ex4.c"
+#line 549 "ex4.c"
 
 #define INITIAL 0
 
@@ -767,10 +762,10 @@ YY_DECL
 		}
 
 	{
-#line 107 "ex4.l"
+#line 102 "ex4.l"
 
 
-#line 774 "ex4.c"
+#line 769 "ex4.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -829,63 +824,62 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 109 "ex4.l"
+#line 104 "ex4.l"
 {stack[stack_pointer] = atoi(yytext); stack_pointer++;};
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 111 "ex4.l"
+#line 106 "ex4.l"
 {};
 	YY_BREAK
 
 case 3:
 YY_RULE_SETUP
-#line 114 "ex4.l"
+#line 109 "ex4.l"
 {add();};
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 115 "ex4.l"
+#line 110 "ex4.l"
 {subtract();};
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 116 "ex4.l"
+#line 111 "ex4.l"
 {multiply();};
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 117 "ex4.l"
+#line 112 "ex4.l"
 {divide();};
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 118 "ex4.l"
+#line 113 "ex4.l"
 {mod();};
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 119 "ex4.l"
+#line 114 "ex4.l"
 {power();};
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 120 "ex4.l"
+#line 115 "ex4.l"
 {output();};
 	YY_BREAK
-
 case 10:
 YY_RULE_SETUP
-#line 123 "ex4.l"
+#line 117 "ex4.l"
 {unrecognized_character(yytext);};
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 125 "ex4.l"
+#line 119 "ex4.l"
 ECHO;
 	YY_BREAK
-#line 889 "ex4.c"
+#line 883 "ex4.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1890,7 +1884,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 125 "ex4.l"
+#line 119 "ex4.l"
 
 
 int yywrap() {
