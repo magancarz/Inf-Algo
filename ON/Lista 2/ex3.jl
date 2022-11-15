@@ -43,7 +43,7 @@ function hilberts(size)
 
     gauss = matrix \ b
     inverse = inv(matrix) * b
-    println("$size & $(rank(matrix)) & $(cond(matrix)) & $(norm(inverse - x)/norm(x)) & $(norm(gauss - x)/norm(x))\\\\ \n\\hline")
+    println("$size & $(rank(matrix)) & $(cond(matrix)) & $(norm(x - inverse)/norm(x)) & $(norm(x - gauss)/norm(x))\\\\ \n\\hline")
 end
 
 function randomMatrix(n, c)
@@ -54,11 +54,11 @@ function randomMatrix(n, c)
     gauss = matrix \ b
     inverse = inv(matrix) * b
 
-    println("$n & $(rank(matrix)) & $(cond(matrix)) & $(norm(inverse - x)/norm(x)) & $(norm(gauss - x)/norm(x))\\\\ \n\\hline")
+    println("$n & $(rank(matrix)) & $(cond(matrix)) & $(norm(x - inverse)/norm(x)) & $(norm(x - gauss)/norm(x))\\\\ \n\\hline")
 end
 
 println("Hilberts:")
-for i in 1:2:30
+for i in 2:2:16
     hilberts(i)
 end
 
