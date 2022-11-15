@@ -1,146 +1,142 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <streambuf>
 #include <string>
-#include <cstring>
 #include <vector>
 #include <map>
 #include <algorithm>
-#include <bitset>
-#define NO_OF_CHARS 256
 
-int getPatternSize(std::string str) {
-    int s = 0;
-    for(int i = 0; i < str.size(); ) {
-        std::bitset<8> c{str[i]};
-        int bitCheck = 7;
-        while(c[bitCheck] == true) {
-            i++;
-            bitCheck--;
-        }
-        i++;
-        s++;
-    }
+bool isFirstByteInUtf8(const uint8_t& bits) { return (bits <= 127 || bits >= 192); }
 
-    return s;
+void increaseIndexIfNecessary(uint64_t& index, const uint8_t currChar) {
+	if (isFirstByteInUtf8(currChar))
+	    index++;
 }
 
-void increaseIndex(int& index, char currChar, int& charsToSkip) {
-    //polskie znaki diakrytyczne s膮 zapisane na 2 bajtach, gdzie 2 bajt nie mie艣ci si臋 w poni偶szym zakresie, wi臋c index zwi臋kszy si臋 tylko raz a nie 2 razy
-    index++;
-    std::bitset<8> c{currChar};
-    if(c[7] == 1) {
+uint32_t getSizeInUtf8(const std::string& pattern) {
+	int size = 0;
 
-        int i = 7;
-        while(c[i] == true) {
-            charsToSkip++;
-            i--;
-        }
-    }
-}
+	for (uint8_t currChar : pattern) {
+	    if (isFirstByteInUtf8(currChar))
+		size++;
+	}
 
-int getNextState(std::string pat, int M, int state, int x) {
-    if (state < M && x == pat[state])
-        return state + 1;
-
-    int ns, i;
-
-    for (ns = state; ns > 0; ns--) {
-        if (pat[ns - 1] == x) {
-            for (i = 0; i < ns - 1; i++)
-                if (pat[i] != pat[state - ns + 1 + i])
-                    break;
-            if (i == ns - 1)
-                return ns;
-        }
-    }
- 
-    return 0;
-}
-
-void computeTF(std::string pat, int M, int TF[][NO_OF_CHARS]) {
-    int state, x;
-    for (state = 0; state <= M; ++state)
-        for (x = 0; x < NO_OF_CHARS; ++x)
-            TF[state][x] = getNextState(pat, M, state, x);
-}
-
-void FAMatcher(std::string pat, std::string txt) {
-    int M = strlen(pat.c_str());
-    int N = txt.size();
- 
-    int TF[32][NO_OF_CHARS];
- 
-    computeTF(pat, M, TF);
-	
-    int i, state = 0;
-    for (i = 0; i < N; i++) {
-        state = TF[state][txt[i]];
-        if (state == M)
-            std::cout << "Pattern found at index "<< i - M + 1 <<std::endl;
-    }
+	return size;
 }
 
 std::vector<int> computePI(std::string& pattern) {
-	int m = strlen(pattern.c_str());
-	std::vector<int> pi(m, 0);
-	int k = 0;
+    int pointer = -1;
+    int patternSize = pattern.size();
+    std::vector<int> pi = std::vector<int>(patternSize, -1);
 
-	for(int i = 1; i < m; i++) {
-		while(k > 0 && pattern[k] != pattern[i]) {
-			k = pi[k - 1];
-		}
-		if(pattern[k] == pattern[i]) {
-			k += 1;
-		}
-		pi[i] = k;
-	}
+    for (int i = 1; i < patternSize; i++) {
+        while (pointer >= 0 && pattern[pointer + 1] != pattern[i])
+            pointer = pi[pointer];
+        if (pattern[pointer + 1] == pattern[i])
+            pointer++;
+        pi[i] = pointer;
+    }
 
-	return pi;
+    return pi;
+}
+
+class State {
+public:
+    State() {this->map = std::map<uint8_t, int>(); }
+
+    int returnNewStateIndex(uint8_t currChar) { return this->map[currChar]; }
+    void setStateIndex(uint8_t currChar, int stateIndex) { this->map[currChar] = stateIndex; }
+
+private:
+    std::map<uint8_t, int> map;
+};
+
+void setState(std::vector<State>& states, std::string& pattern, int patternSize, int i, char currChar) {
+    int currState = std::min(patternSize, i + 1);
+    std::string patternSuffix(pattern.substr(i == patternSize ? 1 : 0, i) + currChar);
+
+    while(currState > 0 && pattern.compare(0, currState, patternSuffix) != 0) {
+        patternSuffix.erase(0, 1);
+        currState--;
+    }
+
+    states[i].setStateIndex(currChar, currState);
+}
+
+std::vector<State> computeTF(std::string& pattern) {
+    int patternSize = pattern.size();
+    std::vector<State> states = std::vector<State>(patternSize + 1, State());
+    for (int i = 0; i <= patternSize; i++) {
+        for (const char& currChar : pattern) {
+            setState(states, pattern, patternSize, i, currChar);
+        }
+    }
+    
+    return states;
+}
+
+void FAMatcher(std::string& pattern, std::string& txt) {
+    std::vector<State> states = computeTF(pattern);
+    const uint32_t lastState = pattern.size();
+    const uint32_t patternSize = getSizeInUtf8(pattern);
+
+    uint8_t currChar = 0;
+    uint32_t currState = 0;
+    uint64_t index = 0;
+
+    for(int i = 0; i < txt.size(); i++) {
+    	currChar = txt[i];
+        currState = states[currState].returnNewStateIndex(currChar);
+        increaseIndexIfNecessary(index, currChar);
+        if (currState == lastState)
+            printf("%lu\n", index - patternSize);
+    }
 }
 
 void KMPMatcher(std::string& pattern, std::string& text) {
-	int m = pattern.size();
-	int n = text.size();
-    int rps = getPatternSize(pattern);
+	const std::vector<int> f = computePI(pattern);
+    const uint32_t m = pattern.size() - 1;
+    const uint32_t patternSize = getSizeInUtf8(pattern);
 
-	std::vector<int> pi = computePI(pattern);
-	int q = 0;
+    uint8_t currChar = 0;
+    uint64_t index = 0;
+    int pointer = -1;
 
-    int charsToSkip = 0;
-    int ri = 0;
-	for(int i = 0; i < n; i++) {
-		while(q > 0 && pattern[q] != text[i]) {
-			q = pi[q - 1];
-		}
-
-		if(pattern[q] == text[i]) {
-			q += 1;
-		}
-        
-		if(q == m) {
-			std::cout << "Pattern found at index " << ri - rps + 1 << std::endl;
-			q = pi[q - 1];
-		}
-        
-        if(charsToSkip == 0)
-            increaseIndex(ri, text[i], charsToSkip);
-        else
-            charsToSkip--;
-	}
+    for (int i = 0; i < text.size(); i++) {
+    	currChar = text[i];
+        increaseIndexIfNecessary(index, currChar);
+        while (pointer >= 0 && currChar && uint8_t(pattern[pointer + 1]) != currChar)
+            pointer = f[pointer];
+        if (uint8_t(pattern[pointer + 1]) == currChar)
+            pointer++;
+        if (pointer == m) {
+            printf("%lu\n", index - patternSize);
+            pointer = f[pointer];
+        }
+    }
 }
 
 int main(int argc, char** argv) {
-	std::string pattern = argv[2];
-    std::string text = argv[3];
+	//std::string pattern = argv[2];
+    //std::string text = argv[3];
+    
+    std::string pattern = "规规";
+    std::string text = "规规规规规规abba";
 
+    std::cout << "FA Matcher\n";
+    FAMatcher(pattern, text);
+
+    std::cout << "KMP Matcher\n";
+    KMPMatcher(pattern, text);
+
+    /*
 	if(strcmp(argv[1], "FA") == 0) {
 		FAMatcher(pattern, text);
 	}
 	else if(strcmp(argv[1], "KMP") == 0) {
 		KMPMatcher(pattern, text);
 	}
+    */
 
 	return 0;
 }
