@@ -240,94 +240,40 @@ mmap f = map (map f)
 mmmap f = map (map (map f))
 
 --ex 39
--- sum :: (Foldable t, Num a) => t a -> a
--- product :: (Foldable t, Num a) => t a -> a
--- all :: Foldable t => (a -> Bool) -> t a -> Bool
--- any :: Foldable t => (a -> Bool) -> t a -> Bool
+--sprawdź typy i przetestuj działanie funkcji sum, product, all, any
 
 --ex 40
--- ghci> foldl (+) 0 [1..10000]
--- 50005000
--- ghci> foldr (+) 0 [1..10000]
--- 50005000
+--przetestuj działanie funkcji foldl, foldr, ...
 
 --ex 41
-ex41func = foldr (+) 0 [1..100]
-
--- ex1
-gancarz :: [Int] -> Int
-gancarz [x] = x
-gancarz (a:b:xs) = gancarz ((gcd a b) : xs)
-
--- ex2
-fi n = sum [k | k <- [1..n-1], n `mod` k == 0]
-
--- ex3 dirichlet
-dirichlet = \f g (n :: Integer) -> sum [(f d) * (g (n `div` d)) | d <- [1..n], n `mod` d == 0]
-
--- ex4
-func1 = \x -> x * x
-func2 = \x -> x ^ 2
-funcI :: Integer -> Integer
-funcI x = x
-funcN :: Integer -> Integer
-funcN x = 1
-sitam f n = map f [1..n]
+sumEven :: [Int] -> Int
+sumEven xs = foldr (\x y -> if (even x) then y + 1 else y) 0 xs
 
 --ex 42
-nondec' :: Ord a => [a] -> Bool
-nondec' xs = and (map leq (zip xs (tail xs)))
-						where leq (x, y) = x <= y
+nondec42 :: [Int] -> Bool
+nondec42 [x] = True
+nondec42 (x:y:xs) = if(x <= y) then nondec42 (y:xs) else False
+
+nondec42'' [] = True
+nondec42'' (x:xs) = if(fst(x) <= snd(x)) then nondec42'' xs else False
+
+nondec42' :: [Int] -> Bool
+nondec42' xs = nondec42'' (zip xs (tail xs))
 
 --ex 43
---foldl (-) 10 [1,2,3] (((10 - 1) - 2) - 3)
--- 4
---foldr (-) 10 [1,2,3] (1 - (2 - (3 - 10)))
--- (-8)
+--1.foldl (-) e xs = e - sum xs "(((10 - 1) - 2) - 3)" True
+--2.foldr (-) e xs = e - sum xs "(3 - (2 - (1 - 10)))" False
 
---ex 44
+--haskellokwium 2
+--ex 1
+average1 xs = realToFrac (foldl (+) 0 xs) / genericLength xs
+variance1 xs = (foldl (\x y -> x + (y - avg) ^ 2) 0 xs) / genericLength xs
+	where avg = average1 xs
 
+ex2func1 xs = average1 (map variance1 xs)
+ex2func2 xs = variance1 (map average1 xs)
 
---ex 45
-fnl [] x = [x]
-fnl xs x
-	| last xs == x = xs
-	| otherwise    = xs ++ [x]
-remdupl [] = []
-remdupl xs = foldl fnl [] xs
+--ex 2
+aciag = [((-1) ** i) / i | i <- [1.0, 2.0 .. 10.0]]
 
---ex 46
---to samo co 41
-
---ex 47
-approxL :: Float -> Float
-approxL n = foldl (\x y -> x + (1 / (product [1..y]))) 0 [1..n]
-
-approxR :: Float -> Float
-approxR n = foldr (\x y -> (1 / (product [1..x])) + y) 0 [1..n]
-
---ex 48
-sum48 :: (Num a) => [a] -> a
-sum48 [] = 0
-sum48 xs = foldl (\acc x -> acc + ((-1) ^ (fst x) * (snd x))) 0 (zip [2 .. (length xs + 1)] xs)
-
---ex 49
-
---ex 50
-takeWhile' f [] = []
-takeWhile' f (x:xs) =
-	if (f x) == True
-		then x:takeWhile' f xs
-	else []
-
-dropWhile' f [] = []
-dropWhile' f (x:xs) =
-	if (f x) == True
-		then dropWhile' f xs
-	else (x:xs)
-
---ex 51
-average' :: (Real a, Fractional b) => [a] -> b
-average' xs = realToFrac (sum xs) / genericLength xs
-
-variance' xs avg = (foldl (\x y -> x + (y - avg) ^ 2) 0 xs) / genericLength xs 
+lewy x ai = foldl (\a b -> a + ((fst b) * (x ^ (snd b)))) 0 (zip ai [1..])
