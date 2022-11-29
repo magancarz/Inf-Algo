@@ -1,0 +1,746 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    COMMENT
+    EOL
+    ERROR
+    EXPONENT
+    MOD
+
+Grammar
+
+Rule 0     S' -> ex2
+Rule 1     ex2 -> exp
+Rule 2     ex2 -> empty
+Rule 3     empty -> <empty>
+Rule 4     exp -> NUM
+Rule 5     exp -> MINUS NUM
+Rule 6     exp -> MINUS LT_BR exp RT_BR
+Rule 7     exp -> LT_BR exp RT_BR
+Rule 8     exp -> exp ADD exp
+Rule 9     exp -> exp MINUS exp
+Rule 10    exp -> exp POW exponent
+Rule 11    exp -> exp MUL exp
+Rule 12    exp -> exp DIV exp
+Rule 13    exponent -> NUM
+Rule 14    exponent -> MINUS NUM
+Rule 15    exponent -> MINUS LT_BR exponent RT_BR
+Rule 16    exponent -> LT_BR exponent RT_BR
+Rule 17    exponent -> exponent ADD exponent
+Rule 18    exponent -> exponent MINUS exponent
+Rule 19    exponent -> exponent MUL exponent
+Rule 20    exponent -> exponent DIV exponent
+
+Terminals, with rules where they appear
+
+ADD                  : 8 17
+COMMENT              : 
+DIV                  : 12 20
+EOL                  : 
+ERROR                : 
+EXPONENT             : 
+LT_BR                : 6 7 15 16
+MINUS                : 5 6 9 14 15 18
+MOD                  : 
+MUL                  : 11 19
+NUM                  : 4 5 13 14
+POW                  : 10
+RT_BR                : 6 7 15 16
+error                : 
+
+Nonterminals, with rules where they appear
+
+empty                : 2
+ex2                  : 0
+exp                  : 1 6 7 8 8 9 9 10 11 11 12 12
+exponent             : 10 15 16 17 17 18 18 19 19 20 20
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . ex2
+    (1) ex2 -> . exp
+    (2) ex2 -> . empty
+    (4) exp -> . NUM
+    (5) exp -> . MINUS NUM
+    (6) exp -> . MINUS LT_BR exp RT_BR
+    (7) exp -> . LT_BR exp RT_BR
+    (8) exp -> . exp ADD exp
+    (9) exp -> . exp MINUS exp
+    (10) exp -> . exp POW exponent
+    (11) exp -> . exp MUL exp
+    (12) exp -> . exp DIV exp
+    (3) empty -> .
+
+    NUM             shift and go to state 4
+    MINUS           shift and go to state 5
+    LT_BR           shift and go to state 6
+    $end            reduce using rule 3 (empty -> .)
+
+    ex2                            shift and go to state 1
+    exp                            shift and go to state 2
+    empty                          shift and go to state 3
+
+state 1
+
+    (0) S' -> ex2 .
+
+
+
+state 2
+
+    (1) ex2 -> exp .
+    (8) exp -> exp . ADD exp
+    (9) exp -> exp . MINUS exp
+    (10) exp -> exp . POW exponent
+    (11) exp -> exp . MUL exp
+    (12) exp -> exp . DIV exp
+
+    $end            reduce using rule 1 (ex2 -> exp .)
+    ADD             shift and go to state 7
+    MINUS           shift and go to state 8
+    POW             shift and go to state 9
+    MUL             shift and go to state 10
+    DIV             shift and go to state 11
+
+
+state 3
+
+    (2) ex2 -> empty .
+
+    $end            reduce using rule 2 (ex2 -> empty .)
+
+
+state 4
+
+    (4) exp -> NUM .
+
+    ADD             reduce using rule 4 (exp -> NUM .)
+    MINUS           reduce using rule 4 (exp -> NUM .)
+    POW             reduce using rule 4 (exp -> NUM .)
+    MUL             reduce using rule 4 (exp -> NUM .)
+    DIV             reduce using rule 4 (exp -> NUM .)
+    $end            reduce using rule 4 (exp -> NUM .)
+    RT_BR           reduce using rule 4 (exp -> NUM .)
+
+
+state 5
+
+    (5) exp -> MINUS . NUM
+    (6) exp -> MINUS . LT_BR exp RT_BR
+
+    NUM             shift and go to state 12
+    LT_BR           shift and go to state 13
+
+
+state 6
+
+    (7) exp -> LT_BR . exp RT_BR
+    (4) exp -> . NUM
+    (5) exp -> . MINUS NUM
+    (6) exp -> . MINUS LT_BR exp RT_BR
+    (7) exp -> . LT_BR exp RT_BR
+    (8) exp -> . exp ADD exp
+    (9) exp -> . exp MINUS exp
+    (10) exp -> . exp POW exponent
+    (11) exp -> . exp MUL exp
+    (12) exp -> . exp DIV exp
+
+    NUM             shift and go to state 4
+    MINUS           shift and go to state 5
+    LT_BR           shift and go to state 6
+
+    exp                            shift and go to state 14
+
+state 7
+
+    (8) exp -> exp ADD . exp
+    (4) exp -> . NUM
+    (5) exp -> . MINUS NUM
+    (6) exp -> . MINUS LT_BR exp RT_BR
+    (7) exp -> . LT_BR exp RT_BR
+    (8) exp -> . exp ADD exp
+    (9) exp -> . exp MINUS exp
+    (10) exp -> . exp POW exponent
+    (11) exp -> . exp MUL exp
+    (12) exp -> . exp DIV exp
+
+    NUM             shift and go to state 4
+    MINUS           shift and go to state 5
+    LT_BR           shift and go to state 6
+
+    exp                            shift and go to state 15
+
+state 8
+
+    (9) exp -> exp MINUS . exp
+    (4) exp -> . NUM
+    (5) exp -> . MINUS NUM
+    (6) exp -> . MINUS LT_BR exp RT_BR
+    (7) exp -> . LT_BR exp RT_BR
+    (8) exp -> . exp ADD exp
+    (9) exp -> . exp MINUS exp
+    (10) exp -> . exp POW exponent
+    (11) exp -> . exp MUL exp
+    (12) exp -> . exp DIV exp
+
+    NUM             shift and go to state 4
+    MINUS           shift and go to state 5
+    LT_BR           shift and go to state 6
+
+    exp                            shift and go to state 16
+
+state 9
+
+    (10) exp -> exp POW . exponent
+    (13) exponent -> . NUM
+    (14) exponent -> . MINUS NUM
+    (15) exponent -> . MINUS LT_BR exponent RT_BR
+    (16) exponent -> . LT_BR exponent RT_BR
+    (17) exponent -> . exponent ADD exponent
+    (18) exponent -> . exponent MINUS exponent
+    (19) exponent -> . exponent MUL exponent
+    (20) exponent -> . exponent DIV exponent
+
+    NUM             shift and go to state 18
+    MINUS           shift and go to state 19
+    LT_BR           shift and go to state 20
+
+    exponent                       shift and go to state 17
+
+state 10
+
+    (11) exp -> exp MUL . exp
+    (4) exp -> . NUM
+    (5) exp -> . MINUS NUM
+    (6) exp -> . MINUS LT_BR exp RT_BR
+    (7) exp -> . LT_BR exp RT_BR
+    (8) exp -> . exp ADD exp
+    (9) exp -> . exp MINUS exp
+    (10) exp -> . exp POW exponent
+    (11) exp -> . exp MUL exp
+    (12) exp -> . exp DIV exp
+
+    NUM             shift and go to state 4
+    MINUS           shift and go to state 5
+    LT_BR           shift and go to state 6
+
+    exp                            shift and go to state 21
+
+state 11
+
+    (12) exp -> exp DIV . exp
+    (4) exp -> . NUM
+    (5) exp -> . MINUS NUM
+    (6) exp -> . MINUS LT_BR exp RT_BR
+    (7) exp -> . LT_BR exp RT_BR
+    (8) exp -> . exp ADD exp
+    (9) exp -> . exp MINUS exp
+    (10) exp -> . exp POW exponent
+    (11) exp -> . exp MUL exp
+    (12) exp -> . exp DIV exp
+
+    NUM             shift and go to state 4
+    MINUS           shift and go to state 5
+    LT_BR           shift and go to state 6
+
+    exp                            shift and go to state 22
+
+state 12
+
+    (5) exp -> MINUS NUM .
+
+    ADD             reduce using rule 5 (exp -> MINUS NUM .)
+    MINUS           reduce using rule 5 (exp -> MINUS NUM .)
+    POW             reduce using rule 5 (exp -> MINUS NUM .)
+    MUL             reduce using rule 5 (exp -> MINUS NUM .)
+    DIV             reduce using rule 5 (exp -> MINUS NUM .)
+    $end            reduce using rule 5 (exp -> MINUS NUM .)
+    RT_BR           reduce using rule 5 (exp -> MINUS NUM .)
+
+
+state 13
+
+    (6) exp -> MINUS LT_BR . exp RT_BR
+    (4) exp -> . NUM
+    (5) exp -> . MINUS NUM
+    (6) exp -> . MINUS LT_BR exp RT_BR
+    (7) exp -> . LT_BR exp RT_BR
+    (8) exp -> . exp ADD exp
+    (9) exp -> . exp MINUS exp
+    (10) exp -> . exp POW exponent
+    (11) exp -> . exp MUL exp
+    (12) exp -> . exp DIV exp
+
+    NUM             shift and go to state 4
+    MINUS           shift and go to state 5
+    LT_BR           shift and go to state 6
+
+    exp                            shift and go to state 23
+
+state 14
+
+    (7) exp -> LT_BR exp . RT_BR
+    (8) exp -> exp . ADD exp
+    (9) exp -> exp . MINUS exp
+    (10) exp -> exp . POW exponent
+    (11) exp -> exp . MUL exp
+    (12) exp -> exp . DIV exp
+
+    RT_BR           shift and go to state 24
+    ADD             shift and go to state 7
+    MINUS           shift and go to state 8
+    POW             shift and go to state 9
+    MUL             shift and go to state 10
+    DIV             shift and go to state 11
+
+
+state 15
+
+    (8) exp -> exp ADD exp .
+    (8) exp -> exp . ADD exp
+    (9) exp -> exp . MINUS exp
+    (10) exp -> exp . POW exponent
+    (11) exp -> exp . MUL exp
+    (12) exp -> exp . DIV exp
+
+    ADD             reduce using rule 8 (exp -> exp ADD exp .)
+    MINUS           reduce using rule 8 (exp -> exp ADD exp .)
+    $end            reduce using rule 8 (exp -> exp ADD exp .)
+    RT_BR           reduce using rule 8 (exp -> exp ADD exp .)
+    POW             shift and go to state 9
+    MUL             shift and go to state 10
+    DIV             shift and go to state 11
+
+  ! POW             [ reduce using rule 8 (exp -> exp ADD exp .) ]
+  ! MUL             [ reduce using rule 8 (exp -> exp ADD exp .) ]
+  ! DIV             [ reduce using rule 8 (exp -> exp ADD exp .) ]
+  ! ADD             [ shift and go to state 7 ]
+  ! MINUS           [ shift and go to state 8 ]
+
+
+state 16
+
+    (9) exp -> exp MINUS exp .
+    (8) exp -> exp . ADD exp
+    (9) exp -> exp . MINUS exp
+    (10) exp -> exp . POW exponent
+    (11) exp -> exp . MUL exp
+    (12) exp -> exp . DIV exp
+
+    ADD             reduce using rule 9 (exp -> exp MINUS exp .)
+    MINUS           reduce using rule 9 (exp -> exp MINUS exp .)
+    $end            reduce using rule 9 (exp -> exp MINUS exp .)
+    RT_BR           reduce using rule 9 (exp -> exp MINUS exp .)
+    POW             shift and go to state 9
+    MUL             shift and go to state 10
+    DIV             shift and go to state 11
+
+  ! POW             [ reduce using rule 9 (exp -> exp MINUS exp .) ]
+  ! MUL             [ reduce using rule 9 (exp -> exp MINUS exp .) ]
+  ! DIV             [ reduce using rule 9 (exp -> exp MINUS exp .) ]
+  ! ADD             [ shift and go to state 7 ]
+  ! MINUS           [ shift and go to state 8 ]
+
+
+state 17
+
+    (10) exp -> exp POW exponent .
+    (17) exponent -> exponent . ADD exponent
+    (18) exponent -> exponent . MINUS exponent
+    (19) exponent -> exponent . MUL exponent
+    (20) exponent -> exponent . DIV exponent
+
+    ADD             reduce using rule 10 (exp -> exp POW exponent .)
+    MINUS           reduce using rule 10 (exp -> exp POW exponent .)
+    POW             reduce using rule 10 (exp -> exp POW exponent .)
+    MUL             reduce using rule 10 (exp -> exp POW exponent .)
+    DIV             reduce using rule 10 (exp -> exp POW exponent .)
+    $end            reduce using rule 10 (exp -> exp POW exponent .)
+    RT_BR           reduce using rule 10 (exp -> exp POW exponent .)
+
+  ! ADD             [ shift and go to state 25 ]
+  ! MINUS           [ shift and go to state 26 ]
+  ! MUL             [ shift and go to state 27 ]
+  ! DIV             [ shift and go to state 28 ]
+
+
+state 18
+
+    (13) exponent -> NUM .
+
+    ADD             reduce using rule 13 (exponent -> NUM .)
+    MINUS           reduce using rule 13 (exponent -> NUM .)
+    MUL             reduce using rule 13 (exponent -> NUM .)
+    DIV             reduce using rule 13 (exponent -> NUM .)
+    POW             reduce using rule 13 (exponent -> NUM .)
+    $end            reduce using rule 13 (exponent -> NUM .)
+    RT_BR           reduce using rule 13 (exponent -> NUM .)
+
+
+state 19
+
+    (14) exponent -> MINUS . NUM
+    (15) exponent -> MINUS . LT_BR exponent RT_BR
+
+    NUM             shift and go to state 29
+    LT_BR           shift and go to state 30
+
+
+state 20
+
+    (16) exponent -> LT_BR . exponent RT_BR
+    (13) exponent -> . NUM
+    (14) exponent -> . MINUS NUM
+    (15) exponent -> . MINUS LT_BR exponent RT_BR
+    (16) exponent -> . LT_BR exponent RT_BR
+    (17) exponent -> . exponent ADD exponent
+    (18) exponent -> . exponent MINUS exponent
+    (19) exponent -> . exponent MUL exponent
+    (20) exponent -> . exponent DIV exponent
+
+    NUM             shift and go to state 18
+    MINUS           shift and go to state 19
+    LT_BR           shift and go to state 20
+
+    exponent                       shift and go to state 31
+
+state 21
+
+    (11) exp -> exp MUL exp .
+    (8) exp -> exp . ADD exp
+    (9) exp -> exp . MINUS exp
+    (10) exp -> exp . POW exponent
+    (11) exp -> exp . MUL exp
+    (12) exp -> exp . DIV exp
+
+    ADD             reduce using rule 11 (exp -> exp MUL exp .)
+    MINUS           reduce using rule 11 (exp -> exp MUL exp .)
+    MUL             reduce using rule 11 (exp -> exp MUL exp .)
+    DIV             reduce using rule 11 (exp -> exp MUL exp .)
+    $end            reduce using rule 11 (exp -> exp MUL exp .)
+    RT_BR           reduce using rule 11 (exp -> exp MUL exp .)
+    POW             shift and go to state 9
+
+  ! POW             [ reduce using rule 11 (exp -> exp MUL exp .) ]
+  ! ADD             [ shift and go to state 7 ]
+  ! MINUS           [ shift and go to state 8 ]
+  ! MUL             [ shift and go to state 10 ]
+  ! DIV             [ shift and go to state 11 ]
+
+
+state 22
+
+    (12) exp -> exp DIV exp .
+    (8) exp -> exp . ADD exp
+    (9) exp -> exp . MINUS exp
+    (10) exp -> exp . POW exponent
+    (11) exp -> exp . MUL exp
+    (12) exp -> exp . DIV exp
+
+    ADD             reduce using rule 12 (exp -> exp DIV exp .)
+    MINUS           reduce using rule 12 (exp -> exp DIV exp .)
+    MUL             reduce using rule 12 (exp -> exp DIV exp .)
+    DIV             reduce using rule 12 (exp -> exp DIV exp .)
+    $end            reduce using rule 12 (exp -> exp DIV exp .)
+    RT_BR           reduce using rule 12 (exp -> exp DIV exp .)
+    POW             shift and go to state 9
+
+  ! POW             [ reduce using rule 12 (exp -> exp DIV exp .) ]
+  ! ADD             [ shift and go to state 7 ]
+  ! MINUS           [ shift and go to state 8 ]
+  ! MUL             [ shift and go to state 10 ]
+  ! DIV             [ shift and go to state 11 ]
+
+
+state 23
+
+    (6) exp -> MINUS LT_BR exp . RT_BR
+    (8) exp -> exp . ADD exp
+    (9) exp -> exp . MINUS exp
+    (10) exp -> exp . POW exponent
+    (11) exp -> exp . MUL exp
+    (12) exp -> exp . DIV exp
+
+    RT_BR           shift and go to state 32
+    ADD             shift and go to state 7
+    MINUS           shift and go to state 8
+    POW             shift and go to state 9
+    MUL             shift and go to state 10
+    DIV             shift and go to state 11
+
+
+state 24
+
+    (7) exp -> LT_BR exp RT_BR .
+
+    ADD             reduce using rule 7 (exp -> LT_BR exp RT_BR .)
+    MINUS           reduce using rule 7 (exp -> LT_BR exp RT_BR .)
+    POW             reduce using rule 7 (exp -> LT_BR exp RT_BR .)
+    MUL             reduce using rule 7 (exp -> LT_BR exp RT_BR .)
+    DIV             reduce using rule 7 (exp -> LT_BR exp RT_BR .)
+    $end            reduce using rule 7 (exp -> LT_BR exp RT_BR .)
+    RT_BR           reduce using rule 7 (exp -> LT_BR exp RT_BR .)
+
+
+state 25
+
+    (17) exponent -> exponent ADD . exponent
+    (13) exponent -> . NUM
+    (14) exponent -> . MINUS NUM
+    (15) exponent -> . MINUS LT_BR exponent RT_BR
+    (16) exponent -> . LT_BR exponent RT_BR
+    (17) exponent -> . exponent ADD exponent
+    (18) exponent -> . exponent MINUS exponent
+    (19) exponent -> . exponent MUL exponent
+    (20) exponent -> . exponent DIV exponent
+
+    NUM             shift and go to state 18
+    MINUS           shift and go to state 19
+    LT_BR           shift and go to state 20
+
+    exponent                       shift and go to state 33
+
+state 26
+
+    (18) exponent -> exponent MINUS . exponent
+    (13) exponent -> . NUM
+    (14) exponent -> . MINUS NUM
+    (15) exponent -> . MINUS LT_BR exponent RT_BR
+    (16) exponent -> . LT_BR exponent RT_BR
+    (17) exponent -> . exponent ADD exponent
+    (18) exponent -> . exponent MINUS exponent
+    (19) exponent -> . exponent MUL exponent
+    (20) exponent -> . exponent DIV exponent
+
+    NUM             shift and go to state 18
+    MINUS           shift and go to state 19
+    LT_BR           shift and go to state 20
+
+    exponent                       shift and go to state 34
+
+state 27
+
+    (19) exponent -> exponent MUL . exponent
+    (13) exponent -> . NUM
+    (14) exponent -> . MINUS NUM
+    (15) exponent -> . MINUS LT_BR exponent RT_BR
+    (16) exponent -> . LT_BR exponent RT_BR
+    (17) exponent -> . exponent ADD exponent
+    (18) exponent -> . exponent MINUS exponent
+    (19) exponent -> . exponent MUL exponent
+    (20) exponent -> . exponent DIV exponent
+
+    NUM             shift and go to state 18
+    MINUS           shift and go to state 19
+    LT_BR           shift and go to state 20
+
+    exponent                       shift and go to state 35
+
+state 28
+
+    (20) exponent -> exponent DIV . exponent
+    (13) exponent -> . NUM
+    (14) exponent -> . MINUS NUM
+    (15) exponent -> . MINUS LT_BR exponent RT_BR
+    (16) exponent -> . LT_BR exponent RT_BR
+    (17) exponent -> . exponent ADD exponent
+    (18) exponent -> . exponent MINUS exponent
+    (19) exponent -> . exponent MUL exponent
+    (20) exponent -> . exponent DIV exponent
+
+    NUM             shift and go to state 18
+    MINUS           shift and go to state 19
+    LT_BR           shift and go to state 20
+
+    exponent                       shift and go to state 36
+
+state 29
+
+    (14) exponent -> MINUS NUM .
+
+    ADD             reduce using rule 14 (exponent -> MINUS NUM .)
+    MINUS           reduce using rule 14 (exponent -> MINUS NUM .)
+    MUL             reduce using rule 14 (exponent -> MINUS NUM .)
+    DIV             reduce using rule 14 (exponent -> MINUS NUM .)
+    POW             reduce using rule 14 (exponent -> MINUS NUM .)
+    $end            reduce using rule 14 (exponent -> MINUS NUM .)
+    RT_BR           reduce using rule 14 (exponent -> MINUS NUM .)
+
+
+state 30
+
+    (15) exponent -> MINUS LT_BR . exponent RT_BR
+    (13) exponent -> . NUM
+    (14) exponent -> . MINUS NUM
+    (15) exponent -> . MINUS LT_BR exponent RT_BR
+    (16) exponent -> . LT_BR exponent RT_BR
+    (17) exponent -> . exponent ADD exponent
+    (18) exponent -> . exponent MINUS exponent
+    (19) exponent -> . exponent MUL exponent
+    (20) exponent -> . exponent DIV exponent
+
+    NUM             shift and go to state 18
+    MINUS           shift and go to state 19
+    LT_BR           shift and go to state 20
+
+    exponent                       shift and go to state 37
+
+state 31
+
+    (16) exponent -> LT_BR exponent . RT_BR
+    (17) exponent -> exponent . ADD exponent
+    (18) exponent -> exponent . MINUS exponent
+    (19) exponent -> exponent . MUL exponent
+    (20) exponent -> exponent . DIV exponent
+
+    RT_BR           shift and go to state 38
+    ADD             shift and go to state 25
+    MINUS           shift and go to state 26
+    MUL             shift and go to state 27
+    DIV             shift and go to state 28
+
+
+state 32
+
+    (6) exp -> MINUS LT_BR exp RT_BR .
+
+    ADD             reduce using rule 6 (exp -> MINUS LT_BR exp RT_BR .)
+    MINUS           reduce using rule 6 (exp -> MINUS LT_BR exp RT_BR .)
+    POW             reduce using rule 6 (exp -> MINUS LT_BR exp RT_BR .)
+    MUL             reduce using rule 6 (exp -> MINUS LT_BR exp RT_BR .)
+    DIV             reduce using rule 6 (exp -> MINUS LT_BR exp RT_BR .)
+    $end            reduce using rule 6 (exp -> MINUS LT_BR exp RT_BR .)
+    RT_BR           reduce using rule 6 (exp -> MINUS LT_BR exp RT_BR .)
+
+
+state 33
+
+    (17) exponent -> exponent ADD exponent .
+    (17) exponent -> exponent . ADD exponent
+    (18) exponent -> exponent . MINUS exponent
+    (19) exponent -> exponent . MUL exponent
+    (20) exponent -> exponent . DIV exponent
+
+    ADD             reduce using rule 17 (exponent -> exponent ADD exponent .)
+    MINUS           reduce using rule 17 (exponent -> exponent ADD exponent .)
+    POW             reduce using rule 17 (exponent -> exponent ADD exponent .)
+    $end            reduce using rule 17 (exponent -> exponent ADD exponent .)
+    RT_BR           reduce using rule 17 (exponent -> exponent ADD exponent .)
+    MUL             shift and go to state 27
+    DIV             shift and go to state 28
+
+  ! MUL             [ reduce using rule 17 (exponent -> exponent ADD exponent .) ]
+  ! DIV             [ reduce using rule 17 (exponent -> exponent ADD exponent .) ]
+  ! ADD             [ shift and go to state 25 ]
+  ! MINUS           [ shift and go to state 26 ]
+
+
+state 34
+
+    (18) exponent -> exponent MINUS exponent .
+    (17) exponent -> exponent . ADD exponent
+    (18) exponent -> exponent . MINUS exponent
+    (19) exponent -> exponent . MUL exponent
+    (20) exponent -> exponent . DIV exponent
+
+    ADD             reduce using rule 18 (exponent -> exponent MINUS exponent .)
+    MINUS           reduce using rule 18 (exponent -> exponent MINUS exponent .)
+    POW             reduce using rule 18 (exponent -> exponent MINUS exponent .)
+    $end            reduce using rule 18 (exponent -> exponent MINUS exponent .)
+    RT_BR           reduce using rule 18 (exponent -> exponent MINUS exponent .)
+    MUL             shift and go to state 27
+    DIV             shift and go to state 28
+
+  ! MUL             [ reduce using rule 18 (exponent -> exponent MINUS exponent .) ]
+  ! DIV             [ reduce using rule 18 (exponent -> exponent MINUS exponent .) ]
+  ! ADD             [ shift and go to state 25 ]
+  ! MINUS           [ shift and go to state 26 ]
+
+
+state 35
+
+    (19) exponent -> exponent MUL exponent .
+    (17) exponent -> exponent . ADD exponent
+    (18) exponent -> exponent . MINUS exponent
+    (19) exponent -> exponent . MUL exponent
+    (20) exponent -> exponent . DIV exponent
+
+    ADD             reduce using rule 19 (exponent -> exponent MUL exponent .)
+    MINUS           reduce using rule 19 (exponent -> exponent MUL exponent .)
+    MUL             reduce using rule 19 (exponent -> exponent MUL exponent .)
+    DIV             reduce using rule 19 (exponent -> exponent MUL exponent .)
+    POW             reduce using rule 19 (exponent -> exponent MUL exponent .)
+    $end            reduce using rule 19 (exponent -> exponent MUL exponent .)
+    RT_BR           reduce using rule 19 (exponent -> exponent MUL exponent .)
+
+  ! ADD             [ shift and go to state 25 ]
+  ! MINUS           [ shift and go to state 26 ]
+  ! MUL             [ shift and go to state 27 ]
+  ! DIV             [ shift and go to state 28 ]
+
+
+state 36
+
+    (20) exponent -> exponent DIV exponent .
+    (17) exponent -> exponent . ADD exponent
+    (18) exponent -> exponent . MINUS exponent
+    (19) exponent -> exponent . MUL exponent
+    (20) exponent -> exponent . DIV exponent
+
+    ADD             reduce using rule 20 (exponent -> exponent DIV exponent .)
+    MINUS           reduce using rule 20 (exponent -> exponent DIV exponent .)
+    MUL             reduce using rule 20 (exponent -> exponent DIV exponent .)
+    DIV             reduce using rule 20 (exponent -> exponent DIV exponent .)
+    POW             reduce using rule 20 (exponent -> exponent DIV exponent .)
+    $end            reduce using rule 20 (exponent -> exponent DIV exponent .)
+    RT_BR           reduce using rule 20 (exponent -> exponent DIV exponent .)
+
+  ! ADD             [ shift and go to state 25 ]
+  ! MINUS           [ shift and go to state 26 ]
+  ! MUL             [ shift and go to state 27 ]
+  ! DIV             [ shift and go to state 28 ]
+
+
+state 37
+
+    (15) exponent -> MINUS LT_BR exponent . RT_BR
+    (17) exponent -> exponent . ADD exponent
+    (18) exponent -> exponent . MINUS exponent
+    (19) exponent -> exponent . MUL exponent
+    (20) exponent -> exponent . DIV exponent
+
+    RT_BR           shift and go to state 39
+    ADD             shift and go to state 25
+    MINUS           shift and go to state 26
+    MUL             shift and go to state 27
+    DIV             shift and go to state 28
+
+
+state 38
+
+    (16) exponent -> LT_BR exponent RT_BR .
+
+    ADD             reduce using rule 16 (exponent -> LT_BR exponent RT_BR .)
+    MINUS           reduce using rule 16 (exponent -> LT_BR exponent RT_BR .)
+    MUL             reduce using rule 16 (exponent -> LT_BR exponent RT_BR .)
+    DIV             reduce using rule 16 (exponent -> LT_BR exponent RT_BR .)
+    POW             reduce using rule 16 (exponent -> LT_BR exponent RT_BR .)
+    $end            reduce using rule 16 (exponent -> LT_BR exponent RT_BR .)
+    RT_BR           reduce using rule 16 (exponent -> LT_BR exponent RT_BR .)
+
+
+state 39
+
+    (15) exponent -> MINUS LT_BR exponent RT_BR .
+
+    ADD             reduce using rule 15 (exponent -> MINUS LT_BR exponent RT_BR .)
+    MINUS           reduce using rule 15 (exponent -> MINUS LT_BR exponent RT_BR .)
+    MUL             reduce using rule 15 (exponent -> MINUS LT_BR exponent RT_BR .)
+    DIV             reduce using rule 15 (exponent -> MINUS LT_BR exponent RT_BR .)
+    POW             reduce using rule 15 (exponent -> MINUS LT_BR exponent RT_BR .)
+    $end            reduce using rule 15 (exponent -> MINUS LT_BR exponent RT_BR .)
+    RT_BR           reduce using rule 15 (exponent -> MINUS LT_BR exponent RT_BR .)
+
