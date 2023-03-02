@@ -1,0 +1,61 @@
+.photo {
+	display: flex;
+	justify-content: center;
+}
+
+.profile-photo {
+	width: 30%;
+}
+
+@media only screen and (min-width: 800px) {
+	.profile-photo {
+		width: 15%;
+	}
+}
+
+.example-photo {
+	width: 80%;
+	align-self: center;
+	padding: 10px;
+}
+
+.images {
+	display: flex;
+	align-content: center;
+	flex-direction: column;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+nav li {
+  float: left;
+}
+
+nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+nav li a:hover {
+  background-color: #111;
+}
+
+header {
+	text-align: center;
+}
+
+pre code {
+  background-color: #eee;
+  border: 1px solid #999;
+  display: block;
+  padding: 5px;
+}
