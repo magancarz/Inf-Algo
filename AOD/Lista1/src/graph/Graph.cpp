@@ -6,6 +6,13 @@
 #include <sstream>
 #include <ranges>
 
+void Graph::operator=(const Graph& other) {
+	is_directed_ = other.is_directed_;
+	n_ = other.n_;
+	m_ = other.m_;
+	vertices_ = other.vertices_;
+}
+
 void Graph::loadDataFromFileToGraph(const std::string& path) {
 
 	std::ifstream file_stream(path);
@@ -41,6 +48,18 @@ void Graph::DFS() {
 	resetVisitedVertices();
 
 	DFS(1);
+
+	for (auto& v : tree_) {
+		std::cout << v.first << " -> ";
+
+		for (int i = 0; i < v.second.size(); ++i) {
+			if (i < v.second.size() - 1) {
+				std::cout << v.second[i] << ", ";
+			} else {
+				std::cout << v.second[i] << "\n";
+			}
+		}
+	}
 }
 
 void Graph::DFS(int v) {
@@ -50,6 +69,7 @@ void Graph::DFS(int v) {
 	for (auto& i : vertices_[v]) {
 		if (!visited_[i]) {
 			DFS(i);
+			tree_[v].push_back(i);
 		}
 	}
 }
@@ -82,7 +102,7 @@ void Graph::topologicalSort() {
 
 	resetVisitedVertices();
 
-	for (const auto& v : std::views::iota(1, n_)) {
+	for (const auto& v : std::views::iota(1, n_ + 1)) {
 		if (visited_[v] == false) {
 			topologicalSortUtil(v, stack);
 		}
@@ -104,4 +124,67 @@ void Graph::topologicalSortUtil(int v, std::stack<int>& stack) {
 	}
 
 	stack.push(v);
+}
+
+void Graph::SCCs() {
+	std::stack<int> stack;
+
+	resetVisitedVertices();
+
+	for (const auto& v : vertices_) {
+		if (visited_[v.first] == false) {
+			fillOrder(v.first, stack);
+		}
+	}
+
+	Graph g = getTranspose(*this);
+
+	resetVisitedVertices();
+
+	while (!stack.empty()) {
+		int v = stack.top();
+		stack.pop();
+
+		if (visited_[v] == false) {
+			g.DFSUtil(v, visited_);
+			std::cout << std::endl;
+		}
+	}
+
+}
+
+void Graph::fillOrder(const int v, std::stack<int>& stack) {
+	visited_[v] = true;
+
+	for (const auto& u : vertices_[v]) {
+		if (!visited_[u]) {
+			fillOrder(u, stack);
+		}
+	}
+
+	stack.push(v);
+}
+
+void Graph::DFSUtil(int v, std::vector<bool>& visited) {
+	visited[v] = true;
+	std::cout << v << " ";
+
+	for (const auto& u : vertices_[v]) {
+		if (!visited[u]) {
+			DFSUtil(u, visited);
+		}
+	}
+}
+
+Graph Graph::getTranspose(const Graph& other) {
+	Graph g = *this;
+	g.vertices_.clear();
+	
+	for (const auto& v : std::views::iota(1, g.n_ + 1)) {
+		for (const auto& u : vertices_[v]) {
+			g.vertices_[u].push_back(v);
+		}
+	}
+
+	return g;
 }
