@@ -20,8 +20,8 @@ public:
 	void topologicalSort();
 
 	void SCCs();
-	void fillOrder(int v, std::stack<int>& stack);
-	void DFSUtil(int v, std::vector<bool>& visited);
+
+	bool isBipartite();
 
 	Graph getTranspose(const Graph& other);
 
@@ -31,6 +31,9 @@ private:
 	void DFS(int v);
 
 	void topologicalSortUtil(int v, std::stack<int>& stack);
+
+	void fillOrder(int v, std::stack<int>& stack);
+	void DFSUtil(int v, std::vector<bool>& visited);
 
 	bool is_directed_ = false;
 	int n_ = 0;

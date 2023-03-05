@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <list>
+#include <queue>
 #include <sstream>
 #include <ranges>
 
@@ -174,6 +175,66 @@ void Graph::DFSUtil(int v, std::vector<bool>& visited) {
 			DFSUtil(u, visited);
 		}
 	}
+}
+
+bool Graph::isBipartite() {
+	std::vector<int> color(n_ + 1, -1);
+
+	std::queue<std::pair<int, int>> queue;
+
+	std::vector<int> v1, v2;
+
+	for (const auto& v : std::views::iota(1, n_ + 1)) {
+		if (color[v] == -1) {
+			queue.push({ v, 0 });
+			color[v] = 0;
+			v1.push_back(v);
+
+			while (!queue.empty()) {
+				std::pair<int, int> p = queue.front();
+				queue.pop();
+
+				int u = p.first;
+				int w = p.second;
+
+				for (int j : vertices_[u]) {
+					if (color[j] == w) {
+						return false;
+					}
+
+					if (color[j] == -1) {
+						if (w) {
+							color[j] = 0;
+							v1.push_back(j);
+						} else {
+							color[j] = 1;
+							v2.push_back(j);
+						}
+
+						queue.push({ j, color[j] });
+					}
+				}
+			}
+		}
+	}
+
+	if (n_ <= 200) {
+		std::cout << "V1:\n";
+		for (const auto& v : v1) {
+			std::cout << v << " ";
+		}
+
+		std::cout << std::endl << std::endl;
+
+		std::cout << "V2:\n";
+		for (const auto& v : v2) {
+			std::cout << v << " ";
+		}
+
+		std::cout << std::endl << std::endl;
+	}
+
+	return true;
 }
 
 Graph Graph::getTranspose(const Graph& other) {
