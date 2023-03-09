@@ -6,6 +6,7 @@
 #include <queue>
 #include <sstream>
 #include <ranges>
+#include <unordered_map>
 
 void Graph::operator=(const Graph& other) {
 	is_directed_ = other.is_directed_;
@@ -36,7 +37,7 @@ void Graph::loadDataFromFileToGraph(const std::string& path) {
 			iss >> u;
 			iss >> v;
 
-			vertices_[std::stoi(u)].push_back(std::stoi(v));
+            vertices_[std::stoi(u)].push_back(std::stoi(v));
 		}
 
 		file_stream.close();
@@ -45,21 +46,14 @@ void Graph::loadDataFromFileToGraph(const std::string& path) {
 	}
 }
 
-void Graph::DFS() {
+void Graph::DFS(bool print_tree) {
 	resetVisitedVertices();
+	tree_.clear();
 
 	DFS(1);
 
-	for (auto& v : tree_) {
-		std::cout << v.first << " -> ";
-
-		for (int i = 0; i < v.second.size(); ++i) {
-			if (i < v.second.size() - 1) {
-				std::cout << v.second[i] << ", ";
-			} else {
-				std::cout << v.second[i] << "\n";
-			}
-		}
+	if (print_tree) {
+		printTree();
 	}
 }
 
@@ -75,8 +69,9 @@ void Graph::DFS(int v) {
 	}
 }
 
-void Graph::BFS() {
+void Graph::BFS(bool print_tree) {
 	resetVisitedVertices();
+	tree_.clear();
 
 	std::list<int> queue;
 
@@ -93,39 +88,95 @@ void Graph::BFS() {
 			if(!visited_[adjacent]) {
 				visited_[adjacent] = true;
 				queue.push_back(adjacent);
+				tree_[s].push_back(adjacent);
+			}
+		}
+	}
+
+	if (print_tree) {
+		printTree();
+	}
+}
+
+void Graph::printTree() {
+	for (auto& v : tree_) {
+		std::cout << v.first << " -> ";
+
+		for (int i = 0; i < v.second.size(); ++i) {
+			if (i < v.second.size() - 1) {
+				std::cout << v.second[i] << ", ";
+			} else {
+				std::cout << v.second[i] << "\n";
 			}
 		}
 	}
 }
 
 void Graph::topologicalSort() {
-	std::stack<int> stack;
+    resetVisitedVertices();
 
-	resetVisitedVertices();
+    std::stack<std::pair<bool, int>> dfs;
+    std::stack<int> post_order;
 
-	for (const auto& v : std::views::iota(1, n_ + 1)) {
-		if (visited_[v] == false) {
-			topologicalSortUtil(v, stack);
-		}
-	}
+    for (int v = 1; v <= n_; ++v) {
+        if (!visited_[v]) {
+            dfs.push(std::make_pair(false, v));
+        }
 
-	while (!stack.empty()) {
-		std::cout << stack.top() << std::endl;
-		stack.pop();
-	}
+        while (!dfs.empty()) {
+            std::pair<bool, int> node = dfs.top();
+            dfs.pop();
+
+            if (node.first) {
+                post_order.push(node.second);
+                continue;
+            }
+
+            if (visited_[node.second]) {
+                continue;
+            }
+
+            visited_[node.second] = true;
+            dfs.push(std::make_pair(true, node.second));
+            const auto& new_vec = vertices_[node.second];
+            for (const auto son : new_vec) {
+                if (!visited_[son]) {
+                    dfs.push(std::make_pair(false, son));
+                }
+            }
+        }
+    }
+
+    std::unordered_map<int, int> positions;
+    int index = 0;
+
+    std::vector<int> t_sort;
+    while (!post_order.empty()) {
+        int vertex = post_order.top();
+        t_sort.push_back(vertex);
+
+        positions[vertex] = index++;
+
+        post_order.pop();
+    }
+
+    for (int v = 1; v <= n_; ++v) {
+        for (const auto& u : vertices_[v]) {
+            if (positions[v] > positions[u]) {
+                std::cout << "There is a cycle!\n";
+                return;
+            }
+        }
+    }
+
+    if (n_ <= 200) {
+        for (const auto& v : t_sort) {
+            std::cout << v << std::endl;
+        }
+    }
 }
 
-void Graph::topologicalSortUtil(int v, std::stack<int>& stack) {
-	visited_[v] = true;
 
-	for (const auto& i : vertices_[v]) {
-		if (!visited_[i]) {
-			topologicalSortUtil(i, stack);
-		}
-	}
-
-	stack.push(v);
-}
 
 void Graph::SCCs() {
 	std::stack<int> stack;
@@ -142,16 +193,27 @@ void Graph::SCCs() {
 
 	resetVisitedVertices();
 
+    std::vector<int> sizes;
 	while (!stack.empty()) {
 		int v = stack.top();
 		stack.pop();
 
 		if (visited_[v] == false) {
+            g.scc_size_ = 0;
 			g.DFSUtil(v, visited_);
-			std::cout << std::endl;
+            sizes.push_back(g.scc_size_);
+            ++scc_amt_;
+			if (n_ <= 200) std::cout << std::endl;
 		}
 	}
 
+    std::cout << "There are " << scc_amt_ << " strongly connected components.\n";
+    scc_amt_ = 0;
+
+    std::cout << "There are following number of elements in each SCC:\n";
+    for (const auto& v : sizes) {
+        std::cout << v << std::endl;
+    }
 }
 
 void Graph::fillOrder(const int v, std::stack<int>& stack) {
@@ -168,7 +230,8 @@ void Graph::fillOrder(const int v, std::stack<int>& stack) {
 
 void Graph::DFSUtil(int v, std::vector<bool>& visited) {
 	visited[v] = true;
-	std::cout << v << " ";
+	if (n_ <= 200) std::cout << v << " ";
+    ++scc_size_;
 
 	for (const auto& u : vertices_[v]) {
 		if (!visited[u]) {

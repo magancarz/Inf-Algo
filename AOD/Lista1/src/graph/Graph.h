@@ -14,8 +14,8 @@ public:
 
 	void loadDataFromFileToGraph(const std::string& path);
 
-	void DFS();
-	void BFS();
+	void DFS(bool print_tree = false);
+	void BFS(bool print_tree = false);
 
 	void topologicalSort();
 
@@ -30,6 +30,8 @@ private:
 
 	void DFS(int v);
 
+	void printTree();
+
 	void topologicalSortUtil(int v, std::stack<int>& stack);
 
 	void fillOrder(int v, std::stack<int>& stack);
@@ -42,4 +44,7 @@ private:
 
 	std::vector<bool> visited_;
 	std::map<int, std::vector<int>> tree_;
+
+    int scc_amt_ = 0;
+    int scc_size_ = 0;
 };
