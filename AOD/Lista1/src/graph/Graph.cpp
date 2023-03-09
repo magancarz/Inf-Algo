@@ -179,15 +179,39 @@ void Graph::topologicalSort() {
 
 
 void Graph::SCCs() {
-	std::stack<int> stack;
-
 	resetVisitedVertices();
 
-	for (const auto& v : vertices_) {
-		if (visited_[v.first] == false) {
-			fillOrder(v.first, stack);
-		}
-	}
+    std::stack<std::pair<bool, int>> dfs;
+    std::stack<int> stack;
+
+    for (int v = 1; v <= n_; ++v) {
+        if (!visited_[v]) {
+            dfs.push(std::make_pair(false, v));
+        }
+
+        while (!dfs.empty()) {
+            std::pair<bool, int> node = dfs.top();
+            dfs.pop();
+
+            if (node.first) {
+                stack.push(node.second);
+                continue;
+            }
+
+            if (visited_[node.second]) {
+                continue;
+            }
+
+            visited_[node.second] = true;
+            dfs.push(std::make_pair(true, node.second));
+            const auto& new_vec = vertices_[node.second];
+            for (const auto son : new_vec) {
+                if (!visited_[son]) {
+                    dfs.push(std::make_pair(false, son));
+                }
+            }
+        }
+    }
 
 	Graph g = getTranspose(*this);
 
@@ -198,7 +222,7 @@ void Graph::SCCs() {
 		int v = stack.top();
 		stack.pop();
 
-		if (visited_[v] == false) {
+		if (!visited_[v]) {
             g.scc_size_ = 0;
 			g.DFSUtil(v, visited_);
             sizes.push_back(g.scc_size_);
@@ -216,28 +240,40 @@ void Graph::SCCs() {
     }
 }
 
-void Graph::fillOrder(const int v, std::stack<int>& stack) {
-	visited_[v] = true;
-
-	for (const auto& u : vertices_[v]) {
-		if (!visited_[u]) {
-			fillOrder(u, stack);
-		}
-	}
-
-	stack.push(v);
-}
-
 void Graph::DFSUtil(int v, std::vector<bool>& visited) {
-	visited[v] = true;
-	if (n_ <= 200) std::cout << v << " ";
+    visited[v] = true;
+    if (n_ <= 200) std::cout << v << " ";
     ++scc_size_;
 
-	for (const auto& u : vertices_[v]) {
-		if (!visited[u]) {
-			DFSUtil(u, visited);
-		}
-	}
+    std::stack<std::pair<bool, int>> dfs;
+
+    for (const auto& u : vertices_[v]) {
+        if (!visited[u]) {
+            dfs.push(std::make_pair(false, u));
+        }
+
+        while (!dfs.empty()) {
+            std::pair<bool, int> node = dfs.top();
+            dfs.pop();
+
+            if (visited[node.second]) {
+                continue;
+            }
+
+            visited[node.second] = true;
+
+            if (n_ <= 200) std::cout << node.second << " ";
+            ++scc_size_;
+
+            dfs.push(std::make_pair(true, node.second));
+            const auto& new_vec = vertices_[node.second];
+            for (const auto son : new_vec) {
+                if (!visited[son]) {
+                    dfs.push(std::make_pair(false, son));
+                }
+            }
+        }
+    }
 }
 
 bool Graph::isBipartite() {

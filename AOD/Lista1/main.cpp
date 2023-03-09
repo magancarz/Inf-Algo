@@ -20,6 +20,6 @@ void runTests() {
 int main() {
 	//runTests();
     Graph g;
-    g.loadDataFromFileToGraph("../tests/4/d4b-6.txt");
-    g.isBipartite() ? std::cout << "Yes\n" : std::cout << "No\n";
+    g.loadDataFromFileToGraph("../tests/3/g3-6.txt");
+    g.SCCs();
 }
