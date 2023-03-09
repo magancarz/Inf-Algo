@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">w01</string>
+    <string name="podaj">Podaj która liczba\n jest większa?</string>
+    <string name="super_gra">Super GRA</string>
+</resources>
