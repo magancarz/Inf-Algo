@@ -26,7 +26,7 @@ public:
 	Graph getTranspose(const Graph& other);
 
 private:
-	void resetVisitedVertices() { visited_ = std::vector<bool>(n_ + 1, false); }
+	void resetVisitedVertices() { visited = std::vector<bool>(n + 1, false); }
 
 	void DFS(int v);
 
@@ -37,14 +37,14 @@ private:
 	void fillOrder(int v, std::stack<int>& stack);
 	void DFSUtil(int v, std::vector<bool>& visited);
 
-	bool is_directed_ = false;
-	int n_ = 0;
-	int m_ = 0;
-	std::map<int, std::vector<int>> vertices_;
+	bool is_directed = false;
+	int n = 0;
+	int m = 0;
+	std::map<int, std::vector<int>> vertices;
 
-	std::vector<bool> visited_;
-	std::map<int, std::vector<int>> tree_;
+	std::vector<bool> visited;
+	std::map<int, std::vector<int>> tree;
 
-    int scc_amt_ = 0;
-    int scc_size_ = 0;
+    int scc_amt = 0;
+    int scc_size = 0;
 };

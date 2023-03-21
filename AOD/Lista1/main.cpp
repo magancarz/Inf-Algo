@@ -20,6 +20,6 @@ void runTests() {
 int main() {
 	//runTests();
     Graph g;
-    g.loadDataFromFileToGraph("../tests/3/g3-6.txt");
-    g.SCCs();
+    g.loadDataFromFileToGraph("../tests/test.txt");
+    g.topologicalSort();
 }
