@@ -23,7 +23,7 @@ public:
 
 	bool isBipartite();
 
-	Graph getTranspose(const Graph& other);
+	Graph getTranspose();
 
 private:
 	void resetVisitedVertices() { visited = std::vector<bool>(n + 1, false); }
@@ -32,9 +32,6 @@ private:
 
 	void printTree();
 
-	void topologicalSortUtil(int v, std::stack<int>& stack);
-
-	void fillOrder(int v, std::stack<int>& stack);
 	void DFSUtil(int v, std::vector<bool>& visited);
 
 	bool is_directed = false;

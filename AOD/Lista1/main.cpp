@@ -62,9 +62,9 @@ void runTests() {
 int main() {
 	//runTests();
     auto g = new Graph();
-    std::string filepath = "../tests/cycle_test.txt";
+    std::string filepath = "../tests/4/d4b-5.txt";
     g->loadDataFromFileToGraph(filepath);
     std::cout << "Running topological sort on " << filepath << std::endl;
-    g->topologicalSort();
+    g->isBipartite() ? std::cout << "Yes\n" : std::cout << "No\n";
     delete g;
 }

@@ -60,7 +60,7 @@ void Graph::DFS(bool print_tree) {
 void Graph::DFS(int v) {
     visited[v] = true;
 	std::cout << v << std::endl;
-	
+
 	for (auto& i : vertices[v]) {
 		if (!visited[i]) {
 			DFS(i);
@@ -115,33 +115,29 @@ void Graph::printTree() {
 void Graph::topologicalSort() {
     resetVisitedVertices();
 
-    std::stack<std::pair<bool, int>> dfs;
+    std::stack<int> dfs;
     std::stack<int> post_order;
 
     for (int v = 1; v <= n; ++v) {
         if (!visited[v]) {
-            dfs.emplace(false, v);
+            dfs.emplace(v);
         }
 
         while (!dfs.empty()) {
-            std::pair<bool, int> node = dfs.top();
+            auto node = dfs.top();
             dfs.pop();
 
-            if (node.first) {
-                post_order.push(node.second);
+            if (visited[node]) {
+                post_order.push(node);
                 continue;
             }
 
-            if (visited[node.second]) {
-                continue;
-            }
-
-            visited[node.second] = true;
-            dfs.emplace(true, node.second);
-            const auto& adjacents = vertices[node.second];
+            visited[node] = true;
+            dfs.emplace(node);
+            const auto& adjacents = vertices[node];
             for (const auto adjacent : adjacents) {
                 if (!visited[adjacent]) {
-                    dfs.emplace(false, adjacent);
+                    dfs.emplace(adjacent);
                 }
             }
         }
@@ -150,10 +146,10 @@ void Graph::topologicalSort() {
     std::unordered_map<int, int> positions;
     int index = 0;
 
-    std::vector<int> t_sort;
+    std::vector<int> topological_sort;
     while (!post_order.empty()) {
         int vertex = post_order.top();
-        t_sort.push_back(vertex);
+        topological_sort.push_back(vertex);
 
         positions[vertex] = index++;
 
@@ -170,50 +166,44 @@ void Graph::topologicalSort() {
     }
 
     if (n <= 200) {
-        for (const auto& v : t_sort) {
+        for (const auto& v : topological_sort) {
             std::cout << v << std::endl;
         }
     }
 }
 
-
-
 void Graph::SCCs() {
 	resetVisitedVertices();
 
-    std::stack<std::pair<bool, int>> dfs;
+    std::stack<int> dfs;
     std::stack<int> stack;
 
     for (int v = 1; v <= n; ++v) {
         if (!visited[v]) {
-            dfs.push(std::make_pair(false, v));
+            dfs.push(v);
         }
 
         while (!dfs.empty()) {
-            std::pair<bool, int> node = dfs.top();
+            auto node = dfs.top();
             dfs.pop();
 
-            if (node.first) {
-                stack.push(node.second);
+            if (visited[node]) {
+                stack.push(node);
                 continue;
             }
 
-            if (visited[node.second]) {
-                continue;
-            }
-
-            visited[node.second] = true;
-            dfs.push(std::make_pair(true, node.second));
-            const auto& adjacents = vertices[node.second];
+            visited[node] = true;
+            dfs.push(node);
+            const auto& adjacents = vertices[node];
             for (const auto adjacent : adjacents) {
                 if (!visited[adjacent]) {
-                    dfs.push(std::make_pair(false, adjacent));
+                    dfs.push(adjacent);
                 }
             }
         }
     }
 
-	Graph g = getTranspose(*this);
+	Graph g = getTranspose();
 
 	resetVisitedVertices();
 
@@ -245,31 +235,31 @@ void Graph::DFSUtil(int v, std::vector<bool>& visited) {
     if (n <= 200) std::cout << v << " ";
     ++scc_size;
 
-    std::stack<std::pair<bool, int>> dfs;
+    std::stack<int> dfs;
 
     for (const auto& u : vertices[v]) {
         if (!visited[u]) {
-            dfs.push(std::make_pair(false, u));
+            dfs.push(u);
         }
 
         while (!dfs.empty()) {
-            std::pair<bool, int> node = dfs.top();
+            auto node = dfs.top();
             dfs.pop();
 
-            if (visited[node.second]) {
+            if (visited[node]) {
                 continue;
             }
 
-            visited[node.second] = true;
+            visited[node] = true;
 
-            if (n <= 200) std::cout << node.second << " ";
+            if (n <= 200) std::cout << node << " ";
             ++scc_size;
 
-            dfs.push(std::make_pair(true, node.second));
-            const auto& adjacents = vertices[node.second];
+            dfs.push(node);
+            const auto& adjacents = vertices[node];
             for (const auto adjacent : adjacents) {
                 if (!visited[adjacent]) {
-                    dfs.push(std::make_pair(false, adjacent));
+                    dfs.push(adjacent);
                 }
             }
         }
@@ -278,39 +268,39 @@ void Graph::DFSUtil(int v, std::vector<bool>& visited) {
 
 bool Graph::isBipartite() {
 	std::vector<int> color(n + 1, -1);
-
-	std::queue<std::pair<int, int>> queue;
-
 	std::vector<int> v1, v2;
+
+	std::queue<int> queue;
 
 	for (const auto& v : std::views::iota(1, n + 1)) {
 		if (color[v] == -1) {
-			queue.push({ v, 0 });
+			queue.push(v);
 			color[v] = 0;
 			v1.push_back(v);
 
 			while (!queue.empty()) {
-				std::pair<int, int> p = queue.front();
+				auto u = queue.front();
 				queue.pop();
 
-				int u = p.first;
-				int w = p.second;
+				int u_color = color[u];
 
-				for (int j : vertices[u]) {
-					if (color[j] == w) {
+				for (int w : vertices[u]) {
+					if (color[w] == u_color) {
 						return false;
 					}
 
-					if (color[j] == -1) {
-						if (w) {
-							color[j] = 0;
-							v1.push_back(j);
+					if (color[w] == -1) {
+						if (u_color) {
+                            // u_color == 1
+							color[w] = 0;
+							v1.push_back(w);
 						} else {
-							color[j] = 1;
-							v2.push_back(j);
+                            // u_color == 0
+							color[w] = 1;
+							v2.push_back(w);
 						}
 
-						queue.push({ j, color[j] });
+						queue.push(w);
 					}
 				}
 			}
@@ -336,7 +326,7 @@ bool Graph::isBipartite() {
 	return true;
 }
 
-Graph Graph::getTranspose(const Graph& other) {
+Graph Graph::getTranspose() {
 	Graph g = *this;
 	g.vertices.clear();
 	
