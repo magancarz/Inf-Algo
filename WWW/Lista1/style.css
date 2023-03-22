@@ -7,13 +7,14 @@
 	width: 30%;
 }
 
-@media only screen and (min-width: 800px) {
-	.profile-photo {
-		width: 15%;
-	}
+.example-photo {
+	visibility: hidden;
+	width: 0;
+	align-self: center;
+	padding: 10px;
 }
 
-.example-photo {
+.example-photo-lq {
 	width: 80%;
 	align-self: center;
 	padding: 10px;
@@ -23,6 +24,26 @@
 	display: flex;
 	align-content: center;
 	flex-direction: column;
+}
+
+@media only screen and (min-width: 800px) {
+	.profile-photo {
+		width: 15%;
+	}
+
+	li {
+		list-style-type: square;
+	}
+
+	.example-photo {
+		width: 80%;
+		visibility: visible;
+	}
+
+	.example-photo-lq {
+		visibility: hidden;
+		width: 0;
+	}
 }
 
 nav ul {
@@ -35,6 +56,7 @@ nav ul {
 
 nav li {
   float: left;
+  list-style: none;
 }
 
 nav li a {
@@ -53,9 +75,11 @@ header {
 	text-align: center;
 }
 
-pre code {
+code {
   background-color: #eee;
-  border: 1px solid #999;
   display: block;
-  padding: 5px;
+}
+
+footer h2 {
+	text-align: center;
 }
