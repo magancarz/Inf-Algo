@@ -204,10 +204,10 @@ void Graph::SCCs() {
 
             visited[node.second] = true;
             dfs.push(std::make_pair(true, node.second));
-            const auto& new_vec = vertices[node.second];
-            for (const auto son : new_vec) {
-                if (!visited[son]) {
-                    dfs.push(std::make_pair(false, son));
+            const auto& adjacents = vertices[node.second];
+            for (const auto adjacent : adjacents) {
+                if (!visited[adjacent]) {
+                    dfs.push(std::make_pair(false, adjacent));
                 }
             }
         }
@@ -266,10 +266,10 @@ void Graph::DFSUtil(int v, std::vector<bool>& visited) {
             ++scc_size;
 
             dfs.push(std::make_pair(true, node.second));
-            const auto& new_vec = vertices[node.second];
-            for (const auto son : new_vec) {
-                if (!visited[son]) {
-                    dfs.push(std::make_pair(false, son));
+            const auto& adjacents = vertices[node.second];
+            for (const auto adjacent : adjacents) {
+                if (!visited[adjacent]) {
+                    dfs.push(std::make_pair(false, adjacent));
                 }
             }
         }
