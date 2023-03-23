@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<title>Compiler</title>
+	<title>Vulkan Project</title>
 </head>
 <body>
 	<nav>
@@ -16,33 +16,20 @@
 		</ul>
 	</nav>
 	<article>
-		<h2>Compiler</h2>
-		<a href="https://github.com/magancarz/Compiler">GitHub</a>
-		<p>C++, Flex, Bison, Unit Tests, Bash </p>
-		<p>Program which compiles a simple imperative language into virtual machine code with unit tests for the virtual machine's
-		memory mock-up in the compiler code and a test written in bash that automates compiling and checking machine output for
-		example test programs. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		<h2>Vulkan Project</h2>
+		<a href="https://github.com/magancarz">GitHub</a>
+		<p>C++, Vulkan, GLSL, 3D geometry </p>
+		<p>3D model engine that gives the ability to build a world filled with 3D objects including aspects such as water rendering, terrain
+		with height maps, light objects, normal mapped models, specular maps for objects, post-processing effects (gaussian blur,
+		blume effect, contrast), and entity management system. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
 		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
 		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
 		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 	</article>
-	<pre>
-	<code>
-unsigned int CodeGenerator::read_value(
-	const std::string& variable_name) {
-		
-	const unsigned int command_start = m_command_pointer;
-	Variable* variable =
-	m_memory->get_variable(variable_name);
-	variable->set_is_initialized(true);
-
-	write_code("GET", variable->get_memory_position());
-
-	return m_command_pointer - command_start;
-}
-	</code>
-	</pre>
+	<div class="images">
+		<img class="example-photo" src="zadanie.jpg" alt="Zadanie">
+	</div>
 </body>
 </html>

@@ -11,19 +11,57 @@
 	visibility: hidden;
 	width: 0;
 	align-self: center;
-	padding: 10px;
+	padding: 1em;
 }
 
 .example-photo-lq {
 	width: 80%;
 	align-self: center;
-	padding: 10px;
+	padding: 1em;
 }
 
 .images {
 	display: flex;
 	align-content: center;
 	flex-direction: column;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+nav li {
+  float: left;
+  list-style: none;
+}
+
+nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 1.4em 1.6em;
+  text-decoration: none;
+}
+
+nav li a:hover {
+  background-color: #111;
+}
+
+header {
+	text-align: center;
+}
+
+code {
+  background-color: #eee;
+  display: block;
+}
+
+footer h2 {
+	text-align: center;
 }
 
 @media only screen and (min-width: 800px) {
@@ -44,42 +82,12 @@
 		visibility: hidden;
 		width: 0;
 	}
-}
 
-nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-}
-
-nav li {
-  float: left;
-  list-style: none;
-}
-
-nav li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-nav li a:hover {
-  background-color: #111;
-}
-
-header {
-	text-align: center;
-}
-
-code {
-  background-color: #eee;
-  display: block;
-}
-
-footer h2 {
-	text-align: center;
+	nav ul {
+	  list-style-type: none;
+	  margin: 0;
+	  padding: 0;
+	  overflow: hidden;
+	  background-color: #555;
+	}
 }
