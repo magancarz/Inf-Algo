@@ -62,7 +62,7 @@ public class GridRecyclerAdapter extends RecyclerView.Adapter<GridRecyclerAdapte
                 }
             });
 
-//            if (cell.isRevealed()) {
+            if (cell.isRevealed()) {
                 if (cell.getValue() == Cell.BOMB) {
                     valueTextView.setText(R.string.bomb);
                 } else if (cell.getValue() == Cell.BLANK) {
@@ -78,9 +78,9 @@ public class GridRecyclerAdapter extends RecyclerView.Adapter<GridRecyclerAdapte
                         valueTextView.setTextColor(Color.RED);
                     }
                 }
+            } else if (cell.isFlagged()) {
+                valueTextView.setText(R.string.flag);
+            }
         }
-//            } else if (cell.isFlagged()) {
-//                valueTextView.setText(R.string.flag);
-//            }
     }
 }

@@ -74,6 +74,14 @@ public class Grid {
         return adjacentCells;
     }
 
+    public void revealAllBombs() {
+        for (Cell cell : getCells()) {
+            if (cell.getValue() == Cell.BOMB) {
+                cell.setRevealed(true);
+            }
+        }
+    }
+
     private Cell getCellAt(int x, int y) {
         if (x < 0 || x >= size || y < 0 || y >= size) {
             return null;
