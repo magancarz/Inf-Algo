@@ -26,6 +26,13 @@
             android:textSize="48sp" />
 
         <TextView
+            android:id="@+id/activity_main_smiley"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play"
+            android:textSize="64sp" />
+
+        <TextView
             android:id="@+id/activity_main_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

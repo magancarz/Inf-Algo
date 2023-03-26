@@ -2,6 +2,7 @@
     <string name="app_name">Minesweeper</string>
 
     <string name="flag">🚩</string>
-    <string name="bomb">💣</string>
+    <string name="bomb">💣</string>    <string name="play">👾</string>
+
     <string name="default_count">000</string>
 </resources>
