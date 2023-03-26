@@ -28,7 +28,7 @@ public class Grid {
 
             int index = toIndex(x, y);
             if (grid.get(index).getValue() == Cell.BLANK) {
-                grid.set(index, new Cell(Cell.BLANK));
+                grid.set(index, new Cell(Cell.BOMB));
                 bombsPlaced++;
             }
         }
