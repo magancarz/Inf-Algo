@@ -3,25 +3,26 @@ package com.example.minesweeper
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity(), OnCellClickListener {
 
     var gameController: GameController? = null
     var recyclerView: RecyclerView? = null
     var gridRecyclerAdapter: GridRecyclerAdapter? = null
-    var play: TextView? = null
+    var play: Button? = null
     var flag: TextView? = null
     var flagsCount: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         flag = findViewById(R.id.activity_main_flag)
         flagsCount = findViewById(R.id.activity_main_flagsleft)
         flag?.setOnClickListener(View.OnClickListener {
@@ -37,14 +38,22 @@ class MainActivity : AppCompatActivity(), OnCellClickListener {
                 flag?.setBackground(border)
             }
         })
-        play = findViewById(R.id.activity_main_smiley)
+
+        play = findViewById(R.id.activity_main_start)
         play?.setOnClickListener(View.OnClickListener {
-            gameController = GameController(10, 10)
+            gameController = GameController(9, 9)
             gridRecyclerAdapter!!.setCells(gameController!!.grid.cells)
+            flagsCount?.setText(
+                String.format(
+                    "%03d",
+                    gameController!!.numberOfBombs - gameController!!.flagCount
+                )
+            )
         })
+
         recyclerView = findViewById(R.id.activity_main_grid)
-        recyclerView?.setLayoutManager(GridLayoutManager(this, 10))
-        gameController = GameController(10, 10)
+        recyclerView?.setLayoutManager(GridLayoutManager(this, 9))
+        gameController = GameController(9, 9)
         gridRecyclerAdapter = GridRecyclerAdapter(gameController!!.grid.cells, this)
         recyclerView?.setAdapter(gridRecyclerAdapter)
         flagsCount?.setText(
