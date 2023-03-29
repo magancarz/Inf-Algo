@@ -1,3 +1,0 @@
-C:/dev/Inf-Algo/WSI/Lista1/cmake-build-debug/CMakeFiles/Lista1.dir
-C:/dev/Inf-Algo/WSI/Lista1/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/dev/Inf-Algo/WSI/Lista1/cmake-build-debug/CMakeFiles/rebuild_cache.dir

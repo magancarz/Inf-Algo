@@ -105,6 +105,6 @@ int main() {
 //    g->topologicalSort();
 //    auto end = std::chrono::steady_clock::now();
 //    std::cout << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start) << std::endl;
-////    g->isBipartite() ? std::cout << "Yes\n" : std::cout << "No\n";
+//    g->isBipartite() ? std::cout << "Yes\n" : std::cout << "No\n";
 //    delete g;
 }
