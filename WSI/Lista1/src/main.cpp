@@ -6,13 +6,14 @@
 #include <cstdlib>
 #include <algorithm>
 #include <set>
-#include <random>
+#include <unordered_set>
+#include <chrono>
 
 using namespace std;
 
 const int N = 4; //rozmiar planszy
 
-//Struktura reprezentujÄ…ca stan planszy
+//Struktura reprezentuj¹ca stan planszy
 struct State {
     int board[N][N];
     int g; //koszt dotychczasowy
@@ -20,12 +21,39 @@ struct State {
     int f; //funkcja celu f = g + h
     int zero_row; //numer wiersza z zerem
     int zero_col; //numer kolumny z zerem
-    vector<int> path; //Å›cieÅ¼ka od stanu poczÄ…tkowego
-    bool operator<(const State& rhs) const { return f > rhs.f; } //operator porÃ³wnania dla kolejki priorytetowej
+    vector<int> path; //œcie¿ka od stanu pocz¹tkowego
+    bool operator<(const State& rhs) const { return f > rhs.f; } //operator porównania dla kolejki priorytetowej
+    bool operator==(const State& other) const {
+		if (zero_row != other.zero_row || zero_col != other.zero_col)
+			return false;
+
+        for (int y = 0; y < N; ++y) {
+            for (int x = 0; x < N; ++x) {
+                if (board[y][x] != other.board[y][x]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 };
 
-//Funkcja heurystyczna nr 1: liczba elementÃ³w nie na swoim miejscu
-int h1(State& s) {
+struct StateHash {
+	size_t operator()(const State& s) const {
+		size_t hash_code = 0;
+        const auto board = s.board;
+	    for (int i = 0; i < N; i++) {
+	        for (int j = 0; j < N; j++) {
+	            hash_code = hash_code * 31 + board[i][j];
+	        }
+	    }
+	    return hash_code;
+	}
+};
+
+//Funkcja heurystyczna nr 1: liczba elementów nie na swoim miejscu
+int h2(const State& s) {
     int result = 0;
     int count = 1;
     for (int i = 0; i < N; ++i) {
@@ -39,8 +67,8 @@ int h1(State& s) {
     return result;
 }
 
-//Funkcja heurystyczna nr 2: suma odlegÅ‚oÅ›ci kaÅ¼dego elementu od jego pozycji w stanie docelowym
-int h2(State& s) {
+//Funkcja heurystyczna nr 2: suma odleg³oœci ka¿dego elementu od jego pozycji w stanie docelowym
+int h1(const State& s) {
     int result = 0;
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
@@ -55,19 +83,19 @@ int h2(State& s) {
 }
 
 //Funkcja pomocnicza do generowania losowej permutacji planszy
-void shuffleBoard(int board[N][N]) {
-    vector<int> v;
-    for (int i = 0; i < N*N; ++i) {
-        v.push_back(i);
-    }
-    random_shuffle(v.begin(), v.end());
-    int index = 0;
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < N; ++j) {
-            board[i][j] = v[index++];
-        }
-    }
-}
+//void shuffleBoard(int board[N][N]) {
+//    vector<int> v;
+//    for (int i = 0; i < N*N; ++i) {
+//        v.push_back(i);
+//    }
+//    shuffle(v.begin(), v.end(), );
+//    int index = 0;
+//    for (int i = 0; i < N; ++i) {
+//        for (int j = 0; j < N; ++j) {
+//            board[i][j] = v[index++];
+//        }
+//    }
+//}
 
 //Funkcja pomocnicza do drukowania planszy
 void printBoard(int board[N][N]) {
@@ -85,8 +113,11 @@ void printBoard(int board[N][N]) {
     cout << endl;
 }
 
-//Funkcja sprawdzajÄ…ca, czy dany stan jest stanem docelowym
-bool isGoalState(State& s) {
+//Funkcja sprawdzaj¹ca, czy dany stan jest stanem docelowym
+bool isGoalState(const State& s) {
+	if (s.board[N - 1][N - 1] != 0)
+		return false;
+
     int count = 1;
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
@@ -99,12 +130,12 @@ bool isGoalState(State& s) {
     return true;
 }
 
-//Funkcja zwracajÄ…ca listÄ™ nastÄ™pnikÃ³w danego stanu
-vector<State> getSuccessors(State& s) {
+//Funkcja zwracaj¹ca listê nastêpników danego stanu
+vector<State> getSuccessors(const State& s) {
     vector<State> successors;
     int r = s.zero_row;
     int c = s.zero_col;
-//przesuniÄ™cie pustego pola w gÃ³rÄ™
+//przesuniêcie pustego pola w górê
     if (r > 0) {
         State temp = s;
         swap(temp.board[r][c], temp.board[r-1][c]);
@@ -112,10 +143,10 @@ vector<State> getSuccessors(State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp); //zmiana funkcji heurystycznej
         temp.f = temp.g + temp.h;
-        temp.path.push_back(temp.board[r-1][c]);
+        temp.path.push_back(temp.board[r][c]);
         successors.push_back(temp);
     }
-//przesuniÄ™cie pustego pola w dÃ³Å‚
+//przesuniêcie pustego pola w dó³
     if (r < N-1) {
         State temp = s;
         swap(temp.board[r][c], temp.board[r+1][c]);
@@ -123,10 +154,10 @@ vector<State> getSuccessors(State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp); //zmiana funkcji heurystycznej
         temp.f = temp.g + temp.h;
-        temp.path.push_back(temp.board[r+1][c]);
+        temp.path.push_back(temp.board[r][c]);
         successors.push_back(temp);
     }
-//przesuniÄ™cie pustego pola w lewo
+//przesuniêcie pustego pola w lewo
     if (c > 0) {
         State temp = s;
         swap(temp.board[r][c], temp.board[r][c-1]);
@@ -134,10 +165,10 @@ vector<State> getSuccessors(State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp); //zmiana funkcji heurystycznej
         temp.f = temp.g + temp.h;
-        temp.path.push_back(temp.board[r][c-1]);
+        temp.path.push_back(temp.board[r][c]);
         successors.push_back(temp);
     }
-//przesuniÄ™cie pustego pola w prawo
+//przesuniêcie pustego pola w prawo
     if (c < N-1) {
         State temp = s;
         swap(temp.board[r][c], temp.board[r][c+1]);
@@ -145,20 +176,26 @@ vector<State> getSuccessors(State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp); //zmiana funkcji heurystycznej
         temp.f = temp.g + temp.h;
-        temp.path.push_back(temp.board[r][c+1]);
+        temp.path.push_back(temp.board[r][c]);
         successors.push_back(temp);
     }
     return successors;
 }
 
-//GÅ‚Ã³wna funkcja rozwiÄ…zujÄ…ca 15 puzzle algorytmem A*
+//G³ówna funkcja rozwi¹zuj¹ca 15 puzzle algorytmem A*
 void solvePuzzle() {
 //Generowanie losowej permutacji planszy
-    int board[N][N];
-    shuffleBoard(board);
-    cout << "Stan poczÄ…tkowy:" << endl;
+	auto start = std::chrono::steady_clock::now();
+
+    int board[N][N] = {
+            {13, 2, 10, 3},
+            {1, 12, 8, 4},
+            {5, 9, 6, 7},
+            {15, 14, 11, 0}
+    };
+    cout << "Stan pocz¹tkowy:" << endl;
     printBoard(board);
-//Inicjalizacja stanu poczÄ…tkowego
+//Inicjalizacja stanu pocz¹tkowego
     State initial_state;
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
@@ -173,39 +210,42 @@ void solvePuzzle() {
     initial_state.h = h1(initial_state); //zmiana funkcji heurystycznej
     initial_state.f = initial_state.g + initial_state.h;
 
-//Inicjalizacja kolejki priorytetowej i dodanie stanu poczÄ…tkowego do kolejki
+//Inicjalizacja kolejki priorytetowej i dodanie stanu pocz¹tkowego do kolejki
     priority_queue<State> pq;
     pq.push(initial_state);
 
-//Inicjalizacja zbioru odwiedzonych stanÃ³w
-    set<int[N][N]> visited_states;
-    visited_states.insert(initial_state.board);
+//Inicjalizacja zbioru odwiedzonych stanów
+    unordered_set<State, StateHash> visited_states;
 
-//Licznik odwiedzonych stanÃ³w
-    int visited_count = 1;
+//Licznik odwiedzonych stanów
+    int visited_count = 0;
 
-//GÅ‚Ã³wna pÄ™tla algorytmu A*
+//G³ówna pêtla algorytmu A*
     while (!pq.empty()) {
-        //Pobranie stanu o najniÅ¼szym f-wartoÅ›ci z kolejki
+        //Pobranie stanu o najni¿szym f-wartoœci z kolejki
         State current_state = pq.top();
         pq.pop();
+        visited_states.insert(current_state);
+        ++visited_count;
+
         //Sprawdzenie, czy to stan docelowy
         if (isGoalState(current_state)) {
-            cout << "Liczba odwiedzonych stanÃ³w: " << visited_count << endl;
-            cout << "RozwiÄ…zanie: ";
+            cout << "Liczba odwiedzonych stanów: " << visited_count << endl;
+            cout << "Rozwi¹zanie: ";
             for (int i = 0; i < current_state.path.size(); ++i) {
                 cout << current_state.path[i] << " ";
             }
             cout << endl;
+			auto end = std::chrono::steady_clock::now();
+
+            std::cout << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << std::endl;
             return;
         }
-        //Generowanie nastÄ™pnikÃ³w i dodawanie ich do kolejki, jeÅ›li nie byÅ‚y odwiedzone wczeÅ›niej
+        //Generowanie nastêpników i dodawanie ich do kolejki, jeœli nie by³y odwiedzone wczeœniej
         vector<State> successors = getSuccessors(current_state);
         for (int i = 0; i < successors.size(); ++i) {
-            if (visited_states.count(successors[i].board) == 0) {
+            if (visited_states.find(successors[i]) == visited_states.end()) {
                 pq.push(successors[i]);
-                visited_states.insert(successors[i].board);
-                ++visited_count;
             }
         }
     }
