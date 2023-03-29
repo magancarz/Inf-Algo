@@ -49,7 +49,18 @@ cmake_ninja_workdir = C$:\dev\Inf-Algo\WSI\Lista1\cmake-build-debug\
 
 build cmake_object_order_depends_target_Lista1: phony || CMakeFiles\Lista1.dir
 
+<<<<<<< HEAD
 build CMakeFiles\Lista1.dir\src\main.cpp.obj: CXX_COMPILER__Lista1_Debug C$:\dev\Inf-Algo\WSI\Lista1\src\main.cpp || cmake_object_order_depends_target_Lista1
+=======
+build CMakeFiles\Lista1.dir\main.cpp.obj: CXX_COMPILER__Lista1_Debug C$:\dev\Inf-Algo\WSI\Lista1\main.cpp || cmake_object_order_depends_target_Lista1
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++latest
+  OBJECT_DIR = CMakeFiles\Lista1.dir
+  OBJECT_FILE_DIR = CMakeFiles\Lista1.dir
+  TARGET_COMPILE_PDB = CMakeFiles\Lista1.dir\
+  TARGET_PDB = Lista1.pdb
+
+build CMakeFiles\Lista1.dir\src\Node.cpp.obj: CXX_COMPILER__Lista1_Debug C$:\dev\Inf-Algo\WSI\Lista1\src\Node.cpp || cmake_object_order_depends_target_Lista1
+>>>>>>> e3bf05131cf7faa11598cac97d5d0024ee91c673
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++latest
   OBJECT_DIR = CMakeFiles\Lista1.dir
   OBJECT_FILE_DIR = CMakeFiles\Lista1.dir\src
@@ -64,7 +75,11 @@ build CMakeFiles\Lista1.dir\src\main.cpp.obj: CXX_COMPILER__Lista1_Debug C$:\dev
 #############################################
 # Link the executable Lista1.exe
 
+<<<<<<< HEAD
 build Lista1.exe: CXX_EXECUTABLE_LINKER__Lista1_Debug CMakeFiles\Lista1.dir\src\main.cpp.obj
+=======
+build Lista1.exe: CXX_EXECUTABLE_LINKER__Lista1_Debug CMakeFiles\Lista1.dir\main.cpp.obj CMakeFiles\Lista1.dir\src\Node.cpp.obj
+>>>>>>> e3bf05131cf7faa11598cac97d5d0024ee91c673
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   LINK_FLAGS = /machine:X86 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
@@ -81,7 +96,11 @@ build Lista1.exe: CXX_EXECUTABLE_LINKER__Lista1_Debug CMakeFiles\Lista1.dir\src\
 # Utility command for edit_cache
 
 build CMakeFiles\edit_cache.util: CUSTOM_COMMAND
+<<<<<<< HEAD
   COMMAND = cmd.exe /C "cd /D C:\dev\Inf-Algo\WSI\Lista1\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2022.3.3\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+=======
+  COMMAND = cmd.exe /C "cd /D C:\dev\Inf-Algo\WSI\Lista1\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2022.3.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+>>>>>>> e3bf05131cf7faa11598cac97d5d0024ee91c673
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -92,7 +111,11 @@ build edit_cache: phony CMakeFiles\edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles\rebuild_cache.util: CUSTOM_COMMAND
+<<<<<<< HEAD
   COMMAND = cmd.exe /C "cd /D C:\dev\Inf-Algo\WSI\Lista1\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2022.3.3\bin\cmake\win\x64\bin\cmake.exe" --regenerate-during-build -SC:\dev\Inf-Algo\WSI\Lista1 -BC:\dev\Inf-Algo\WSI\Lista1\cmake-build-debug"
+=======
+  COMMAND = cmd.exe /C "cd /D C:\dev\Inf-Algo\WSI\Lista1\cmake-build-debug && "C:\Program Files\JetBrains\CLion 2022.3.2\bin\cmake\win\x64\bin\cmake.exe" --regenerate-during-build -SC:\dev\Inf-Algo\WSI\Lista1 -BC:\dev\Inf-Algo\WSI\Lista1\cmake-build-debug"
+>>>>>>> e3bf05131cf7faa11598cac97d5d0024ee91c673
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -121,14 +144,22 @@ build all: phony Lista1.exe
 #############################################
 # Re-run CMake if any of its inputs changed.
 
+<<<<<<< HEAD
 build build.ninja: RERUN_CMAKE | C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCXXInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeGenericSystem.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeRCInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC-CXX.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC-CXX.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake C$:\dev\Inf-Algo\WSI\Lista1\CMakeLists.txt CMakeCache.txt CMakeFiles\3.24.2\CMakeCCompiler.cmake CMakeFiles\3.24.2\CMakeCXXCompiler.cmake CMakeFiles\3.24.2\CMakeRCCompiler.cmake CMakeFiles\3.24.2\CMakeSystem.cmake
+=======
+build build.ninja: RERUN_CMAKE | C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCXXInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeGenericSystem.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeRCInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC-CXX.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC-CXX.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake C$:\dev\Inf-Algo\WSI\Lista1\CMakeLists.txt CMakeCache.txt CMakeFiles\3.24.2\CMakeCCompiler.cmake CMakeFiles\3.24.2\CMakeCXXCompiler.cmake CMakeFiles\3.24.2\CMakeRCCompiler.cmake CMakeFiles\3.24.2\CMakeSystem.cmake
+>>>>>>> e3bf05131cf7faa11598cac97d5d0024ee91c673
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
+<<<<<<< HEAD
 build C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCXXInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeGenericSystem.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeRCInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC-CXX.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC-CXX.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.3\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake C$:\dev\Inf-Algo\WSI\Lista1\CMakeLists.txt CMakeCache.txt CMakeFiles\3.24.2\CMakeCCompiler.cmake CMakeFiles\3.24.2\CMakeCXXCompiler.cmake CMakeFiles\3.24.2\CMakeRCCompiler.cmake CMakeFiles\3.24.2\CMakeSystem.cmake: phony
+=======
+build C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCXXInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeGenericSystem.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeRCInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC-CXX.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Compiler\MSVC.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC-CXX.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\Windows.cmake C$:\Program$ Files\JetBrains\CLion$ 2022.3.2\bin\cmake\win\x64\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake C$:\dev\Inf-Algo\WSI\Lista1\CMakeLists.txt CMakeCache.txt CMakeFiles\3.24.2\CMakeCCompiler.cmake CMakeFiles\3.24.2\CMakeCXXCompiler.cmake CMakeFiles\3.24.2\CMakeRCCompiler.cmake CMakeFiles\3.24.2\CMakeSystem.cmake: phony
+>>>>>>> e3bf05131cf7faa11598cac97d5d0024ee91c673
 
 
 #############################################

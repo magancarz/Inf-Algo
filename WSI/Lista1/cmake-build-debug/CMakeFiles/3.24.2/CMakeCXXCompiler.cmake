@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 set(CMAKE_CXX_COMPILER "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostx86/x86/cl.exe")
 set(CMAKE_CXX_COMPILER_ARG1 "")
 set(CMAKE_CXX_COMPILER_ID "MSVC")
 set(CMAKE_CXX_COMPILER_VERSION "19.34.31937.0")
+=======
+set(CMAKE_CXX_COMPILER "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31629/bin/Hostx86/x86/cl.exe")
+set(CMAKE_CXX_COMPILER_ARG1 "")
+set(CMAKE_CXX_COMPILER_ID "MSVC")
+set(CMAKE_CXX_COMPILER_VERSION "19.33.31630.0")
+>>>>>>> e3bf05131cf7faa11598cac97d5d0024ee91c673
 set(CMAKE_CXX_COMPILER_VERSION_INTERNAL "")
 set(CMAKE_CXX_COMPILER_WRAPPER "")
 set(CMAKE_CXX_STANDARD_COMPUTED_DEFAULT "14")
@@ -22,12 +29,21 @@ set(CMAKE_CXX_COMPILER_ARCHITECTURE_ID X86)
 
 set(MSVC_CXX_ARCHITECTURE_ID X86)
 
+<<<<<<< HEAD
 set(CMAKE_AR "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostx86/x86/lib.exe")
 set(CMAKE_CXX_COMPILER_AR "")
 set(CMAKE_RANLIB ":")
 set(CMAKE_CXX_COMPILER_RANLIB "")
 set(CMAKE_LINKER "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostx86/x86/link.exe")
 set(CMAKE_MT "C:/Program Files (x86)/Windows Kits/10/bin/10.0.22000.0/x86/mt.exe")
+=======
+set(CMAKE_AR "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31629/bin/Hostx86/x86/lib.exe")
+set(CMAKE_CXX_COMPILER_AR "")
+set(CMAKE_RANLIB ":")
+set(CMAKE_CXX_COMPILER_RANLIB "")
+set(CMAKE_LINKER "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31629/bin/Hostx86/x86/link.exe")
+set(CMAKE_MT "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x86/mt.exe")
+>>>>>>> e3bf05131cf7faa11598cac97d5d0024ee91c673
 set(CMAKE_COMPILER_IS_GNUCXX )
 set(CMAKE_CXX_COMPILER_LOADED 1)
 set(CMAKE_CXX_COMPILER_WORKS TRUE)
