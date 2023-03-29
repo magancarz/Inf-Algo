@@ -1,5 +1,6 @@
 package com.example.hangman
 
+import android.content.Context
 import kotlin.random.Random
 
 class GameManager {
@@ -9,15 +10,15 @@ class GameManager {
     private lateinit var wordToGuess: String
     private var maxTries = 7
     private var currentTries = 0
-    private var hangmanImage: Int = R.drawable.game0
+    private var hangmanImage: Int = R.drawable.wisielec0
 
-    fun startNewGame() : GameState {
+    fun startNewGame(context: Context) : GameState {
         lettersUsed = ""
         currentTries = 0
-        val randomIndex = Random.nextInt(0, WordDictionary.words.size)
-        wordToGuess = WordDictionary.words[randomIndex]
+        val stringArray = context.resources.getStringArray(R.array.words)
+        wordToGuess = stringArray[Random.nextInt(stringArray.size)]
         generateUnderscores(wordToGuess)
-        hangmanImage = R.drawable.game0
+        hangmanImage = R.drawable.wisielec0
         return getGameState()
     }
 
@@ -72,15 +73,15 @@ class GameManager {
 
     private fun getCurrentImageState(): Int {
         return when (currentTries) {
-            0 -> R.drawable.game0
-            1 -> R.drawable.game1
-            2 -> R.drawable.game2
-            3 -> R.drawable.game3
-            4 -> R.drawable.game4
-            5 -> R.drawable.game5
-            6 -> R.drawable.game6
-            7 -> R.drawable.game7
-            else -> R.drawable.game7
+            0 -> R.drawable.wisielec0
+            1 -> R.drawable.wisielec1
+            2 -> R.drawable.wisielec2
+            3 -> R.drawable.wisielec3
+            4 -> R.drawable.wisielec4
+            5 -> R.drawable.wisielec5
+            6 -> R.drawable.wisielec6
+            7 -> R.drawable.wisielec7
+            else -> R.drawable.wisielec7
         }
     }
 }

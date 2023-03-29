@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             startNewGame()
         }
 
-        val gameState = gameManager.startNewGame()
+        val gameState = gameManager.startNewGame(this)
         updateUI(gameState)
 
         lettersLayout.children.forEach { letterView ->
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     private fun gameOver(wordToGuess: String) {
         Toast.makeText(applicationContext, "Game Lost!", Toast.LENGTH_SHORT).show()
         wordTextView.text = wordToGuess
-        imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.game7))
+        imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.wisielec7))
     }
 
     private fun gameWon(wordToGuess: String) {
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startNewGame() {
-        val gameState = gameManager.startNewGame()
+        val gameState = gameManager.startNewGame(this)
         lettersLayout.visibility = View.VISIBLE
         lettersLayout.children.forEach { letterView ->
             letterView.visibility = View.VISIBLE
