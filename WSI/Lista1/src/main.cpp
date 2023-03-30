@@ -21,11 +21,13 @@ struct PathElement {
 
 struct State {
     std::array<std::array<uint8_t, N>, N> board;
-    uint8_t g;
-    uint8_t h;
-    uint8_t f;
-    uint8_t zero_row;
-    uint8_t zero_col;
+    struct alignas(2) {
+        uint8_t g;
+        uint8_t h;
+        uint8_t f;
+        uint8_t zero_row;
+        uint8_t zero_col;
+    };
     PathElement* path_element;
 
     bool operator<(const State& rhs) const {
@@ -33,18 +35,7 @@ struct State {
     }
 
     bool operator==(const State& other) const {
-		if (zero_row != other.zero_row || zero_col != other.zero_col)
-			return false;
-
-        for (uint8_t y = 0; y < N; ++y) {
-            for (uint8_t x = 0; x < N; ++x) {
-                if (board[y][x] != other.board[y][x]) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return board == other.board && zero_row == other.zero_row && zero_col == other.zero_col;
     }
 
     std::vector<int> getPath() const {
@@ -61,8 +52,7 @@ struct State {
     }
 };
 
-uint32_t MurmurHash32(const void *key, int len, uint32_t seed)
-{
+uint32_t MurmurHash32(const void *key, int len, uint32_t seed) {
     const uint8_t *data = (const uint8_t *)key;
     const int nblocks = len >> 2;
 
@@ -112,17 +102,7 @@ uint32_t MurmurHash32(const void *key, int len, uint32_t seed)
     return hash;
 }
 
-struct StateHash {
-    size_t operator()(const State& s) const {
-    
-        const auto board = s.board;
-        const uint32_t hash_code = MurmurHash32(&board, sizeof(board), 0);
-
-        return hash_code;
-    }
-};
-
-int h1(const State& s) {
+uint8_t h1(const State& s) {
     uint8_t result = 0;
     for (uint8_t i = 0; i < N; ++i) {
         for (uint8_t j = 0; j < N; ++j) {
@@ -258,13 +238,7 @@ vector<State> getSuccessors(const State& s) {
 
 void solvePuzzle() {
 	const auto start = std::chrono::steady_clock::now();
-
-    /*int board[N][N] = {
-            {1, 2, 3, 4},
-            {5, 6, 7, 8},
-            {9, 10, 11, 12},
-            {13, 14, 0, 15}
-    };*/
+    
     int board[N][N] = {
             {13, 2, 10, 3},
             {1, 12, 8, 4},
@@ -277,6 +251,7 @@ void solvePuzzle() {
             {15, 2, 12, 4},
             {14, 3, 1, 0}
     };*/
+
     cout << "Initial state: " << endl;
     printBoard(board);
 
@@ -298,14 +273,14 @@ void solvePuzzle() {
     priority_queue<State> pq;
     pq.push(initial_state);
 
-    unordered_set<State, StateHash> visited_states;
+    unordered_set<uint32_t> visited_states;
 
     uint32_t visited_count = 0;
 
     while (!pq.empty()) {
         State current_state = pq.top();
         pq.pop();
-        visited_states.insert(current_state);
+        visited_states.insert(MurmurHash32(&current_state.board, sizeof(current_state.board), 0));
         ++visited_count;
         
         if (isGoalState(current_state)) {
@@ -323,7 +298,7 @@ void solvePuzzle() {
 
         vector<State> successors = getSuccessors(current_state);
         for (const auto& successor : successors) {
-            if (visited_states.find(successor) == visited_states.end()) {
+            if (visited_states.find(MurmurHash32(&successor.board, sizeof(successor.board), 0)) == visited_states.end()) {
                 pq.push(successor);
             }
         }
