@@ -1,4 +1,5 @@
 .vs/*
 x64/*
+Release/*
 Lista1.vcxproj.filters
 Lista1.vcxproj.user

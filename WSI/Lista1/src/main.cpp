@@ -13,7 +13,7 @@
 
 using namespace std;
 
-constexpr int N = 4;
+constexpr int puzzle_size = 4;
 
 struct PathElement {
 	uint32_t parent;
@@ -24,7 +24,7 @@ uint32_t current_path_element_index = 0;
 std::vector<PathElement> path_elements;
 
 struct State {
-    std::array<std::array<uint8_t, N>, N> board;
+    std::array<std::array<uint8_t, puzzle_size>, puzzle_size> board;
     struct alignas(1) {
         uint8_t zero_row;
         uint8_t zero_col;
@@ -108,11 +108,11 @@ uint32_t MurmurHash32(const void *key, int len, uint32_t seed) {
 
 uint8_t h1(const State& s) {
     uint8_t result = 0;
-    for (uint8_t i = 0; i < N; ++i) {
-        for (uint8_t j = 0; j < N; ++j) {
+    for (uint8_t i = 0; i < puzzle_size; ++i) {
+        for (uint8_t j = 0; j < puzzle_size; ++j) {
             if (s.board[i][j] != 0) {
-                const uint8_t row = (s.board[i][j] - 1) >> 2; // N = 4
-                const uint8_t col = (s.board[i][j] - 1) % N;
+                const uint8_t row = (s.board[i][j] - 1) >> 2; // puzzle_size = 4
+                const uint8_t col = (s.board[i][j] - 1) % puzzle_size;
                 result += abs(i - row) + abs(j - col);
             }
         }
@@ -123,8 +123,8 @@ uint8_t h1(const State& s) {
 int h2(const State& s) {
     int result = 0;
     int count = 1;
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < N; ++j) {
+    for (int i = 0; i < puzzle_size; ++i) {
+        for (int j = 0; j < puzzle_size; ++j) {
             if (s.board[i][j] != count && s.board[i][j] != 0) {
                 ++result;
             }
@@ -134,10 +134,10 @@ int h2(const State& s) {
     return result;
 }
 
-void printBoard(std::array<std::array<uint8_t, N>, N> board) {
+void printBoard(std::array<std::array<uint8_t, puzzle_size>, puzzle_size> board) {
     cout << endl;
-    for (uint8_t i = 0; i < N; ++i) {
-        for (uint8_t j = 0; j < N; ++j) {
+    for (uint8_t i = 0; i < puzzle_size; ++i) {
+        for (uint8_t j = 0; j < puzzle_size; ++j) {
             if (board[i][j] == 0) {
                 cout << "x ";
             } else {
@@ -150,12 +150,12 @@ void printBoard(std::array<std::array<uint8_t, N>, N> board) {
 }
 
 bool isGoalState(const State& s) {
-	if (s.board[N - 1][N - 1] != 0)
+	if (s.board[puzzle_size - 1][puzzle_size - 1] != 0)
 		return false;
 
     uint8_t count = 1;
-    for (uint8_t i = 0; i < N; ++i) {
-        for (uint8_t j = 0; j < N; ++j) {
+    for (uint8_t i = 0; i < puzzle_size; ++i) {
+        for (uint8_t j = 0; j < puzzle_size; ++j) {
             if (s.board[i][j] != count && s.board[i][j] != 0) {
                 return false;
             }
@@ -184,7 +184,7 @@ vector<State> getSuccessors(const State& s) {
     }
 
 	// down
-    if (r < N-1) {
+    if (r < puzzle_size-1) {
         State temp = s;
         swap(temp.board[r][c], temp.board[r+1][c]);
         temp.zero_row = r+1;
@@ -210,7 +210,7 @@ vector<State> getSuccessors(const State& s) {
     }
 
     // right
-    if (c < N-1) {
+    if (c < puzzle_size-1) {
         State temp = s;
         swap(temp.board[r][c], temp.board[r][c+1]);
         temp.zero_col = c+1;
@@ -224,7 +224,7 @@ vector<State> getSuccessors(const State& s) {
     return successors;
 }
 
-bool isSolvable(std::array<std::array<uint8_t, N>, N> board) {
+bool isSolvable(std::array<std::array<uint8_t, puzzle_size>, puzzle_size> board) {
     int inversions = 0;
     for (int i = 0; i < 16; i++) {
         for (int j = i + 1; j < 16; j++) {
@@ -236,8 +236,8 @@ bool isSolvable(std::array<std::array<uint8_t, N>, N> board) {
     return (inversions % 2 == 0);
 }
 
-std::array<std::array<uint8_t, N>, N> generateRandomBoard() {
-    auto board = std::array<std::array<uint8_t, N>, N>();
+std::array<std::array<uint8_t, puzzle_size>, puzzle_size> generateRandomBoard() {
+    auto board = std::array<std::array<uint8_t, puzzle_size>, puzzle_size>();
 	do {
 		// Initialize a random number generator engine
 	    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
@@ -246,7 +246,7 @@ std::array<std::array<uint8_t, N>, N> generateRandomBoard() {
 	    uniform_int_distribution<int> randDist(0, 15);
 
 	    // Initialize the board with values from 0 to 15 in random order
-	    board = std::array<std::array<uint8_t, N>, N>();
+	    board = std::array<std::array<uint8_t, puzzle_size>, puzzle_size>();
 	    int boardArr[16];
 	    for (int i = 0; i < 16; i++) {
 	        boardArr[i] = i;
@@ -272,48 +272,36 @@ std::array<std::array<uint8_t, N>, N> generateRandomBoard() {
     return board;
 }
 
-//void destroyPath(const PathElement* path_element) {
-//    while (path_element != nullptr) {
-//        destroyPath(path_element->parent);
-//        delete path_element;
-//    }
-//}
-
 void solvePuzzle() {
 	const auto start = std::chrono::steady_clock::now();
-
-    /*int board[N][N] = {
-            {1, 8, 2},
-            {0, 4, 3},
-            {7, 6, 5}
-    };*/
-    int board[N][N] = {
+    
+    /*int board[puzzle_size][puzzle_size] = {
             {13, 2, 10, 3},
             {1, 12, 8, 4},
             {5, 9, 6, 7},
             {15, 14, 11, 0}
-    };
-    /*int board[N][N] = {
+    };*/
+    /*int board[puzzle_size][puzzle_size] = {
             {1, 2, 3, 4},
             {5, 6, 7, 8},
             {9, 10, 11, 12},
             {13, 0, 14, 15}
     };*/
-    /*int board[N][N] = {
+    /*int board[puzzle_size][puzzle_size] = {
             {6, 13, 7, 10},
             {8, 9, 11, 5},
             {15, 2, 12, 4},
             {14, 3, 1, 0}
     };*/
 
-    //const auto board = generateRandomBoard();
+    const auto board = generateRandomBoard();
 
     cout << "Initial state: " << endl;
-    //printBoard(board);
+    printBoard(board);
 
     State initial_state{};
-    for (uint8_t i = 0; i < N; ++i) {
-        for (uint8_t j = 0; j < N; ++j) {
+    for (uint8_t i = 0; i < puzzle_size; ++i) {
+        for (uint8_t j = 0; j < puzzle_size; ++j) {
             initial_state.board[i][j] = static_cast<uint8_t>(board[i][j]);
             if (board[i][j] == 0) {
                 initial_state.zero_row = i;
@@ -366,11 +354,14 @@ void solvePuzzle() {
 
 void performanceTest() {
 	for (int i = 0; i < 10; ++i) {
-		
+        {
+		solvePuzzle();
+        }
+		std::cout << "------------------------------\n";
 	}
 }
 
 int main() {
-    solvePuzzle();
+    performanceTest();
     return 0;
 }
