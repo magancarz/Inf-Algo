@@ -2,26 +2,31 @@
 #include <queue>
 #include <unordered_map>
 #include <vector>
-#include <ctime>
 #include <cstdlib>
 #include <algorithm>
 #include <set>
 #include <unordered_set>
 #include <chrono>
+#include <array>
+#include <cstdint>
 
 using namespace std;
 
-const int N = 4;
+constexpr int N = 4;
 
 struct State {
-    int board[N][N];
+    std::array<std::array<int, N>, N> board;
     int g;
     int h;
     int f;
     int zero_row;
     int zero_col;
     vector<int> path;
-    bool operator<(const State& rhs) const { return f > rhs.f; }
+
+    bool operator<(const State& rhs) const {
+	    return f > rhs.f;
+    }
+
     bool operator==(const State& other) const {
 		if (zero_row != other.zero_row || zero_col != other.zero_col)
 			return false;
@@ -38,18 +43,81 @@ struct State {
     }
 };
 
+uint32_t MurmurHash32(const void *key, int len, uint32_t seed)
+{
+    const uint8_t *data = (const uint8_t *)key;
+    const int nblocks = len >> 2;
+
+    uint32_t hash = seed;
+
+    const uint32_t c1 = 0xcc9e2d51;
+    const uint32_t c2 = 0x1b873593;
+
+    // Process the data in 4-byte blocks
+    const uint32_t *blocks = (const uint32_t *)(data + nblocks * 4);
+    for (int i = -nblocks; i; i++) {
+        uint32_t k = blocks[i];
+
+        k *= c1;
+        k = (k << 15) | (k >> 17);  // Rotates the bits to the left
+        k *= c2;
+
+        hash ^= k;
+        hash = (hash << 13) | (hash >> 19);  // Rotates the bits to the left
+        hash = hash * 5 + 0xe6546b64;
+    }
+
+    // Process any remaining bytes
+    const uint8_t *tail = (const uint8_t *)(data + nblocks * 4);
+    uint32_t k1 = 0;
+    switch (len & 3) {
+        case 3:
+            k1 ^= tail[2] << 16;
+        case 2:
+            k1 ^= tail[1] << 8;
+        case 1:
+            k1 ^= tail[0];
+            k1 *= c1;
+            k1 = (k1 << 15) | (k1 >> 17);
+            k1 *= c2;
+            hash ^= k1;
+    }
+
+    // Finalize the hash
+    hash ^= len;
+    hash ^= (hash >> 16);
+    hash *= 0x85ebca6b;
+    hash ^= (hash >> 13);
+    hash *= 0xc2b2ae35;
+    hash ^= (hash >> 16);
+
+    return hash;
+}
+
 struct StateHash {
-	size_t operator()(const State& s) const {
-		size_t hash_code = 0;
+    size_t operator()(const State& s) const {
+
+        constexpr uint32_t seed = 0;
         const auto board = s.board;
-	    for (int i = 0; i < N; i++) {
-	        for (int j = 0; j < N; j++) {
-	            hash_code = hash_code * 31 + board[i][j];
-	        }
-	    }
-	    return hash_code;
-	}
+        const uint32_t hash_code = MurmurHash32(&board, sizeof(board), seed);
+
+        return hash_code;
+    }
 };
+
+int h1(const State& s) {
+    int result = 0;
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            if (s.board[i][j] != 0) {
+                const int row = (s.board[i][j] - 1) / N;
+                const int col = (s.board[i][j] - 1) % N;
+                result += abs(i - row) + abs(j - col);
+            }
+        }
+    }
+    return result;
+}
 
 int h2(const State& s) {
     int result = 0;
@@ -64,34 +132,6 @@ int h2(const State& s) {
     }
     return result;
 }
-
-int h1(const State& s) {
-    int result = 0;
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < N; ++j) {
-            if (s.board[i][j] != 0) {
-                int row = (s.board[i][j] - 1) / N;
-                int col = (s.board[i][j] - 1) % N;
-                result += abs(i - row) + abs(j - col);
-            }
-        }
-    }
-    return result;
-}
-
-//void shuffleBoard(int board[N][N]) {
-//    vector<int> v;
-//    for (int i = 0; i < N*N; ++i) {
-//        v.push_back(i);
-//    }
-//    shuffle(v.begin(), v.end(), );
-//    int index = 0;
-//    for (int i = 0; i < N; ++i) {
-//        for (int j = 0; j < N; ++j) {
-//            board[i][j] = v[index++];
-//        }
-//    }
-//}
 
 void printBoard(int board[N][N]) {
     cout << endl;
@@ -126,8 +166,8 @@ bool isGoalState(const State& s) {
 
 vector<State> getSuccessors(const State& s) {
     vector<State> successors;
-    int r = s.zero_row;
-    int c = s.zero_col;
+    const int r = s.zero_row;
+    const int c = s.zero_col;
 
     // up
     if (r > 0) {
@@ -180,7 +220,7 @@ vector<State> getSuccessors(const State& s) {
 }
 
 void solvePuzzle() {
-	auto start = std::chrono::steady_clock::now();
+	const auto start = std::chrono::steady_clock::now();
 
     int board[N][N] = {
             {13, 2, 10, 3},
@@ -188,7 +228,7 @@ void solvePuzzle() {
             {5, 9, 6, 7},
             {15, 14, 11, 0}
     };
-    cout << "Stan pocz¹tkowy:" << endl;
+    cout << "Initial state: " << endl;
     printBoard(board);
 
     State initial_state;
@@ -219,29 +259,28 @@ void solvePuzzle() {
         ++visited_count;
         
         if (isGoalState(current_state)) {
-            cout << "Liczba odwiedzonych stanów: " << visited_count << endl;
-            cout << "Rozwi¹zanie: ";
-            for (int i = 0; i < current_state.path.size(); ++i) {
-                cout << current_state.path[i] << " ";
+            cout << "Number of visited states: " << visited_count << endl;
+            cout << "Solution: ";
+            for (const auto& step : current_state.path) {
+                cout << step << " ";
             }
             cout << endl;
-			auto end = std::chrono::steady_clock::now();
+			const auto end = std::chrono::steady_clock::now();
 
             std::cout << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << std::endl;
             return;
         }
 
         vector<State> successors = getSuccessors(current_state);
-        for (int i = 0; i < successors.size(); ++i) {
-            if (visited_states.find(successors[i]) == visited_states.end()) {
-                pq.push(successors[i]);
+        for (const auto& successor : successors) {
+            if (visited_states.find(successor) == visited_states.end()) {
+                pq.push(successor);
             }
         }
     }
 }
 
 int main() {
-    srand(time(NULL));
     solvePuzzle();
     return 0;
 }
