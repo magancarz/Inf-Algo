@@ -15,12 +15,13 @@ using namespace std;
 
 constexpr int N = 4;
 
-struct Test {
-	uint32_t test1;
-    uint8_t test2;
+struct PathElement {
+	uint32_t parent;
+    uint8_t value;
 };
 
-std::vector<Test> test_vec;
+uint32_t current_path_element_index = 0;
+std::vector<PathElement> path_elements;
 
 struct State {
     std::array<std::array<uint8_t, N>, N> board;
@@ -31,7 +32,7 @@ struct State {
         uint8_t h : 8;
         uint8_t f : 8;
     };
-    uint32_t test;
+    uint32_t path_element_ptr;
 
     bool operator<(const State& rhs) const {
 	    return f > rhs.f;
@@ -41,18 +42,18 @@ struct State {
         return board == other.board && zero_row == other.zero_row && zero_col == other.zero_col;
     }
 
-    /*std::vector<int> getPath() const {
+    std::vector<int> getPath() const {
         std::vector<int> path;
-        path.emplace_back(path_element->current_move);
+        path.emplace_back(path_elements[path_element_ptr].value);
 
-        auto current = path_element->parent;
-        while (current != nullptr) {
-            path.push_back(current->current_move);
-            current = current->parent;
+        auto current = path_elements[path_elements[path_element_ptr].parent];
+        while (current.value != 0) {
+            path.push_back(current.value);
+            current = path_elements[current.parent];
         }
         std::reverse(path.begin(), path.end());
         return path;
-    }*/
+    }
 };
 
 uint32_t MurmurHash32(const void *key, int len, uint32_t seed) {
@@ -177,13 +178,8 @@ vector<State> getSuccessors(const State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp);
         temp.f = temp.g + temp.h;
-
-        /*const auto path_element = new PathElement{
-			s.path_element,
-            temp.board[r][c]
-        };
-        temp.path_element = path_element;*/
-        test_vec.push_back({1024, 5});
+        temp.path_element_ptr = current_path_element_index++;
+        path_elements.push_back({s.path_element_ptr, temp.board[r][c]});
         successors.push_back(temp);
     }
 
@@ -195,13 +191,8 @@ vector<State> getSuccessors(const State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp);
         temp.f = temp.g + temp.h;
-
-        /*const auto path_element = new PathElement{
-			s.path_element,
-            temp.board[r][c]
-        };
-        temp.path_element = path_element;*/
-        test_vec.push_back({1024, 5});
+        temp.path_element_ptr = current_path_element_index++;
+        path_elements.push_back({s.path_element_ptr, temp.board[r][c]});
         successors.push_back(temp);
     }
 
@@ -213,13 +204,8 @@ vector<State> getSuccessors(const State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp);
         temp.f = temp.g + temp.h;
-
-        /*const auto path_element = new PathElement{
-			s.path_element,
-            temp.board[r][c]
-        };
-        temp.path_element = path_element;*/
-        test_vec.push_back({1024, 5});
+        temp.path_element_ptr = current_path_element_index++;
+        path_elements.push_back({s.path_element_ptr, temp.board[r][c]});
         successors.push_back(temp);
     }
 
@@ -231,13 +217,8 @@ vector<State> getSuccessors(const State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp);
         temp.f = temp.g + temp.h;
-
-        /*const auto path_element = new PathElement{
-			s.path_element,
-            temp.board[r][c]
-        };
-        temp.path_element = path_element;*/
-        test_vec.push_back({1024, 5});
+        temp.path_element_ptr = current_path_element_index++;
+        path_elements.push_back({s.path_element_ptr, temp.board[r][c]});
         successors.push_back(temp);
     }
     return successors;
@@ -306,11 +287,17 @@ void solvePuzzle() {
             {0, 4, 3},
             {7, 6, 5}
     };*/
-    /*int board[N][N] = {
+    int board[N][N] = {
             {13, 2, 10, 3},
             {1, 12, 8, 4},
             {5, 9, 6, 7},
             {15, 14, 11, 0}
+    };
+    /*int board[N][N] = {
+            {1, 2, 3, 4},
+            {5, 6, 7, 8},
+            {9, 10, 11, 12},
+            {13, 0, 14, 15}
     };*/
     /*int board[N][N] = {
             {6, 13, 7, 10},
@@ -319,10 +306,10 @@ void solvePuzzle() {
             {14, 3, 1, 0}
     };*/
 
-    const auto board = generateRandomBoard();
+    //const auto board = generateRandomBoard();
 
     cout << "Initial state: " << endl;
-    printBoard(board);
+    //printBoard(board);
 
     State initial_state{};
     for (uint8_t i = 0; i < N; ++i) {
@@ -334,10 +321,12 @@ void solvePuzzle() {
             }
         }
     }
-    //initial_state.path_element = new PathElement{nullptr, 0};
     initial_state.g = 0;
     initial_state.h = h1(initial_state);
     initial_state.f = initial_state.g + initial_state.h;
+    initial_state.path_element_ptr = 0;
+    path_elements.push_back({initial_state.path_element_ptr, 0});
+    ++current_path_element_index;
 
     priority_queue<State> pq;
     pq.push(initial_state);
@@ -355,9 +344,9 @@ void solvePuzzle() {
         if (isGoalState(current_state)) {
             cout << "Number of visited states: " << visited_count << endl;
             cout << "Solution: ";
-            /*for (const auto& step : current_state.getPath()) {
+            for (const auto& step : current_state.getPath()) {
                 cout << step << " ";
-            }*/
+            }
             cout << endl;
 			const auto end = std::chrono::steady_clock::now();
 
