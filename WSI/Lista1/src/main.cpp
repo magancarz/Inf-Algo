@@ -14,14 +14,19 @@ using namespace std;
 
 constexpr int N = 4;
 
+struct PathElement {
+	PathElement* parent;
+    uint8_t current_move;
+};
+
 struct State {
-    std::array<std::array<int, N>, N> board;
-    int g;
-    int h;
-    int f;
-    int zero_row;
-    int zero_col;
-    vector<int> path;
+    std::array<std::array<uint8_t, N>, N> board;
+    uint8_t g;
+    uint8_t h;
+    uint8_t f;
+    uint8_t zero_row;
+    uint8_t zero_col;
+    PathElement* path_element;
 
     bool operator<(const State& rhs) const {
 	    return f > rhs.f;
@@ -31,8 +36,8 @@ struct State {
 		if (zero_row != other.zero_row || zero_col != other.zero_col)
 			return false;
 
-        for (int y = 0; y < N; ++y) {
-            for (int x = 0; x < N; ++x) {
+        for (uint8_t y = 0; y < N; ++y) {
+            for (uint8_t x = 0; x < N; ++x) {
                 if (board[y][x] != other.board[y][x]) {
                     return false;
                 }
@@ -40,6 +45,19 @@ struct State {
         }
 
         return true;
+    }
+
+    std::vector<int> getPath() const {
+        std::vector<int> path;
+        path.emplace_back(path_element->current_move);
+
+        auto current = path_element->parent;
+        while (current != nullptr) {
+            path.push_back(current->current_move);
+            current = current->parent;
+        }
+        std::reverse(path.begin(), path.end());
+        return path;
     }
 };
 
@@ -96,22 +114,21 @@ uint32_t MurmurHash32(const void *key, int len, uint32_t seed)
 
 struct StateHash {
     size_t operator()(const State& s) const {
-
-        constexpr uint32_t seed = 0;
+    
         const auto board = s.board;
-        const uint32_t hash_code = MurmurHash32(&board, sizeof(board), seed);
+        const uint32_t hash_code = MurmurHash32(&board, sizeof(board), 0);
 
         return hash_code;
     }
 };
 
 int h1(const State& s) {
-    int result = 0;
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < N; ++j) {
+    uint8_t result = 0;
+    for (uint8_t i = 0; i < N; ++i) {
+        for (uint8_t j = 0; j < N; ++j) {
             if (s.board[i][j] != 0) {
-                const int row = (s.board[i][j] - 1) / N;
-                const int col = (s.board[i][j] - 1) % N;
+                const uint8_t row = (s.board[i][j] - 1) >> 2; // N = 4
+                const uint8_t col = (s.board[i][j] - 1) % N;
                 result += abs(i - row) + abs(j - col);
             }
         }
@@ -135,8 +152,8 @@ int h2(const State& s) {
 
 void printBoard(int board[N][N]) {
     cout << endl;
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < N; ++j) {
+    for (uint8_t i = 0; i < N; ++i) {
+        for (uint8_t j = 0; j < N; ++j) {
             if (board[i][j] == 0) {
                 cout << " ";
             } else {
@@ -152,9 +169,9 @@ bool isGoalState(const State& s) {
 	if (s.board[N - 1][N - 1] != 0)
 		return false;
 
-    int count = 1;
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < N; ++j) {
+    uint8_t count = 1;
+    for (uint8_t i = 0; i < N; ++i) {
+        for (uint8_t j = 0; j < N; ++j) {
             if (s.board[i][j] != count && s.board[i][j] != 0) {
                 return false;
             }
@@ -166,8 +183,8 @@ bool isGoalState(const State& s) {
 
 vector<State> getSuccessors(const State& s) {
     vector<State> successors;
-    const int r = s.zero_row;
-    const int c = s.zero_col;
+    const uint8_t r = s.zero_row;
+    const uint8_t c = s.zero_col;
 
     // up
     if (r > 0) {
@@ -177,7 +194,12 @@ vector<State> getSuccessors(const State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp);
         temp.f = temp.g + temp.h;
-        temp.path.push_back(temp.board[r][c]);
+
+        const auto path_element = new PathElement{
+			s.path_element,
+            temp.board[r][c]
+        };
+        temp.path_element = path_element;
         successors.push_back(temp);
     }
 
@@ -189,7 +211,12 @@ vector<State> getSuccessors(const State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp);
         temp.f = temp.g + temp.h;
-        temp.path.push_back(temp.board[r][c]);
+
+        const auto path_element = new PathElement{
+			s.path_element,
+            temp.board[r][c]
+        };
+        temp.path_element = path_element;
         successors.push_back(temp);
     }
 
@@ -201,7 +228,12 @@ vector<State> getSuccessors(const State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp);
         temp.f = temp.g + temp.h;
-        temp.path.push_back(temp.board[r][c]);
+
+        const auto path_element = new PathElement{
+			s.path_element,
+            temp.board[r][c]
+        };
+        temp.path_element = path_element;
         successors.push_back(temp);
     }
 
@@ -213,7 +245,12 @@ vector<State> getSuccessors(const State& s) {
         temp.g = s.g + 1;
         temp.h = h1(temp);
         temp.f = temp.g + temp.h;
-        temp.path.push_back(temp.board[r][c]);
+
+        const auto path_element = new PathElement{
+			s.path_element,
+            temp.board[r][c]
+        };
+        temp.path_element = path_element;
         successors.push_back(temp);
     }
     return successors;
@@ -222,25 +259,38 @@ vector<State> getSuccessors(const State& s) {
 void solvePuzzle() {
 	const auto start = std::chrono::steady_clock::now();
 
+    /*int board[N][N] = {
+            {1, 2, 3, 4},
+            {5, 6, 7, 8},
+            {9, 10, 11, 12},
+            {13, 14, 0, 15}
+    };*/
     int board[N][N] = {
             {13, 2, 10, 3},
             {1, 12, 8, 4},
             {5, 9, 6, 7},
             {15, 14, 11, 0}
     };
+    /*int board[N][N] = {
+            {6, 13, 7, 10},
+            {8, 9, 11, 5},
+            {15, 2, 12, 4},
+            {14, 3, 1, 0}
+    };*/
     cout << "Initial state: " << endl;
     printBoard(board);
 
-    State initial_state;
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < N; ++j) {
-            initial_state.board[i][j] = board[i][j];
+    State initial_state{};
+    for (uint8_t i = 0; i < N; ++i) {
+        for (uint8_t j = 0; j < N; ++j) {
+            initial_state.board[i][j] = static_cast<uint8_t>(board[i][j]);
             if (board[i][j] == 0) {
                 initial_state.zero_row = i;
                 initial_state.zero_col = j;
             }
         }
     }
+    initial_state.path_element = new PathElement{nullptr, 0};
     initial_state.g = 0;
     initial_state.h = h1(initial_state);
     initial_state.f = initial_state.g + initial_state.h;
@@ -250,7 +300,7 @@ void solvePuzzle() {
 
     unordered_set<State, StateHash> visited_states;
 
-    int visited_count = 0;
+    uint32_t visited_count = 0;
 
     while (!pq.empty()) {
         State current_state = pq.top();
@@ -261,7 +311,7 @@ void solvePuzzle() {
         if (isGoalState(current_state)) {
             cout << "Number of visited states: " << visited_count << endl;
             cout << "Solution: ";
-            for (const auto& step : current_state.path) {
+            for (const auto& step : current_state.getPath()) {
                 cout << step << " ";
             }
             cout << endl;
