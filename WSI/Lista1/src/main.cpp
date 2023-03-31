@@ -355,13 +355,19 @@ void solvePuzzle() {
 void performanceTest() {
 	for (int i = 0; i < 10; ++i) {
         {
-		solvePuzzle();
+			solvePuzzle();
+
+		    path_elements.clear();
+		    current_path_element_index = 0;
         }
 		std::cout << "------------------------------\n";
 	}
 }
 
 int main() {
+	std::cout << "Size of State: " << sizeof(State) << "B" << std::endl;
+	std::cout << "Size of PathElement: " << sizeof(PathElement) << "B" << std::endl;
+
     performanceTest();
     return 0;
 }
