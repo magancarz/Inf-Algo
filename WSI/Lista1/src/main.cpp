@@ -10,6 +10,7 @@
 #include <array>
 #include <cstdint>
 #include <random>
+#include <bitset>
 
 using namespace std;
 
@@ -24,18 +25,15 @@ uint32_t current_path_element_index = 0;
 std::vector<PathElement> path_elements;
 
 struct State {
-    std::array<std::array<uint8_t, puzzle_size>, puzzle_size> board;
-    struct alignas(1) {
-        uint8_t zero_row;
-        uint8_t zero_col;
-        uint8_t g : 8;
-        uint8_t h : 8;
-        uint8_t f : 8;
-    };
+    uint64_t board;
     uint32_t path_element_ptr;
+    uint8_t zero_row : 4;
+    uint8_t zero_col : 4;
+    uint8_t g : 8;
+    uint8_t h : 8;
 
     bool operator<(const State& rhs) const {
-	    return f > rhs.f;
+	    return (g + h) > (rhs.g + rhs.h);
     }
 
     bool operator==(const State& other) const {
@@ -54,65 +52,47 @@ struct State {
         std::reverse(path.begin(), path.end());
         return path;
     }
+
+    uint64_t arrayToUint64(std::array<std::array<uint8_t, 4>, 4> arr) const {
+
+        std::bitset<64> result;
+
+        std::bitset<64> test{7};
+        test <<= 4;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                std::bitset<64> temp{ arr[i][j] };
+                temp <<= i * 16 + j * 4;
+                result |= temp;
+            }
+        }
+
+        return result.to_ullong();
+    }
+
+    std::array<std::array<uint8_t, 4>, 4> uint64ToArray(uint64_t value) const {
+        std::array<std::array<uint8_t, 4>, 4> result;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                result[i][j] = (value >> ((3 - i) * 16 + (3 - j) * 8)) & 0xFF;
+            }
+        }
+
+        return result;
+    }
 };
 
-uint32_t MurmurHash32(const void *key, int len, uint32_t seed) {
-    const uint8_t *data = (const uint8_t *)key;
-    const int nblocks = len >> 2;
-
-    uint32_t hash = seed;
-
-    const uint32_t c1 = 0xcc9e2d51;
-    const uint32_t c2 = 0x1b873593;
-
-    // Process the data in 4-byte blocks
-    const uint32_t *blocks = (const uint32_t *)(data + nblocks * 4);
-    for (int i = -nblocks; i; i++) {
-        uint32_t k = blocks[i];
-
-        k *= c1;
-        k = (k << 15) | (k >> 17);  // Rotates the bits to the left
-        k *= c2;
-
-        hash ^= k;
-        hash = (hash << 13) | (hash >> 19);  // Rotates the bits to the left
-        hash = hash * 5 + 0xe6546b64;
-    }
-
-    // Process any remaining bytes
-    const uint8_t *tail = (const uint8_t *)(data + nblocks * 4);
-    uint32_t k1 = 0;
-    switch (len & 3) {
-        case 3:
-            k1 ^= tail[2] << 16;
-        case 2:
-            k1 ^= tail[1] << 8;
-        case 1:
-            k1 ^= tail[0];
-            k1 *= c1;
-            k1 = (k1 << 15) | (k1 >> 17);
-            k1 *= c2;
-            hash ^= k1;
-    }
-
-    // Finalize the hash
-    hash ^= len;
-    hash ^= (hash >> 16);
-    hash *= 0x85ebca6b;
-    hash ^= (hash >> 13);
-    hash *= 0xc2b2ae35;
-    hash ^= (hash >> 16);
-
-    return hash;
-}
-
 uint8_t h1(const State& s) {
+    const auto board = s.uint64ToArray(s.board);
+
     uint8_t result = 0;
     for (uint8_t i = 0; i < puzzle_size; ++i) {
         for (uint8_t j = 0; j < puzzle_size; ++j) {
-            if (s.board[i][j] != 0) {
-                const uint8_t row = (s.board[i][j] - 1) >> 2; // puzzle_size = 4
-                const uint8_t col = (s.board[i][j] - 1) % puzzle_size;
+            if (board[i][j] != 0) {
+                const uint8_t row = (board[i][j] - 1) >> 2; // puzzle_size = 4
+                const uint8_t col = (board[i][j] - 1) % puzzle_size;
                 result += abs(i - row) + abs(j - col);
             }
         }
@@ -121,11 +101,13 @@ uint8_t h1(const State& s) {
 }
 
 int h2(const State& s) {
+	const auto board = s.uint64ToArray(s.board);
+
     int result = 0;
     int count = 1;
     for (int i = 0; i < puzzle_size; ++i) {
         for (int j = 0; j < puzzle_size; ++j) {
-            if (s.board[i][j] != count && s.board[i][j] != 0) {
+            if (board[i][j] != count && board[i][j] != 0) {
                 ++result;
             }
             ++count;
@@ -150,13 +132,15 @@ void printBoard(std::array<std::array<uint8_t, puzzle_size>, puzzle_size> board)
 }
 
 bool isGoalState(const State& s) {
-	if (s.board[puzzle_size - 1][puzzle_size - 1] != 0)
+    const auto board = s.uint64ToArray(s.board);
+
+	if (board[puzzle_size - 1][puzzle_size - 1] != 0)
 		return false;
 
     uint8_t count = 1;
     for (uint8_t i = 0; i < puzzle_size; ++i) {
         for (uint8_t j = 0; j < puzzle_size; ++j) {
-            if (s.board[i][j] != count && s.board[i][j] != 0) {
+            if (board[i][j] != count && board[i][j] != 0) {
                 return false;
             }
             ++count;
@@ -172,53 +156,57 @@ vector<State> getSuccessors(const State& s) {
 
     // up
     if (r > 0) {
+		auto board = s.uint64ToArray(s.board);
         State temp = s;
-        swap(temp.board[r][c], temp.board[r-1][c]);
+        swap(board[r][c], board[r-1][c]);
+        temp.board = temp.arrayToUint64(board);
+        temp.path_element_ptr = current_path_element_index++;
         temp.zero_row = r-1;
         temp.g = s.g + 1;
         temp.h = h1(temp);
-        temp.f = temp.g + temp.h;
-        temp.path_element_ptr = current_path_element_index++;
-        path_elements.push_back({s.path_element_ptr, temp.board[r][c]});
+        path_elements.push_back({s.path_element_ptr, board[r][c]});
         successors.push_back(temp);
     }
 
 	// down
     if (r < puzzle_size-1) {
+        auto board = s.uint64ToArray(s.board);
         State temp = s;
-        swap(temp.board[r][c], temp.board[r+1][c]);
+        swap(board[r][c], board[r+1][c]);
+        temp.board = temp.arrayToUint64(board);
+        temp.path_element_ptr = current_path_element_index++;
         temp.zero_row = r+1;
         temp.g = s.g + 1;
         temp.h = h1(temp);
-        temp.f = temp.g + temp.h;
-        temp.path_element_ptr = current_path_element_index++;
-        path_elements.push_back({s.path_element_ptr, temp.board[r][c]});
+        path_elements.push_back({s.path_element_ptr, board[r][c]});
         successors.push_back(temp);
     }
 
     // left
     if (c > 0) {
+        auto board = s.uint64ToArray(s.board);
         State temp = s;
-        swap(temp.board[r][c], temp.board[r][c-1]);
+        swap(board[r][c], board[r][c-1]);
+        temp.board = temp.arrayToUint64(board);
+        temp.path_element_ptr = current_path_element_index++;
         temp.zero_col = c-1;
         temp.g = s.g + 1;
         temp.h = h1(temp);
-        temp.f = temp.g + temp.h;
-        temp.path_element_ptr = current_path_element_index++;
-        path_elements.push_back({s.path_element_ptr, temp.board[r][c]});
+        path_elements.push_back({s.path_element_ptr, board[r][c]});
         successors.push_back(temp);
     }
 
     // right
     if (c < puzzle_size-1) {
+        auto board = s.uint64ToArray(s.board);
         State temp = s;
-        swap(temp.board[r][c], temp.board[r][c+1]);
+        swap(board[r][c], board[r][c+1]);
+        temp.board = temp.arrayToUint64(board);
+        temp.path_element_ptr = current_path_element_index++;
         temp.zero_col = c+1;
         temp.g = s.g + 1;
         temp.h = h1(temp);
-        temp.f = temp.g + temp.h;
-        temp.path_element_ptr = current_path_element_index++;
-        path_elements.push_back({s.path_element_ptr, temp.board[r][c]});
+        path_elements.push_back({s.path_element_ptr, board[r][c]});
         successors.push_back(temp);
     }
     return successors;
@@ -300,18 +288,9 @@ void solvePuzzle() {
     printBoard(board);
 
     State initial_state{};
-    for (uint8_t i = 0; i < puzzle_size; ++i) {
-        for (uint8_t j = 0; j < puzzle_size; ++j) {
-            initial_state.board[i][j] = static_cast<uint8_t>(board[i][j]);
-            if (board[i][j] == 0) {
-                initial_state.zero_row = i;
-                initial_state.zero_col = j;
-            }
-        }
-    }
+    initial_state.board = initial_state.arrayToUint64(board);
     initial_state.g = 0;
     initial_state.h = h1(initial_state);
-    initial_state.f = initial_state.g + initial_state.h;
     initial_state.path_element_ptr = 0;
     path_elements.push_back({initial_state.path_element_ptr, 0});
     ++current_path_element_index;
@@ -319,14 +298,14 @@ void solvePuzzle() {
     priority_queue<State> pq;
     pq.push(initial_state);
 
-    unordered_set<uint32_t> visited_states;
+    unordered_set<uint64_t> visited_states;
 
     uint32_t visited_count = 0;
 
     while (!pq.empty()) {
         State current_state = pq.top();
         pq.pop();
-        visited_states.insert(MurmurHash32(&current_state.board, sizeof(current_state.board), 0));
+        visited_states.insert(current_state.board);
         ++visited_count;
         
         if (isGoalState(current_state)) {
@@ -345,7 +324,7 @@ void solvePuzzle() {
 
         vector<State> successors = getSuccessors(current_state);
         for (const auto& successor : successors) {
-            if (visited_states.find(MurmurHash32(&successor.board, sizeof(successor.board), 0)) == visited_states.end()) {
+            if (visited_states.find(successor.board) == visited_states.end()) {
                 pq.push(successor);
             }
         }
