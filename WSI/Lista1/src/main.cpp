@@ -10,7 +10,6 @@
 #include <array>
 #include <cstdint>
 #include <random>
-#include <bitset>
 
 constexpr int puzzle_size = 4;
 
@@ -29,9 +28,12 @@ struct State {
     uint8_t zero_col : 4;
     uint8_t g : 8;
     uint8_t h : 8;
+    uint8_t f : 8;
+
+    State() = default;
 
     bool operator<(const State& rhs) const {
-	    return (g + h) > (rhs.g + rhs.h);
+	    return f > rhs.f;
     }
 
     std::vector<int> getPath() const {
@@ -49,27 +51,24 @@ struct State {
 
     static uint64_t arrayToUint64(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& arr) {
 
-        std::bitset<64> result;
+        uint64_t result{0};
 
         for (int i = 0; i < puzzle_size; i++) {
             for (int j = 0; j < puzzle_size; j++) {
-                std::bitset<64> temp{ arr[i][j] };
-                temp <<= i * 16 + j * 4;
-                result |= temp;
+                result |= static_cast<uint64_t>(arr[i][j]) << (i * 16 + j * 4);
             }
         }
 
-        return result.to_ullong();
+        return result;
     }
 
     static std::array<std::array<uint8_t, puzzle_size>, puzzle_size> uint64ToArray(const uint64_t value) {
-
-        std::bitset<64> from_value{value};
+    
         std::array<std::array<uint8_t, puzzle_size>, puzzle_size> result{};
 
         for (int i = 0; i < puzzle_size; i++) {
             for (int j = 0; j < puzzle_size; j++) {
-                result[i][j] = (value >> i * 16 + j * 4) & 0xF;
+                result[i][j] = (value >> (i * 16 + j * 4)) & 0xF;
             }
         }
 
@@ -128,20 +127,10 @@ void printBoard(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>&
 
 bool isGoalState(const State& s) {
 
-    const auto board = State::uint64ToArray(s.board);
+	if (s.zero_row != puzzle_size - 1 || s.zero_col != puzzle_size - 1) return false;
 
-	if (board[puzzle_size - 1][puzzle_size - 1] != 0)
-		return false;
+    if (s.board != 1147797409030816545) return false; // hardcoded "win state" value
 
-    uint8_t count = 1;
-    for (uint8_t i = 0; i < puzzle_size; ++i) {
-        for (uint8_t j = 0; j < puzzle_size; ++j) {
-            if (board[i][j] != count && board[i][j] != 0) {
-                return false;
-            }
-            ++count;
-        }
-    }
     return true;
 }
 
@@ -156,13 +145,15 @@ std::vector<State> getSuccessors(const State& s) {
     // up
     if (r > 0) {
 		auto board = template_board;
-        State temp = s;
+        State temp{};
         std::swap(board[r][c], board[r-1][c]);
         temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
-        temp.zero_row = r-1;
+    	temp.zero_row = r-1;
+        temp.zero_col = c;
         temp.g = s.g + 1;
         temp.h = h1(temp);
+        temp.f = temp.g + temp.h;
         path_elements.push_back({s.path_element_ptr, board[r][c]});
         successors.push_back(temp);
     }
@@ -170,13 +161,15 @@ std::vector<State> getSuccessors(const State& s) {
 	// down
     if (r < puzzle_size-1) {
         auto board = template_board;
-        State temp = s;
+        State temp{};
         std::swap(board[r][c], board[r+1][c]);
         temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
-        temp.zero_row = r+1;
+    	temp.zero_row = r+1;
+        temp.zero_col = c;
         temp.g = s.g + 1;
         temp.h = h1(temp);
+        temp.f = temp.g + temp.h;
         path_elements.push_back({s.path_element_ptr, board[r][c]});
         successors.push_back(temp);
     }
@@ -184,13 +177,15 @@ std::vector<State> getSuccessors(const State& s) {
     // left
     if (c > 0) {
         auto board = template_board;
-        State temp = s;
+        State temp{};
         std::swap(board[r][c], board[r][c-1]);
         temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
+    	temp.zero_row = r;
         temp.zero_col = c-1;
         temp.g = s.g + 1;
         temp.h = h1(temp);
+        temp.f = temp.g + temp.h;
         path_elements.push_back({s.path_element_ptr, board[r][c]});
         successors.push_back(temp);
     }
@@ -198,13 +193,15 @@ std::vector<State> getSuccessors(const State& s) {
     // right
     if (c < puzzle_size-1) {
         auto board = template_board;
-        State temp = s;
+        State temp{};
         std::swap(board[r][c], board[r][c+1]);
         temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
+    	temp.zero_row = r;
         temp.zero_col = c+1;
         temp.g = s.g + 1;
         temp.h = h1(temp);
+        temp.f = temp.g + temp.h;
         path_elements.push_back({s.path_element_ptr, board[r][c]});
         successors.push_back(temp);
     }
@@ -263,12 +260,12 @@ void solvePuzzle() {
 	const auto start = std::chrono::steady_clock::now();
 
     // test cases
-    /*const std::array<std::array<uint8_t, 4>, 4> board {{
+    const std::array<std::array<uint8_t, 4>, 4> board {{
             {13, 2, 10, 3},
             {1, 12, 8, 4},
             {5, 9, 6, 7},
             {15, 14, 11, 0}
-    }};*/
+    }};
     /*const std::array<std::array<uint8_t, 4>, 4> board {{
             {1, 2, 3, 4},
             {5, 6, 7, 8},
@@ -282,7 +279,7 @@ void solvePuzzle() {
             {14, 3, 1, 0}
     }};*/
 
-    const auto board = generateRandomBoard();
+    //const auto board = generateRandomBoard();
 
     std::cout << "Initial state: " << std::endl;
     printBoard(board);
@@ -320,6 +317,8 @@ void solvePuzzle() {
 			const auto end = std::chrono::steady_clock::now();
 
             std::cout << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms." << std::endl;
+
+            visited_states.clear();
 
             return;
         }
