@@ -12,8 +12,6 @@
 #include <random>
 #include <bitset>
 
-using namespace std;
-
 constexpr int puzzle_size = 4;
 
 struct PathElement {
@@ -36,10 +34,6 @@ struct State {
 	    return (g + h) > (rhs.g + rhs.h);
     }
 
-    bool operator==(const State& other) const {
-        return board == other.board && zero_row == other.zero_row && zero_col == other.zero_col;
-    }
-
     std::vector<int> getPath() const {
         std::vector<int> path;
         path.emplace_back(path_elements[path_element_ptr].value);
@@ -53,15 +47,12 @@ struct State {
         return path;
     }
 
-    uint64_t arrayToUint64(std::array<std::array<uint8_t, 4>, 4> arr) const {
+    static uint64_t arrayToUint64(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& arr) {
 
         std::bitset<64> result;
 
-        std::bitset<64> test{7};
-        test <<= 4;
-
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < puzzle_size; i++) {
+            for (int j = 0; j < puzzle_size; j++) {
                 std::bitset<64> temp{ arr[i][j] };
                 temp <<= i * 16 + j * 4;
                 result |= temp;
@@ -71,12 +62,14 @@ struct State {
         return result.to_ullong();
     }
 
-    std::array<std::array<uint8_t, 4>, 4> uint64ToArray(uint64_t value) const {
-        std::array<std::array<uint8_t, 4>, 4> result;
+    static std::array<std::array<uint8_t, puzzle_size>, puzzle_size> uint64ToArray(const uint64_t value) {
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                result[i][j] = (value >> ((3 - i) * 16 + (3 - j) * 8)) & 0xFF;
+        std::bitset<64> from_value{value};
+        std::array<std::array<uint8_t, puzzle_size>, puzzle_size> result{};
+
+        for (int i = 0; i < puzzle_size; i++) {
+            for (int j = 0; j < puzzle_size; j++) {
+                result[i][j] = (value >> i * 16 + j * 4) & 0xF;
             }
         }
 
@@ -85,7 +78,8 @@ struct State {
 };
 
 uint8_t h1(const State& s) {
-    const auto board = s.uint64ToArray(s.board);
+
+    const auto board = State::uint64ToArray(s.board);
 
     uint8_t result = 0;
     for (uint8_t i = 0; i < puzzle_size; ++i) {
@@ -101,7 +95,8 @@ uint8_t h1(const State& s) {
 }
 
 int h2(const State& s) {
-	const auto board = s.uint64ToArray(s.board);
+
+	const auto board = State::uint64ToArray(s.board);
 
     int result = 0;
     int count = 1;
@@ -116,23 +111,24 @@ int h2(const State& s) {
     return result;
 }
 
-void printBoard(std::array<std::array<uint8_t, puzzle_size>, puzzle_size> board) {
-    cout << endl;
+void printBoard(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
+
     for (uint8_t i = 0; i < puzzle_size; ++i) {
         for (uint8_t j = 0; j < puzzle_size; ++j) {
             if (board[i][j] == 0) {
-                cout << "x ";
+                std::cout << "x ";
             } else {
-                cout << static_cast<int>(board[i][j]) << " ";
+                std::cout << static_cast<int>(board[i][j]) << " ";
             }
         }
-        cout << endl;
+        std::cout << std::endl;
     }
-    cout << endl;
+    std::cout << std::endl;
 }
 
 bool isGoalState(const State& s) {
-    const auto board = s.uint64ToArray(s.board);
+
+    const auto board = State::uint64ToArray(s.board);
 
 	if (board[puzzle_size - 1][puzzle_size - 1] != 0)
 		return false;
@@ -149,17 +145,20 @@ bool isGoalState(const State& s) {
     return true;
 }
 
-vector<State> getSuccessors(const State& s) {
-    vector<State> successors;
+std::vector<State> getSuccessors(const State& s) {
+
+    std::vector<State> successors;
     const uint8_t r = s.zero_row;
     const uint8_t c = s.zero_col;
 
+    const auto template_board = State::uint64ToArray(s.board);
+
     // up
     if (r > 0) {
-		auto board = s.uint64ToArray(s.board);
+		auto board = template_board;
         State temp = s;
-        swap(board[r][c], board[r-1][c]);
-        temp.board = temp.arrayToUint64(board);
+        std::swap(board[r][c], board[r-1][c]);
+        temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
         temp.zero_row = r-1;
         temp.g = s.g + 1;
@@ -170,10 +169,10 @@ vector<State> getSuccessors(const State& s) {
 
 	// down
     if (r < puzzle_size-1) {
-        auto board = s.uint64ToArray(s.board);
+        auto board = template_board;
         State temp = s;
-        swap(board[r][c], board[r+1][c]);
-        temp.board = temp.arrayToUint64(board);
+        std::swap(board[r][c], board[r+1][c]);
+        temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
         temp.zero_row = r+1;
         temp.g = s.g + 1;
@@ -184,10 +183,10 @@ vector<State> getSuccessors(const State& s) {
 
     // left
     if (c > 0) {
-        auto board = s.uint64ToArray(s.board);
+        auto board = template_board;
         State temp = s;
-        swap(board[r][c], board[r][c-1]);
-        temp.board = temp.arrayToUint64(board);
+        std::swap(board[r][c], board[r][c-1]);
+        temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
         temp.zero_col = c-1;
         temp.g = s.g + 1;
@@ -198,10 +197,10 @@ vector<State> getSuccessors(const State& s) {
 
     // right
     if (c < puzzle_size-1) {
-        auto board = s.uint64ToArray(s.board);
+        auto board = template_board;
         State temp = s;
-        swap(board[r][c], board[r][c+1]);
-        temp.board = temp.arrayToUint64(board);
+        std::swap(board[r][c], board[r][c+1]);
+        temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
         temp.zero_col = c+1;
         temp.g = s.g + 1;
@@ -212,12 +211,13 @@ vector<State> getSuccessors(const State& s) {
     return successors;
 }
 
-bool isSolvable(std::array<std::array<uint8_t, puzzle_size>, puzzle_size> board) {
+bool isSolvable(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
+
     int inversions = 0;
     for (int i = 0; i < 16; i++) {
         for (int j = i + 1; j < 16; j++) {
-            if (board[i/4][i%4] && board[j/4][j%4] && board[i/4][i%4] > board[j/4][j%4]) {
-                inversions++;
+            if (board[i / 4][i % 4] && board[j / 4][j % 4] && board[i / 4][i % 4] > board[j / 4][j % 4]) {
+                ++inversions;
             }
         }
     }
@@ -225,80 +225,82 @@ bool isSolvable(std::array<std::array<uint8_t, puzzle_size>, puzzle_size> board)
 }
 
 std::array<std::array<uint8_t, puzzle_size>, puzzle_size> generateRandomBoard() {
+
     auto board = std::array<std::array<uint8_t, puzzle_size>, puzzle_size>();
 	do {
-		// Initialize a random number generator engine
-	    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
-	    std::default_random_engine randEngine(seed);
-	    // Define a uniform distribution to generate random numbers between 0 and 15
-	    uniform_int_distribution<int> randDist(0, 15);
+	    const auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+	    std::default_random_engine default_random_engine{static_cast<unsigned int>(seed)};
 
-	    // Initialize the board with values from 0 to 15 in random order
+	    std::uniform_int_distribution<int> rand_dist(0, 15);
+        
 	    board = std::array<std::array<uint8_t, puzzle_size>, puzzle_size>();
-	    int boardArr[16];
-	    for (int i = 0; i < 16; i++) {
-	        boardArr[i] = i;
+	    uint8_t board_arr[puzzle_size * puzzle_size];
+	    for (uint8_t i = 0; i < puzzle_size * puzzle_size; i++) {
+	        board_arr[i] = i;
 	    }
-	    shuffle(boardArr, boardArr + 16, randEngine);
-	    for (int i = 0; i < 16; i++) {
-	        board[i/4][i%4] = boardArr[i];
+	    shuffle(board_arr, board_arr + puzzle_size * puzzle_size, default_random_engine);
+	    for (uint8_t i = 0; i < puzzle_size * puzzle_size; i++) {
+	        board[i/4][i%4] = board_arr[i];
 	    }
-
-	    // Move 0 to the bottom right corner
-	    int zeroRow, zeroCol;
-	    for (int i = 0; i < 16; i++) {
-	        if (board[i/4][i%4] == 0) {
-	            zeroRow = i/4;
-	            zeroCol = i%4;
+        
+	    uint8_t zero_row, zero_col;
+	    for (uint8_t i = 0; i < puzzle_size * puzzle_size; i++) {
+	        if (board[i / 4][i % 4] == 0) {
+	            zero_row = i / 4;
+	            zero_col = i % 4;
 	            break;
 	        }
 	    }
-	    int lastRow = 3, lastCol = 3;
-	    swap(board[zeroRow][zeroCol], board[lastRow][lastCol]);
+	    constexpr uint8_t last_row = 3, last_col = 3;
+	    std::swap(board[zero_row][zero_col], board[last_row][last_col]);
 	} while (!isSolvable(board));
 
     return board;
 }
 
 void solvePuzzle() {
+
 	const auto start = std::chrono::steady_clock::now();
-    
-    /*int board[puzzle_size][puzzle_size] = {
+
+    // test cases
+    /*const std::array<std::array<uint8_t, 4>, 4> board {{
             {13, 2, 10, 3},
             {1, 12, 8, 4},
             {5, 9, 6, 7},
             {15, 14, 11, 0}
-    };*/
-    /*int board[puzzle_size][puzzle_size] = {
+    }};*/
+    /*const std::array<std::array<uint8_t, 4>, 4> board {{
             {1, 2, 3, 4},
             {5, 6, 7, 8},
             {9, 10, 11, 12},
             {13, 0, 14, 15}
-    };*/
-    /*int board[puzzle_size][puzzle_size] = {
+    }};*/
+    /*const std::array<std::array<uint8_t, 4>, 4> board {{
             {6, 13, 7, 10},
             {8, 9, 11, 5},
             {15, 2, 12, 4},
             {14, 3, 1, 0}
-    };*/
+    }};*/
 
     const auto board = generateRandomBoard();
 
-    cout << "Initial state: " << endl;
+    std::cout << "Initial state: " << std::endl;
     printBoard(board);
 
     State initial_state{};
-    initial_state.board = initial_state.arrayToUint64(board);
+    initial_state.board = State::arrayToUint64(board);
+    initial_state.zero_row = puzzle_size - 1;
+    initial_state.zero_col = puzzle_size - 1;
     initial_state.g = 0;
     initial_state.h = h1(initial_state);
     initial_state.path_element_ptr = 0;
     path_elements.push_back({initial_state.path_element_ptr, 0});
     ++current_path_element_index;
 
-    priority_queue<State> pq;
+    std::priority_queue<State> pq;
     pq.push(initial_state);
 
-    unordered_set<uint64_t> visited_states;
+    std::unordered_set<uint64_t> visited_states;
 
     uint32_t visited_count = 0;
 
@@ -309,12 +311,12 @@ void solvePuzzle() {
         ++visited_count;
         
         if (isGoalState(current_state)) {
-            cout << "Number of visited states: " << visited_count << endl;
-            cout << "Solution: ";
+            std::cout << "Number of visited states: " << visited_count << std::endl;
+            std::cout << "Solution: ";
             for (const auto& step : current_state.getPath()) {
-                cout << step << " ";
+                std::cout << step << " ";
             }
-            cout << endl;
+            std::cout << std::endl;
 			const auto end = std::chrono::steady_clock::now();
 
             std::cout << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms." << std::endl;
@@ -322,7 +324,7 @@ void solvePuzzle() {
             return;
         }
 
-        vector<State> successors = getSuccessors(current_state);
+        std::vector<State> successors = getSuccessors(current_state);
         for (const auto& successor : successors) {
             if (visited_states.find(successor.board) == visited_states.end()) {
                 pq.push(successor);
@@ -346,6 +348,7 @@ void performanceTest() {
 int main() {
 	std::cout << "Size of State: " << sizeof(State) << "B" << std::endl;
 	std::cout << "Size of PathElement: " << sizeof(PathElement) << "B" << std::endl;
+    std::cout << std::endl;
 
     performanceTest();
     return 0;

@@ -1,0 +1,17 @@
+Sprawozdanie z zadania dotyczącego wyznaczenia planu zakupu i dostaw paliwa na lotniska, który minimalizuje koszty oraz odpowiedzi na pytania a, b i c.
+
+W zadaniu przedsiębiorstwo lotnicze miało do wyboru trzech dostawców paliwa dla samolotów odrzutowych. Do wyboru były trzy firmy: Firma 1, Firma 2 i Firma 3, które informowały o ilościach paliwa, jakie mogą dostarczyć w nadchodzącym miesiącu. Samoloty tankowały paliwo na czterech lotniskach, a koszt jednego galonu paliwa (w $) zależał od kosztów transportu dostarczonego przez poszczególnych dostawców i kształtował się na każdym z lotnisk. Wyznaczono ilości paliwa niezbędne do tankowania na poszczególnych lotniskach.
+
+Aby wyznaczyć plan zakupu i dostaw paliwa na lotniska, który minimalizuje koszty, sformułowano model programowania liniowego. Zadanie polegało na minimalizacji całkowitego kosztu dostaw paliwa z uwzględnieniem ilości paliwa potrzebnej na każdym lotnisku i kosztów dostarczania paliwa przez poszczególnych dostawców.
+
+Odpowiedzi na poszczególne pytania:
+
+a) Minimalny łączny koszt dostaw wymaganych ilości paliwa na wszystkie lotniska wyniósł 6 735 000 dolarów.
+
+b) Nie, nie wszystkie firmy dostarczają paliwo. Najbardziej opłacalnym dostawcą okazała się Firma 2, która dostarczała paliwo na wszystkie lotniska, podczas gdy Firma 1 dostarczała tylko na Lotnisko 1, a Firma 3 na Lotniska 3 i 4.
+
+c) Nie, możliwości dostaw paliwa przez firmy nie zostały wyczerpane. Firma 2 dostarczyła 550 000 galonów, a jej maksymalna możliwa dostawa wynosiła 660 000 galonów. Firma 1 dostarczyła tylko 275 000 galonów, a jej maksymalna możliwa dostawa wynosiła 550 000 galonów. Firma 3 dostarczyła 385 000 galonów, a jej maksymalna możliwa dostawa wynosiła 660 000 galonów.
+
+Dla firm 1 i 2 jeszcze pozostało dostępne paliwo, natomiast firma 3 wykorzystała już całe swoje zapasy. Oznacza to, że w przypadku wyboru planu zakupu z wykorzystaniem firmy 3, konieczne byłoby poszukiwanie innej firmy, która byłaby w stanie dostarczyć brakujące ilości paliwa.
+
+Podsumowując, rozwiązanie problemu za pomocą programowania liniowego pozwoliło na minimalizację kosztów dostarczenia wymaganych ilości paliwa na czterech lotniskach. Plan zakupu, który minimalizuje koszty, zakładał zakup odpowiednich ilości paliwa od firm 1 i 2. Dzięki temu wszystkie lotniska mogły być zaopatrzone w niezbędną ilość paliwa, a koszty transportu były jak najniższe.
