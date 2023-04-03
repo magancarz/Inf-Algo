@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace 'com.example.hangman'
-    compileSdk 31
+    namespace 'com.example.hangmanapk'
+    compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.hangman"
+        applicationId "com.example.hangmanapk"
         minSdk 30
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 

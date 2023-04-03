@@ -13,6 +13,9 @@
 
 constexpr int puzzle_size = 4;
 
+double average_solution_length = 0;
+long average_visited_count = 0;
+
 struct PathElement {
 	uint32_t parent;
     uint8_t value;
@@ -76,7 +79,7 @@ struct State {
     }
 };
 
-uint8_t h1(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
+uint8_t h2(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
 
     uint8_t result = 0;
     for (uint8_t i = 0; i < puzzle_size; ++i) {
@@ -91,19 +94,23 @@ uint8_t h1(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& boar
     return result;
 }
 
-int h2(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
+uint8_t h1(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
 
-    int result = 0;
-    int count = 1;
+    uint8_t result = 0;
+    uint8_t count = 1;
     for (int i = 0; i < puzzle_size; ++i) {
         for (int j = 0; j < puzzle_size; ++j) {
-            if (board[i][j] != count && board[i][j] != 0) {
+            if (board[i][j] != count) {
                 ++result;
             }
             ++count;
         }
     }
-    return result;
+
+    if (board[puzzle_size - 1][puzzle_size - 1] == 0)
+		--result;
+
+    return result * 16;
 }
 
 void printBoard(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
@@ -255,12 +262,12 @@ void solvePuzzle() {
 
 
     // test cases
-    /*const std::array<std::array<uint8_t, 4>, 4> board {{
+    const std::array<std::array<uint8_t, 4>, 4> board {{
             {13, 2, 10, 3},
             {1, 12, 8, 4},
             {5, 9, 6, 7},
             {15, 14, 11, 0}
-    }};*/
+    }};
     /*const std::array<std::array<uint8_t, 4>, 4> board {{
             {1, 2, 3, 4},
             {5, 6, 7, 8},
@@ -274,7 +281,7 @@ void solvePuzzle() {
             {14, 3, 1, 0}
     }};*/
 
-    const auto board = generateRandomBoard();
+    //const auto board = generateRandomBoard();
 
     std::cout << "Initial state: " << std::endl;
     printBoard(board);
@@ -315,6 +322,9 @@ void solvePuzzle() {
 
             std::cout << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms." << std::endl;
 
+            average_solution_length += static_cast<int>(current_state.g);
+            average_visited_count += visited_count;
+
             visited_states.clear();
 
             return;
@@ -330,7 +340,7 @@ void solvePuzzle() {
 }
 
 void performanceTest() {
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < 5; ++i) {
         {
 			solvePuzzle();
 
@@ -339,6 +349,9 @@ void performanceTest() {
         }
 		std::cout << "------------------------------\n";
 	}
+
+    std::cout << average_solution_length / 5.0 << std::endl;
+    std::cout << average_visited_count / 5.0 << std::endl;
 }
 
 int main() {

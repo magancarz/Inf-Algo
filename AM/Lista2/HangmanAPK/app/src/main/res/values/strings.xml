@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Hangman</string>
+    <string-array name="words">
+        <item>monitor</item>
+        <item>komputer</item>
+        <item>myszka</item>
+        <item>kabel</item>
+        <item>mleko</item>
+        <item>studia</item>
+        <item>uczelnia</item>
+        <item>aplikacja</item>
+        <item>głośnik</item>
+        <item>pizza</item>
+        <item>kebab</item>
+        <item>burger</item>
+        <item>praca</item>
+        <item>film</item>
+        <item>serial</item>
+        <item>telewizor</item>
+        <item>mikrofon</item>
+        <item>klawiatura</item>
+        <item>keyboard</item>
+        <item>gitara</item>
+        <item>flet</item>
+    </string-array>
+</resources>
