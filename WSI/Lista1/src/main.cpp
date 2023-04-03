@@ -76,9 +76,7 @@ struct State {
     }
 };
 
-uint8_t h1(const State& s) {
-
-    const auto board = State::uint64ToArray(s.board);
+uint8_t h1(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
 
     uint8_t result = 0;
     for (uint8_t i = 0; i < puzzle_size; ++i) {
@@ -93,9 +91,7 @@ uint8_t h1(const State& s) {
     return result;
 }
 
-int h2(const State& s) {
-
-	const auto board = State::uint64ToArray(s.board);
+int h2(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
 
     int result = 0;
     int count = 1;
@@ -148,12 +144,12 @@ std::vector<State> getSuccessors(const State& s) {
         std::swap(board[r][c], board[r-1][c]);
         temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
+        temp.h = h1(board);
         path_elements.push_back({s.path_element_ptr, board[r][c]});
         std::swap(board[r-1][c], board[r][c]);
     	temp.zero_row = r-1;
         temp.zero_col = c;
         temp.g = s.g + 1;
-        temp.h = h1(temp);
         temp.f = temp.g + temp.h;
         successors.push_back(temp);
     }
@@ -165,11 +161,11 @@ std::vector<State> getSuccessors(const State& s) {
         temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
         path_elements.push_back({s.path_element_ptr, board[r][c]});
+        temp.h = h1(board);
         std::swap(board[r+1][c], board[r][c]);
     	temp.zero_row = r+1;
         temp.zero_col = c;
         temp.g = s.g + 1;
-        temp.h = h1(temp);
         temp.f = temp.g + temp.h;
         successors.push_back(temp);
     }
@@ -181,11 +177,11 @@ std::vector<State> getSuccessors(const State& s) {
         temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
         path_elements.push_back({s.path_element_ptr, board[r][c]});
+        temp.h = h1(board);
         std::swap(board[r][c-1], board[r][c]);
     	temp.zero_row = r;
         temp.zero_col = c-1;
         temp.g = s.g + 1;
-        temp.h = h1(temp);
         temp.f = temp.g + temp.h;
         successors.push_back(temp);
     }
@@ -197,11 +193,11 @@ std::vector<State> getSuccessors(const State& s) {
         temp.board = State::arrayToUint64(board);
         temp.path_element_ptr = current_path_element_index++;
         path_elements.push_back({s.path_element_ptr, board[r][c]});
+        temp.h = h1(board);
         std::swap(board[r][c+1], board[r][c]);
     	temp.zero_row = r;
         temp.zero_col = c+1;
         temp.g = s.g + 1;
-        temp.h = h1(temp);
         temp.f = temp.g + temp.h;
         successors.push_back(temp);
     }
@@ -288,7 +284,7 @@ void solvePuzzle() {
     initial_state.zero_row = puzzle_size - 1;
     initial_state.zero_col = puzzle_size - 1;
     initial_state.g = 0;
-    initial_state.h = h1(initial_state);
+    initial_state.h = h1(board);
     initial_state.path_element_ptr = 0;
     path_elements.push_back({initial_state.path_element_ptr, 0});
     ++current_path_element_index;
@@ -309,6 +305,7 @@ void solvePuzzle() {
         
         if (isGoalState(current_state)) {
             std::cout << "Number of visited states: " << visited_count << std::endl;
+            std::cout << "Length of solution: " << static_cast<int>(current_state.g) << std::endl;
             std::cout << "Solution: ";
             for (const auto& step : current_state.getPath()) {
                 std::cout << step << " ";
