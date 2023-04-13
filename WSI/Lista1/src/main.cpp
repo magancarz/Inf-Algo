@@ -110,7 +110,7 @@ uint8_t h1(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& boar
     if (board[puzzle_size - 1][puzzle_size - 1] == 0)
 		--result;
 
-    return result * 16;
+    return result;
 }
 
 void printBoard(const std::array<std::array<uint8_t, puzzle_size>, puzzle_size>& board) {
@@ -260,7 +260,6 @@ std::array<std::array<uint8_t, puzzle_size>, puzzle_size> generateRandomBoard() 
 
 void solvePuzzle() {
 
-
     // test cases
     const std::array<std::array<uint8_t, 4>, 4> board {{
             {13, 2, 10, 3},
@@ -275,10 +274,10 @@ void solvePuzzle() {
             {13, 0, 14, 15}
     }};*/
     /*const std::array<std::array<uint8_t, 4>, 4> board {{
-            {6, 13, 7, 10},
-            {8, 9, 11, 5},
-            {15, 2, 12, 4},
-            {14, 3, 1, 0}
+            {11, 15, 6, 1},
+            {5, 4, 14, 10},
+            {3, 8, 13, 12},
+            {2, 7, 9, 0}
     }};*/
 
     //const auto board = generateRandomBoard();
@@ -288,8 +287,8 @@ void solvePuzzle() {
 
     State initial_state{};
     initial_state.board = State::arrayToUint64(board);
-    initial_state.zero_row = puzzle_size - 1;
-    initial_state.zero_col = puzzle_size - 1;
+    initial_state.zero_row = 3;//puzzle_size - 1;
+    initial_state.zero_col = 1;//puzzle_size - 1;
     initial_state.g = 0;
     initial_state.h = h1(board);
     initial_state.path_element_ptr = 0;
@@ -340,7 +339,7 @@ void solvePuzzle() {
 }
 
 void performanceTest() {
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < 10; ++i) {
         {
 			solvePuzzle();
 
@@ -350,8 +349,8 @@ void performanceTest() {
 		std::cout << "------------------------------\n";
 	}
 
-    std::cout << average_solution_length / 5.0 << std::endl;
-    std::cout << average_visited_count / 5.0 << std::endl;
+    std::cout << average_solution_length / 10.0 << std::endl;
+    std::cout << average_visited_count / 10.0 << std::endl;
 }
 
 int main() {
