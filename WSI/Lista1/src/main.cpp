@@ -261,12 +261,12 @@ std::array<std::array<uint8_t, puzzle_size>, puzzle_size> generateRandomBoard() 
 void solvePuzzle() {
 
     // test cases
-    const std::array<std::array<uint8_t, 4>, 4> board {{
+    /*const std::array<std::array<uint8_t, 4>, 4> board {{
             {13, 2, 10, 3},
             {1, 12, 8, 4},
             {5, 9, 6, 7},
             {15, 14, 11, 0}
-    }};
+    }};*/
     /*const std::array<std::array<uint8_t, 4>, 4> board {{
             {1, 2, 3, 4},
             {5, 6, 7, 8},
@@ -280,15 +280,15 @@ void solvePuzzle() {
             {2, 7, 9, 0}
     }};*/
 
-    //const auto board = generateRandomBoard();
+    const auto board = generateRandomBoard();
 
     std::cout << "Initial state: " << std::endl;
     printBoard(board);
 
     State initial_state{};
     initial_state.board = State::arrayToUint64(board);
-    initial_state.zero_row = 3;//puzzle_size - 1;
-    initial_state.zero_col = 1;//puzzle_size - 1;
+    initial_state.zero_row = puzzle_size - 1;
+    initial_state.zero_col = 3;
     initial_state.g = 0;
     initial_state.h = h1(board);
     initial_state.path_element_ptr = 0;
