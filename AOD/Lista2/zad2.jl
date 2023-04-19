@@ -1,54 +1,41 @@
 using JuMP, GLPK
 
-# data
-n = 5  # number of cities
-m = 6  # number of connections
-T = 20  # maximum travel time
-c = [ 0.0 1.0 0.0 2.0 0.0;
-      0.0 0.0 1.0 5.0 0.0;
-      0.0 0.0 0.0 0.0 0.0;
-      0.0 0.0 0.0 0.0 3.0;
-      0.0 0.0 5.0 0.0 0.0]  # connection costs
-t = [ T+1 10.0 T+1 2.0 T+1;
-      T+1 T+1 11.0 8.0 T+1;
-      T+1 T+1 T+1 T+1 T+1;
-      T+1 T+1 T+1 T+1 4.0;
-      T+1 T+1 8.0 T+1 T+1]  # connection times
-i_star = 1  # starting city
-j_star = 3  # ending city
+nodes = 0
+edges = 0
 
-# create model
-model = Model(GLPK.Optimizer)
+filename = "data.txt"
+lines = filter(line -> !isempty(strip(line)), readlines(filename))
+nodes, edges = split(lines[1])
+nodes, edges = parse(Int, nodes), parse(Int, edges)
+c = zeros(nodes, nodes)
+u = zeros(nodes, nodes)
+t_max = 10
 
-# variables
-@variable(model, x[1:n, 1:n], Bin)  # x[i,j] = 1 if connection (i,j) is used
-@variable(model, total_cost >= 0)  # total cost of the path
-@variable(model, total_time >= 0)  # total time of the path
-
-# objective
-@objective(model, Min, total_cost)
-
-# constraints
-@constraint(model, total_time == sum(t[i,j] * x[i,j] for i in 1:n, j in 1:n))
-@constraint(model, sum(x[i_star,j] for j in 1:n) == sum(x[i,j_star] for i in 1:n))
-
-@constraint(model, sum(x[i,j_star] for i in 1:n) == 1)  # end at j_star
-for i in 1:n
-    for j in 1:n
-        @constraint(model, total_cost >= c[i,j] * x[i,j])  # enforce x[i,j] = 1 => use cost c[i,j]
-    end
+for i in 2:edges+1
+    from, to, cap, cost = split(lines[i])
+    from, to, cap, cost = parse(Int, from), parse(Int, to), parse(Int, cap), parse(Int, cost)
+    c[from, to] = cap
+    u[from, to] = cost
 end
-@constraint(model, total_time <= T)  # limit total time
 
-# solve and print results
-optimize!(model)
-println("Total cost: ", objective_value(model))
-println("Total time: ", value(total_time))
-println("Path: ")
+n = nodes
+b = zeros(nodes)
+b[1] = 1
+b[13] = -1
+T_max = 24
+shortest_path = Model()
+set_optimizer(shortest_path, GLPK.Optimizer)
+set_silent(shortest_path)
+@variable(shortest_path, x[1:n, 1:n], Bin)
+@constraint(shortest_path, [i = 1:n, j = 1:n; c[i, j] == 0], x[i, j] == 0)
+@constraint(shortest_path, [i = 1:n], sum(x[i, :]) - sum(x[:, i]) == b[i])
+@constraint(shortest_path, sum(u[i, j] * x[i, j] for i in 1:n, j in 1:n) <= T_max)
+@objective(shortest_path, Min, sum(c .* x))
+optimize!(shortest_path)
+println(objective_value(shortest_path))
 for i in 1:n
     for j in 1:n
-        if value(x[i,j]) > 0
-            println(i, " -> ", j)
-        end
+        print(value.(x[i,j]), " ")
     end
+    println()
 end
