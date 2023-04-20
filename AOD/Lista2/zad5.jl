@@ -1,38 +1,41 @@
 using JuMP
 using GLPK
 
-num_of_materials = 0
-num_of_machines = 0
-hours_constraints::Vector{Int64} = []
-materials_constraints::Vector{Int64}  = []
-minutes_per_kg::Vector{Int64} = []
-costs::Vector{Int64} = []
-profits::Vector{Int64} = []
-machine_costs::Vector{Int64} = []
+materials_count = 0
+machines_count = 0
+hours_constraints = []
+materials_constraints  = []
+minutes_per_kg = []
+costs = []
+profits = []
+machine_costs = []
 
-open("data.txt") do io
-    while !eof(io)
-        global num_of_machines = parse(Int,readline(io))
-        
-        global num_of_materials = parse(Int,readline(io))
-        for i in 1:num_of_machines
-            push!(hours_constraints, parse(Int64, readline(io)))
-        end
-        for i in 1:num_of_materials
-            push!(materials_constraints, parse(Int64,readline(io)))
-        end
-        for i in 1:num_of_materials*num_of_machines
-            push!(minutes_per_kg, parse(Int64, readline(io)))
-        end
-        for i in 1:num_of_materials
-            push!(profits, parse(Int64,readline(io)))
-        end
-        for i in 1:num_of_materials
-            push!(costs, parse(Int64,readline(io)))
-        end
-        for i in 1:num_of_machines
-            push!(machine_costs, parse(Int64, readline(io)))
-        end
+open("data5.txt") do io
+    global materials_count = parse(Int, readline(io))
+    global machines_count = parse(Int, readline(io))
+    
+    for _ in 1:machines_count
+        push!(hours_constraints, parse(Int, readline(io)))
+    end
+    
+    for _ in 1:materials_count
+        push!(materials_constraints, parse(Int, readline(io)))
+    end
+    
+    for _ in 1:materials_count * machines_count
+        push!(minutes_per_kg, parse(Int, readline(io)))
+    end
+    
+    for _ in 1:materials_count
+        push!(profits, parse(Int, readline(io)))
+    end
+    
+    for _ in 1:materials_count
+        push!(costs, parse(Int, readline(io)))
+    end
+    
+    for _ in 1:machines_count
+        push!(machine_costs, parse(Int, readline(io)))
     end
 end
 
@@ -43,31 +46,28 @@ println(profits)
 println(costs)
 println(machine_costs)
 
+wedzarnia = Model()
+set_optimizer(wedzarnia, GLPK.Optimizer)
 
-szycie = Model()
-set_optimizer(szycie,GLPK.Optimizer)
+@variable(wedzarnia, x[1:materials_count] >= 0)
 
-@variable(szycie, x[1:num_of_materials] >=0)
-
-
-for i in 1:num_of_materials
-    @constraint(szycie, x[i]<=materials_constraints[i])
+for i in 1:materials_count
+    @constraint(wedzarnia, x[i] <= materials_constraints[i])
 end
 
-for i in 1:num_of_machines
-    @constraint(szycie, sum(minutes_per_kg[((i-1)*num_of_materials)+j]*x[j] for j in 1:num_of_materials)<=hours_constraints[i])
+for i in 1:machines_count
+    @constraint(wedzarnia, sum(minutes_per_kg[((i - 1) * materials_count) + j] * x[j] for j in 1:materials_count) <= hours_constraints[i])
 end
 
-@objective(szycie, Max, sum(x[i]*(profits[i]-costs[i]) for i in 1:num_of_materials) - 
-            sum((minutes_per_kg[((i-1)*num_of_materials)+j]*x[j]*machine_costs[i])/60 for j in 1:num_of_materials, i in 1:num_of_machines))
+@objective(wedzarnia, Max,
+    sum(x[i] * (profits[i] - costs[i]) for i in 1:materials_count) - 
+    sum((minutes_per_kg[((i - 1) * materials_count) + j] * x[j] * machine_costs[i]) / 60.0 
+    for j in 1:materials_count, i in 1:machines_count))
 
+optimize!(wedzarnia)
 
+println("Profit: ", objective_value(wedzarnia))
 
-optimize!(szycie)
-
-
-println("value: ", objective_value(szycie))
-
-for i in 1:num_of_materials
+for i in 1:materials_count
     println("x", i, " = ", value.(x[i]))
 end
