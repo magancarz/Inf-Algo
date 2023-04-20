@@ -27,11 +27,10 @@ end
 
 b = zeros(n)
 b[1] = 1
-b[3] = -1
+b[10] = -1
 
 shortest_path = Model()
 set_optimizer(shortest_path, GLPK.Optimizer)
-set_silent(shortest_path)
 
 @variable(shortest_path, x[1:n, 1:n], Bin)
 
@@ -48,7 +47,7 @@ optimize!(shortest_path)
 println(objective_value(shortest_path))
 for i in 1:n
     for j in 1:n
-        print(value.(x[i,j]), " ")
+        print(value.(x[i, j]), " ")
     end
     println()
 end
