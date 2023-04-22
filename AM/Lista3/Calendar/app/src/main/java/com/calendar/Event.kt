@@ -2,22 +2,22 @@ package com.calendar
 
 import java.time.LocalTime
 
-class Event(var name: String, date: String?, time: LocalTime) {
+class Event(name: String, date: String?) {
 
+    private var title: String?
     private var date: String?
-    private var time: LocalTime
 
     init {
+        this.title = name
         this.date = date
-        this.time = time
     }
 
     fun getDate(): String? {
         return date
     }
 
-    fun setDate(date: String?) {
-        this.date = date
+    fun getTitle(): String? {
+        return title
     }
 
     companion object {

@@ -135,12 +135,11 @@
             android:layout_gravity="center"
             android:textSize="20sp"/>
 
-        <ListView
-            android:id="@+id/eventListView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/eventRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="296dp"
             android:layout_weight="5" />
 
     </LinearLayout>
 </ScrollView>
->>>>>>> 7123d98 (AM Lista 3: nie final)

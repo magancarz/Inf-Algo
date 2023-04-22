@@ -29,7 +29,7 @@ class EventEditActivity : AppCompatActivity() {
 
     fun saveEventAction(view: View?) {
         val eventName: String = name!!.text.toString()
-        val newEvent = Event(eventName, selectedDate, localTime)
+        val newEvent = Event(eventName, selectedDate)
         Event.eventsList.add(newEvent)
         finish()
     }

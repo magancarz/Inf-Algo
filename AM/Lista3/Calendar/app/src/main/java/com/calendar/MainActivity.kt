@@ -5,17 +5,20 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
-class MainActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
+class MainActivity : AppCompatActivity(), CalendarAdapter.OnItemListener, EventAdapter.OnEventClickListener {
 
     private var monthYearText: TextView? = null
     private var calendarRecyclerView: RecyclerView? = null
+    private var eventRecyclerView: RecyclerView? = null
     private var selectedDate: LocalDate? = null
     private var eventListView: ListView? = null
 
@@ -32,8 +35,8 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
 
     private fun initWidgets() {
         calendarRecyclerView = findViewById(R.id.calendarRecyclerView)
+        eventRecyclerView = findViewById(R.id.eventRecyclerView)
         monthYearText = findViewById(R.id.monthYearTV)
-        eventListView = findViewById(R.id.eventListView)
     }
 
     private fun setMonthView() {
@@ -83,6 +86,17 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
         startActivity(intent)
     }
 
+    override fun onEventClick(title: TextView?) {
+        val text = title!!.text;
+        val title1 = text.split(" ")[0]
+        val date = text.split(" ")[1]
+
+        val el = Event.eventsList.find { event -> event.getTitle() == title1 && event.getDate() == date }
+        Event.eventsList.remove(el)
+
+        setEventAdapter()
+    }
+
     override fun onItemClick(position: Int, date: LocalDate?) {
         if (date != null) {
             selectedDate = date
@@ -97,8 +111,10 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
 
     private fun setEventAdapter() {
         val dailyEvents: ArrayList<Event> = Event.eventsList
-        val eventAdapter = EventAdapter(applicationContext, dailyEvents)
-        eventListView!!.adapter = eventAdapter
+        val eventAdapter = EventAdapter(dailyEvents, this)
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
+        eventRecyclerView!!.layoutManager = layoutManager
+        eventRecyclerView!!.adapter = eventAdapter
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -109,6 +125,5 @@ class MainActivity : AppCompatActivity(), CalendarAdapter.OnItemListener {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         selectedDate = LocalDate.parse(savedInstanceState.getString("selectedDate"))
->>>>>>> 7123d98 (AM Lista 3: nie final)
     }
 }

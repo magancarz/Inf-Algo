@@ -1,28 +1,32 @@
 package com.calendar
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-class EventAdapter(context: Context, private val events: List<Event>) :
-    ArrayAdapter<Event>(context, 0, events) {
+class EventAdapter(
+    private val events: ArrayList<Event>,
+    private val onEventClickListener: OnEventClickListener,
+    ) : RecyclerView.Adapter<EventViewHolder>() {
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var view = convertView
-        val event = getItem(position)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val view: View = inflater.inflate(R.layout.event_cell, parent, false)
+        return EventViewHolder(view, onEventClickListener, events)
+    }
 
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.event_cell, parent, false)
-        }
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        val event = events[position]
+        holder.title.text = event.getTitle() + " " + event.getDate()
+    }
 
-        val eventCell = view!!.findViewById<TextView>(R.id.eventCell)
+    override fun getItemCount(): Int {
+        return events!!.size
+    }
 
-        val eventTitle = event!!.name + " " + event.getDate()
-        eventCell.text = eventTitle
-
-        return view
+    interface OnEventClickListener {
+        fun onEventClick(title: TextView?)
     }
 }
