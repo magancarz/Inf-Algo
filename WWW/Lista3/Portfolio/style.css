@@ -1,0 +1,151 @@
+.photo {
+  justify-content: center;
+}
+
+.photo {
+  display: flex;
+}
+
+.profile-photo {
+  width: 30%;
+}
+
+.example-photo {
+  visibility: hidden;
+  width: 0;
+  align-self: center;
+  padding: 1em;
+}
+
+.example-photo-lq {
+  width: 80%;
+  align-self: center;
+  padding: 1em;
+}
+
+.images {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+}
+
+.navbar {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+}
+
+.brand-title {
+    font-size: 1.5rem;
+    margin: .5rem;
+}
+
+.navbar-links {
+    height: 100%;
+}
+
+.navbar-links ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-links li {
+    list-style: none;
+}
+
+.navbar-links li a {
+    display: block;
+    text-decoration: none;
+    color: white;
+    padding: 1rem;
+}
+
+.navbar-links li:hover {
+    background-color: #555;
+}
+
+.toggle-button {
+    position: absolute;
+    top: .75rem;
+    right: 1rem;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+}
+
+.toggle-button .bar {
+    height: 3px;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 800px) {
+    body.js-enabled .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    body.js-enabled .toggle-button {
+        display: flex;
+    }
+
+    body.js-enabled .navbar-links {
+        display: none;
+    }
+
+    body.js-enabled .navbar-links ul {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    body.js-enabled .navbar-links ul li {
+        text-align: center;
+    }
+
+    body.js-enabled .navbar-links ul li a {
+        padding: .5rem 1rem;
+    }
+
+    body.js-enabled .navbar-links.active {
+        display: flex;
+    }
+}
+
+header {
+  text-align: center;
+}
+
+code {
+  background-color: #eee;
+  display: block;
+}
+
+footer h2 {
+  text-align: center;
+}
+
+@media only screen and (min-width: 800px) {
+  .profile-photo {
+    width: 15%;
+  }
+  li {
+    list-style-type: square;
+  }
+  .example-photo {
+    width: 80%;
+    visibility: visible;
+  }
+  .example-photo-lq {
+    visibility: hidden;
+    width: 0;
+  }
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,89 @@
+@import 'mixins';
+
+@function px-to-em($px-value, $base-font-size: 16px) {
+	@return calc($px-value / $base-font-size) * 1em;
+}
+
+$mobile-pf-photo-width: 30%;
+$pf-photo-width: 15%;
+$photo-width: 80%;
+$default-padding: px-to-em(16px);
+$nav-background-color: #333;
+$nav-background-color: #111;
+$code-background-color: #eee;
+$lg-screen: 800px;
+
+%center {
+	justify-content: center;
+}
+
+.photo {
+	display: flex;
+	@extend %center;
+}
+
+.profile-photo {
+	width: $mobile-pf-photo-width;
+}
+
+.example-photo {
+	visibility: hidden;
+	width: 0;
+	align-self: center;
+	padding: $default-padding;
+}
+
+.example-photo-lq {
+	width: $photo-width;
+	align-self: center;
+	padding: $default-padding;
+}
+
+.images {
+	display: flex;
+	align-content: center;
+	flex-direction: column;
+}
+
+nav {
+	list-style: none;
+
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		background-color: $nav-background-color;
+	}
+
+	li {
+		float: left;
+
+		a {
+			display: block;
+			color: white;
+			text-align: center;
+			padding: 1.4em 1.6em;
+			text-decoration: none;
+		}
+
+		a:hover {
+			background-color: $nav-background-color;
+		}
+	}
+}
+
+header {
+	text-align: center;
+}
+
+code {
+  background-color: $code-background-color;
+  display: block;
+}
+
+footer h2 {
+	text-align: center;
+}
+
+@include media;
