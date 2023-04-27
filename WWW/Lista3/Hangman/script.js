@@ -8,12 +8,16 @@ const resultText = document.getElementById("result-text");
 
 let options = {
   words: [
-    "Apple",
-    "Blueberry",
-    "Mandarin",
-    "Pineapple",
-    "Pomegranate",
-    "Watermelon",
+    "Komputer",
+    "Polska",
+    "Informatyka",
+    "Studia",
+    "Matura",
+    "Polski",
+    "Egzamin",
+    "Laboratoria",
+    "Politechnika",
+    "Auto"
   ]
 };
 
@@ -98,7 +102,7 @@ const initializer = () => {
             winCount += 1;
 
             if (winCount == charArray.length) {
-              resultText.innerHTML = `<h2 class='win-msg'>You Win!</h2><p>The word was <span>${chosenWord}</span></p>`;
+              resultText.innerHTML = `<h2 class='win-msg'>You Won!</h2><p>The word was <span>${chosenWord}</span></p>`;
 
               blocker();
             }
