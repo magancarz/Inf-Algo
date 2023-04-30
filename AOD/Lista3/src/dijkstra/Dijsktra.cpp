@@ -66,4 +66,58 @@ namespace aod {
 
 		return dist;
 	}
+
+	std::vector<int> dijkstraDial(Graph& graph, int src, int W) {
+
+		auto& [n, m, adjacency_list] = graph;
+
+		std::vector<std::pair<int, std::list<int>::iterator>> dist(n + 1);
+	 
+	    for (int i = 0; i <= n; i++)
+	        dist[i].first = std::numeric_limits<int>::max();
+	 
+		std::vector<std::list<int>> buckets(W * n + 1);
+
+	    buckets[0].push_back(src);
+	    dist[src].first = 0;
+	 
+	    int idx = 0;
+	    while (true) {
+	        while (buckets[idx].empty() && idx < W*n)
+	            idx++;
+	 
+	        if (idx == W * n)
+	            break;
+	 
+	        int u = buckets[idx].front();
+	        buckets[idx].pop_front();
+	 
+	        for (const auto& [v, weight] : adjacency_list[u]) {
+
+	            int dv = dist[v].first;
+	            int du = dist[u].first;
+	 
+	            if (dv > du + weight) {
+	                if (dv != std::numeric_limits<int>::max())
+	                    buckets[dv].erase(dist[v].second);
+	 
+	                dist[v].first = du + weight;
+	                dv = dist[v].first;
+	 
+	                buckets[dv].push_front(v);
+	 
+	                dist[v].second = buckets[dv].begin();
+	            }
+	        }
+	    }
+	 
+	    std::vector<int> distances(n + 1);
+		std::ranges::transform(
+			dist.begin(),
+			dist.end(),
+			distances.begin(),
+			[&] (const std::pair<int, std::list<int>::iterator>& el) -> int { return el.first; });
+
+		return distances;
+	}
 }

@@ -6,7 +6,7 @@
 int main() {
 
 	aod::Graph g = aod::loadGraphFromFile("tests/aod.txt");
-	auto dijkstra_test = aod::dijkstra(g, 1, 6);
+	auto test = aod::dijkstraDialWithOnlyDistances(g, 1, 20);
 
 	std::cout << "testing\n";
 }

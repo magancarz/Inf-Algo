@@ -14,11 +14,13 @@ namespace aod {
 	};
 
 	struct NodeComparator {
-		bool operator() (std::shared_ptr<Node>& node1, std::shared_ptr<Node>& node2) {
+		bool operator() (const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2) const {
 			return node1->distance > node2->distance;
 		}
 	};
 
 	std::vector<int> dijkstra(Graph& graph, int from, int to);
 	std::vector<int> dijkstraWithOnlyDistances(Graph& graph, int src);
+
+	std::vector<int> dijkstraDialWithOnlyDistances(Graph& graph, int src, int W);
 }
