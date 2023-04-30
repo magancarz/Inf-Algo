@@ -67,7 +67,7 @@ namespace aod {
 		return dist;
 	}
 
-	std::vector<int> dijkstraDial(Graph& graph, int from, int to, int W) {
+	std::vector<int> dijkstraDial(Graph& graph, int from, int to, int max_weight) {
 
 		auto& [n, m, adjacency_list] = graph;
 
@@ -77,17 +77,17 @@ namespace aod {
 	        dist[i].first = std::numeric_limits<int>::max();
 	    }
 	 
-		std::vector<std::list<std::shared_ptr<Node>>> buckets(W * n + 1);
+		std::vector<std::list<std::shared_ptr<Node>>> buckets(max_weight * n + 1);
 
 	    buckets[0].push_back(std::make_shared<Node>(nullptr, from, 0));
 	    dist[from].first = 0;
 	 
 	    int idx = 0;
 	    while (true) {
-	        while (buckets[idx].empty() && idx < W*n)
+	        while (buckets[idx].empty() && idx < max_weight*n)
 	            idx++;
 	 
-	        if (idx == W * n)
+	        if (idx == max_weight * n)
 	            break;
 	 
 	        auto u = buckets[idx].front();
@@ -126,7 +126,7 @@ namespace aod {
 	    }
 	}
 
-	std::vector<int> dijkstraDialWithOnlyDistances(Graph& graph, int src, int W) {
+	std::vector<int> dijkstraDialWithOnlyDistances(Graph& graph, int src, int max_weight) {
 
 		auto& [n, m, adjacency_list] = graph;
 
@@ -135,17 +135,17 @@ namespace aod {
 	    for (int i = 0; i <= n; i++)
 	        dist[i].first = std::numeric_limits<int>::max();
 	 
-		std::vector<std::list<int>> buckets(W * n + 1);
+		std::vector<std::list<int>> buckets(max_weight * n + 1);
 
 	    buckets[0].push_back(src);
 	    dist[src].first = 0;
 	 
 	    int idx = 0;
 	    while (true) {
-	        while (buckets[idx].empty() && idx < W*n)
+	        while (buckets[idx].empty() && idx < max_weight*n)
 	            idx++;
 	 
-	        if (idx == W * n)
+	        if (idx == max_weight * n)
 	            break;
 	 
 	        int u = buckets[idx].front();
@@ -178,5 +178,62 @@ namespace aod {
 			[&] (const std::pair<int, std::list<int>::iterator>& el) -> int { return el.first; });
 
 		return distances;
+	}
+
+	std::vector<int> dijkstraRadix(Graph& graph, int from, int to, int max_weight) {
+
+		auto& [n, m, adjacency_list] = graph;
+
+		std::vector<int> distances(n + 1, std::numeric_limits<int>::max());
+	    distances[from] = 0;
+	    RadixHeap q(n, max_weight);
+	    q.push(std::make_shared<Node>(nullptr, from, 0));
+	    while (!q.empty()) {
+	        auto x = q.pop();
+
+			if (x->node == to) {
+
+				std::vector<int> path;
+				while (x != nullptr) {
+					path.push_back(x->node);
+					x = x->parent_node;
+				}
+
+				std::ranges::reverse(path);
+
+	            return path;
+			}
+
+	        if (x->distance != distances[x->node]) continue;
+	        for (const auto& e : adjacency_list[x->node]) {
+	            if (distances[e.first] > distances[x->node] + e.second) {
+	                distances[e.first] = distances[x->node] + e.second;
+	                q.push(std::make_shared<Node>(x, e.first, distances[e.first]));
+	            }
+	        }
+	    }
+	    return distances;
+	}
+
+	std::vector<int> dijkstraRadixWithOnlyDistances(Graph& graph, int s, int max_weight) {
+
+		auto& [n, m, adjacency_list] = graph;
+
+		std::vector<int> distances(n + 1, std::numeric_limits<int>::max());
+	    distances[s] = 0;
+	    RadixHeap q(n, max_weight);
+	    q.push(std::make_shared<Node>(nullptr, s, 0));
+	    while (!q.empty()) {
+	        auto x = q.pop();
+
+	        if (x->distance != distances[x->node]) continue;
+	        for (const auto& e : adjacency_list[x->node]) {
+	            if (distances[e.first] > distances[x->node] + e.second) {
+	                distances[e.first] = distances[x->node] + e.second;
+	                q.push(std::make_shared<Node>(nullptr, e.first, distances[e.first]));
+	            }
+	        }
+	    }
+	    return distances;
 	}
 }
