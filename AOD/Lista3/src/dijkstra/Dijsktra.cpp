@@ -67,7 +67,66 @@ namespace aod {
 		return dist;
 	}
 
-	std::vector<int> dijkstraDial(Graph& graph, int src, int W) {
+	std::vector<int> dijkstraDial(Graph& graph, int from, int to, int W) {
+
+		auto& [n, m, adjacency_list] = graph;
+
+		std::vector<std::pair<int, std::list<std::shared_ptr<Node>>::iterator>> dist(n + 1);
+	 
+	    for (int i = 0; i <= n; i++) {
+	        dist[i].first = std::numeric_limits<int>::max();
+	    }
+	 
+		std::vector<std::list<std::shared_ptr<Node>>> buckets(W * n + 1);
+
+	    buckets[0].push_back(std::make_shared<Node>(nullptr, from, 0));
+	    dist[from].first = 0;
+	 
+	    int idx = 0;
+	    while (true) {
+	        while (buckets[idx].empty() && idx < W*n)
+	            idx++;
+	 
+	        if (idx == W * n)
+	            break;
+	 
+	        auto u = buckets[idx].front();
+	        buckets[idx].pop_front();
+
+			if (u->node == to) {
+
+				std::vector<int> path;
+				while (u != nullptr) {
+					path.push_back(u->node);
+					u = u->parent_node;
+				}
+
+				std::ranges::reverse(path);
+
+	            return path;
+			}
+
+	        for (const auto& [v, weight] : adjacency_list[u->node]) {
+
+	            const int du = dist[u->node].first;
+	            int dv = dist[v].first;
+	 
+	            if (du + weight < dv) {
+	                if (dv != std::numeric_limits<int>::max())
+	                    buckets[dv].erase(dist[v].second);
+	 
+	                dist[v].first = du + weight;
+	                dv = dist[v].first;
+	 
+	                buckets[dv].push_front(std::make_shared<Node>(u, v, du + weight));
+	 
+	                dist[v].second = buckets[dv].begin();
+	            }
+	        }
+	    }
+	}
+
+	std::vector<int> dijkstraDialWithOnlyDistances(Graph& graph, int src, int W) {
 
 		auto& [n, m, adjacency_list] = graph;
 
@@ -94,10 +153,10 @@ namespace aod {
 	 
 	        for (const auto& [v, weight] : adjacency_list[u]) {
 
+	            const int du = dist[u].first;
 	            int dv = dist[v].first;
-	            int du = dist[u].first;
 	 
-	            if (dv > du + weight) {
+	            if (du + weight < dv) {
 	                if (dv != std::numeric_limits<int>::max())
 	                    buckets[dv].erase(dist[v].second);
 	 

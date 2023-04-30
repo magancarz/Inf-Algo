@@ -22,5 +22,6 @@ namespace aod {
 	std::vector<int> dijkstra(Graph& graph, int from, int to);
 	std::vector<int> dijkstraWithOnlyDistances(Graph& graph, int src);
 
+	std::vector<int> dijkstraDial(Graph& graph, int from, int to, int W);
 	std::vector<int> dijkstraDialWithOnlyDistances(Graph& graph, int src, int W);
 }
