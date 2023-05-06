@@ -1,13 +1,13 @@
 SOURCES = $(wildcard *.c)
 BINARY = $(patsubst %.c, %, $(SOURCES))
 
-FLAGS = -W -pedantic -std=c17 -O3
+FLAGS = -W -pedantic -std=c++17 -O3
 .PHONY = all clean
 
 all: $(BINARY)
 
 $(BINARY): %: %.c
-	$(CC) $(FLAGS) $^ -o $@
+	g++ $(FLAGS) $^ -o $@
 	strip $@
 
 clean:

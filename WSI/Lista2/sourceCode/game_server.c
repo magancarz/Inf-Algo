@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
   printf("Message from client 1: %s\n", client_message);
 
   a=atoi(client_message);
+  printf("%d", a);
   if( a==1 ) first = 0; else first = 1;
 
   // client 2 recognition
@@ -103,6 +104,7 @@ int main(int argc, char *argv[])
   printf("Message from client 2: %s\n", client_message);
 
   b=atoi(client_message);
+  printf("%d", b);
   if( a==b ) {
     printf("No player diversity\n");
     return -1;
