@@ -3,25 +3,30 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
-#include <bit>
+#include <queue>
 
 #include "../Graph.h"
 
 namespace aod {
 
+	struct PathElement {
+		uint64_t parent;
+		unsigned int node;
+	};
+
+	inline std::vector<PathElement> path_elements;
+
 	struct Node {
-		std::shared_ptr<Node> parent_node;
-		int node;
+		uint64_t path_element;
+		unsigned int node;
 		unsigned int distance;
 
 		Node() = default;
 		Node(int node, unsigned int distance)
-			: node(node), distance(distance) {
-			parent_node = nullptr;
-		}
+			: node(node), distance(distance) {}
 
-		Node(std::shared_ptr<Node> parent_node, int node, unsigned int distance)
-			: parent_node(std::move(parent_node)), node(node), distance(distance) {}
+		Node(uint64_t path_element, int node, unsigned int distance)
+			: path_element(path_element), node(node), distance(distance) {}
 
 		bool operator<(const Node& other) const {
 			return distance > other.distance;
@@ -29,48 +34,39 @@ namespace aod {
 	};
 
 	struct NodeComparator {
-		bool operator() (const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2) const {
-			return node1->distance > node2->distance;
+		bool operator() (const Node& node1, const Node& node2) const {
+			return node1.distance > node2.distance;
 		}
 	};
 
 	struct RadixHeap {
-		std::vector<std::vector<std::shared_ptr<Node>>> buckets;
-	    int last = 0;
+		std::unordered_map<unsigned int, std::list<Node>> buckets;
 
-		RadixHeap(unsigned int n, unsigned int max_weight) {
-			buckets = std::vector<std::vector<std::shared_ptr<Node>>>(n * max_weight + 1);
-		}
-
-	    void push(const std::shared_ptr<Node>& x) {
-	        buckets[x->distance].push_back(x);
+	    void push(Node x) {
+	        buckets[x.distance].push_back(x);
 	    }
 
-	    std::shared_ptr<Node> pop() {
-	        int i = 0;
+	    Node pop() {
+	        unsigned int i = 0;
 	        while (buckets[i].empty()) ++i;
-	        int j = 0;
-	        for (int k = 1; k < buckets[i].size(); ++k) {
-	            if (buckets[i][k]->distance < buckets[i][j]->distance) j = k;
-	        }
-	        const std::shared_ptr<Node> res = buckets[i][j];
-	        buckets[i].erase(buckets[i].begin() + j);
-	        last = res->distance;
+	        const Node res = buckets[i].front();
+			buckets[i].pop_front();
 	        return res;
 	    }
 
 	    bool empty() {
-			return std::ranges::all_of(buckets.begin(), buckets.end(), [] (const std::vector<std::shared_ptr<Node>>& bucket) { return bucket.empty(); });
+			return std::ranges::all_of(buckets.begin(), buckets.end(), [] (const std::pair<unsigned int, std::list<Node>>& bucket) { return bucket.second.empty(); });
 	    }
 	};
 
+	unsigned int findMaxWeightInGraph(Graph& graph);
 
-	std::vector<int> dijkstra(Graph& graph, int from, int to);
-	std::vector<int> dijkstraWithOnlyDistances(Graph& graph, int src);
+	std::vector<unsigned int> dijkstra(Graph& graph, unsigned int from, unsigned int to);
+	std::vector<unsigned int> dijkstraWithOnlyDistances(Graph& graph, unsigned int src);
 
-	std::vector<int> dijkstraDial(Graph& graph, int from, int to, int max_weight);
-	std::vector<int> dijkstraDialWithOnlyDistances(Graph& graph, int src, int max_weight);
+	std::vector<unsigned int> dijkstraDial(Graph& graph, unsigned int from, unsigned int to);
+	std::vector<unsigned int> dijkstraDialWithOnlyDistances(Graph& graph, unsigned int src);
 
-	std::vector<int> dijkstraRadix(Graph& graph, int from, int to, int max_weight);
-	std::vector<int> dijkstraRadixWithOnlyDistances(Graph& graph, int s, int max_weight);
+	std::vector<unsigned int> dijkstraRadix(Graph& graph, unsigned int from, unsigned int to);
+	std::vector<unsigned int> dijkstraRadixWithOnlyDistances(Graph& graph, unsigned int s);
 }

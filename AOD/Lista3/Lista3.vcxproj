@@ -131,11 +131,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DijkstraBenchmark.cpp" />
     <ClCompile Include="src\dijkstra\Dijsktra.cpp" />
     <ClCompile Include="src\Graph.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DijkstraBenchmark.h" />
     <ClInclude Include="src\dijkstra\Dijkstra.h" />
     <ClInclude Include="src\Graph.h" />
   </ItemGroup>
