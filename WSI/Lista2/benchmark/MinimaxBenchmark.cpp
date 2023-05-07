@@ -13,13 +13,14 @@ void MinimaxBenchmark::benchmark() {
 
 	int max_win_count = 0;
 
-	const auto values = {1, 10, 100};//, 1000, 10000};
-	const int count_of_steps = 3;
+	const auto values = {1, 10, 100, 1000};//, 1000, 10000};
+	const int count_of_steps = 4;
 
 	std::unordered_map<uint8_t, std::unordered_map<uint8_t, uint8_t>> results;
-	int x_step = count_of_steps * count_of_steps;
-	int y_step = count_of_steps;
-	int z_step = 1;
+	int x_step = count_of_steps * count_of_steps * count_of_steps;
+	int y_step = count_of_steps * count_of_steps;
+	int z_step = count_of_steps;
+	int w_step = 1;
 
 	int x = 0;
 	for (const auto& player_win_modifier : values) {
@@ -38,9 +39,9 @@ void MinimaxBenchmark::benchmark() {
 					for (const auto& second_opponent_win_modifier : values) {
 						int k = 0;
 						for (const auto& second_opponent_near_win_block_modifier : values) {
-							if (results[x * x_step + y * y_step + z][i * x_step + j * y_step + k] == 2) {
+							if (results[x * x_step + y * y_step + z][i * x_step + j * y_step + k] == 1) {
 								++win_count;
-							} else if (results[x * x_step + y * y_step + z][i * x_step + j * y_step + k] == 1) {
+							} else if (results[x * x_step + y * y_step + z][i * x_step + j * y_step + k] == 2) {
 								continue;
 							} else {
 								auto player2 = BenchmarkPlayer(9, 2, second_player_win_modifier, second_player_win_modifier, second_opponent_win_modifier, second_opponent_win_modifier, second_player_win_modifier, second_opponent_near_win_block_modifier, nullptr);
