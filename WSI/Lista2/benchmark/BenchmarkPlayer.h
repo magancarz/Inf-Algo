@@ -64,7 +64,7 @@ struct BenchmarkResult {
 
 struct CompareBenchmarkResults {
 	bool operator()(const BenchmarkResult& first, const BenchmarkResult& second) {
-		return first.win_count > second.win_count;
+		return first.win_count <= second.win_count;
 	}
 };
 

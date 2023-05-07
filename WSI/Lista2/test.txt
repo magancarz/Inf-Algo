@@ -1,0 +1,54 @@
+win count: 20
+depth: 0
+player win modifier: 0
+player lose modifier: 0
+opponent win modifier: 0
+opponent lose modifier: 0
+player near win block modifier: 0
+opponent near win block modifier: 0
+-----------------------
+win count: 9
+depth: 0
+player win modifier: 0
+player lose modifier: 0
+opponent win modifier: 0
+opponent lose modifier: 0
+player near win block modifier: 0
+opponent near win block modifier: 0
+-----------------------
+win count: 7
+depth: 0
+player win modifier: 0
+player lose modifier: 0
+opponent win modifier: 0
+opponent lose modifier: 0
+player near win block modifier: 0
+opponent near win block modifier: 0
+-----------------------
+win count: 5
+depth: 0
+player win modifier: 0
+player lose modifier: 0
+opponent win modifier: 0
+opponent lose modifier: 0
+player near win block modifier: 0
+opponent near win block modifier: 0
+-----------------------
+win count: 4
+depth: 0
+player win modifier: 0
+player lose modifier: 0
+opponent win modifier: 0
+opponent lose modifier: 0
+player near win block modifier: 0
+opponent near win block modifier: 0
+-----------------------
+win count: 1
+depth: 0
+player win modifier: 0
+player lose modifier: 0
+opponent win modifier: 0
+opponent lose modifier: 0
+player near win block modifier: 0
+opponent near win block modifier: 0
+-----------------------
