@@ -38,15 +38,15 @@ void MinimaxBenchmark::benchmark() {
 					for (const auto& second_opponent_win_modifier : values) {
 						int k = 0;
 						for (const auto& second_opponent_near_win_block_modifier : values) {
-							if (results[i * x_step + j * y_step + k][x * x_step + y * y_step + z] == 2 || results[x * x_step + y * y_step + z][i * x_step + j * y_step + k] == 1) {
+							if (results[x * x_step + y * y_step + z][i * x_step + j * y_step + k] == 2) {
 								++win_count;
-							} else if (results[i * x_step + j * y_step + k][x * x_step + y * y_step + z] == 1 || results[x * x_step + y * y_step + z][i * x_step + j * y_step + k] == 2) {
+							} else if (results[x * x_step + y * y_step + z][i * x_step + j * y_step + k] == 1) {
 								continue;
 							} else {
 								auto player2 = BenchmarkPlayer(9, 2, second_player_win_modifier, second_player_win_modifier, second_opponent_win_modifier, second_opponent_win_modifier, second_player_win_modifier, second_opponent_near_win_block_modifier, nullptr);
 								int result = runConfiguration(player1, player2);
 								if (result == 1) ++win_count;
-								results[i * x_step + j * y_step + k][x * x_step + y * y_step + z] = result;
+								results[i * x_step + j * y_step + k][x * x_step + y * y_step + z] = 3 - result;
 							}
 							++k;
 						}
