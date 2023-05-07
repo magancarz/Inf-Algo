@@ -18,7 +18,6 @@ class ImageCellViewHolder(
 ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
     var imageView: ImageView? = null
-    var textView: TextView? = null
 
     val onItemListener: ImageCellAdapter.OnEventClickListener
 
@@ -26,7 +25,6 @@ class ImageCellViewHolder(
 
     init {
         imageView = itemView.findViewById(R.id.imageView)
-        textView = itemView.findViewById(R.id.description)
         this.onItemListener = onItemListener
     }
 
@@ -35,7 +33,6 @@ class ImageCellViewHolder(
 
         imageView!!.setImageDrawable(ContextCompat.getDrawable(context, imageCell!!.image))
         imageView!!.setOnClickListener(this)
-        textView!!.text = imageCell!!.description
     }
 
     override fun onClick(view: View) {
