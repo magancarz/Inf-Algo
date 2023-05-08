@@ -18,11 +18,11 @@ class MainActivity : AppCompatActivity(), ImageCellAdapter.OnEventClickListener 
         setContentView(R.layout.activity_main)
 
         if (ImageCell.imageCellsList.isEmpty()) {
-            ImageCell.imageCellsList.add(ImageCell(R.drawable.black, "black", 1f, 0))
-            ImageCell.imageCellsList.add(ImageCell(R.drawable.green, "green", 2f, 1))
-            ImageCell.imageCellsList.add(ImageCell(R.drawable.orange, "orange", 3f, 2))
-            ImageCell.imageCellsList.add(ImageCell(R.drawable.red, "red", 4f, 3))
-            ImageCell.imageCellsList.add(ImageCell(R.drawable.purple, "purple", 5f, 4))
+            ImageCell.imageCellsList.add(ImageCell(R.drawable.black, "Lorem ipsum dolor sit amet", 1f, 0))
+            ImageCell.imageCellsList.add(ImageCell(R.drawable.green, "consectetur adipiscing elit", 2f, 1))
+            ImageCell.imageCellsList.add(ImageCell(R.drawable.orange, "sed do eiusmod tempor incididunt", 3f, 2))
+            ImageCell.imageCellsList.add(ImageCell(R.drawable.red, "ut labore et dolore magna aliqua", 4f, 3))
+            ImageCell.imageCellsList.add(ImageCell(R.drawable.purple, "Ut enim ad minim veniam", 5f, 4))
         }
 
         imagesRecyclerView = findViewById(R.id.imagesRecyclerView)
