@@ -164,6 +164,16 @@ public:
 	    return bestMove;
 	}
 
+	bool operator==(const BenchmarkPlayer& other) {
+		return depth == other.depth &&
+				player_win_modifier == other.player_win_modifier &&
+				player_lose_modifier == other.player_lose_modifier &&
+				opponent_win_modifier == other.opponent_win_modifier &&
+				opponent_lose_modifier == other.opponent_lose_modifier &&
+				player_near_win_block_modifier == other.player_near_win_block_modifier &&
+				opponent_near_win_block_modifier == other.opponent_near_win_block_modifier;
+	}
+
 	uint16_t depth = 0;
 	uint16_t currentPlayer = 0;
 

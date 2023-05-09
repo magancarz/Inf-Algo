@@ -2,9 +2,9 @@
 
 #include <chrono>
 #include <functional>
-#include <queue>
 #include <vector>
 #include <fstream>
+#include <random>
 
 #include "BenchmarkPlayer.h"
 
@@ -96,6 +96,89 @@ void MinimaxBenchmark::benchmark() {
 
 	std::cout << std::endl;
 	saveResultsToFile(benchmark_results);
+}
+
+void MinimaxBenchmark::battleBenchmark() {
+	std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(0,3);
+	std::uniform_int_distribution<std::mt19937::result_type> depth_dist(1,10);
+
+	const std::vector<int> values = {1, 10, 100, 1000, 10000};//, 10000};
+	auto player1 = BenchmarkPlayer(depth_dist(rng), 1, values[dist(rng)], values[dist(rng)], values[dist(rng)], values[dist(rng)], values[dist(rng)], values[dist(rng)], nullptr);
+	int no_of_iterations = 100;
+
+	for (int i = 0; i < no_of_iterations; ++i) {
+		std::cout << "Iteration no. " << i << std::endl;
+		player1 = testPlayerWithEveryConfiguration(player1);
+	}
+
+	std::cout << "Current winner:\n" << "depth = " << player1.depth << std::endl
+			<< "player_win_modifier = " << player1.player_win_modifier << std::endl
+			<< "player_lose_modifier = " << player1.player_lose_modifier << std::endl
+			<< "opponent_win_modifier = " << player1.opponent_win_modifier << std::endl
+			<< "opponent_lose_modifier = " << player1.opponent_lose_modifier << std::endl
+			<< "player_near_win_block_modifier = " << player1.player_near_win_block_modifier << std::endl
+			<< "opponent_near_win_block_modifier = " << player1.opponent_near_win_block_modifier << std::endl;
+}
+
+BenchmarkPlayer MinimaxBenchmark::testPlayerWithEveryConfiguration(BenchmarkPlayer& player) {
+
+	const std::vector<int> values = {1, 10, 100, 1000};
+	const std::vector<int> depth_values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	int win_count = 0;
+	float win_count_limit = std::pow(values.size(), 6) * 10 * 0.75f;
+
+	for (const auto& depth : depth_values) {
+		for (const auto& player_win_modifier : values) {
+			for (const auto& player_lose_modifier : values) {
+				for (const auto& opponent_win_modifier : values) {
+					for (const auto& opponent_lose_modifier : values) {
+						for (const auto& player_near_win_block_modifier : values) {
+							for (const auto& opponent_near_win_block_modifier : values) {
+								auto second_player = BenchmarkPlayer(depth, 2, player_win_modifier, player_lose_modifier, opponent_win_modifier, opponent_lose_modifier, player_near_win_block_modifier, opponent_near_win_block_modifier, nullptr);
+
+								if (player == second_player) continue;
+								if (runConfiguration(player, second_player) == 2) {
+									if (runConfiguration(second_player, player) == 1) {
+										if (win_count >= win_count_limit) {
+											std::cout << "Player with over 75% wins:\n" << "depth = " << player.depth << std::endl
+														<< "player_win_modifier = " << player.player_win_modifier << std::endl
+														<< "player_lose_modifier = " << player.player_lose_modifier << std::endl
+														<< "opponent_win_modifier = " << player.opponent_win_modifier << std::endl
+														<< "opponent_lose_modifier = " << player.opponent_lose_modifier << std::endl
+														<< "player_near_win_block_modifier = " << player.player_near_win_block_modifier << std::endl
+														<< "opponent_near_win_block_modifier = " << player.opponent_near_win_block_modifier << std::endl;
+											std::cout << "---------------\n";
+										}
+
+										return second_player;
+									}
+								}
+
+								if (runConfiguration(second_player, player) == 2) {
+									++win_count;
+								}
+
+								
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	std::cout << "Player with 100% wins:\n" << "depth = " << player.depth << std::endl
+				<< "player_win_modifier = " << player.player_win_modifier << std::endl
+				<< "player_lose_modifier = " << player.player_lose_modifier << std::endl
+				<< "opponent_win_modifier = " << player.opponent_win_modifier << std::endl
+				<< "opponent_lose_modifier = " << player.opponent_lose_modifier << std::endl
+				<< "player_near_win_block_modifier = " << player.player_near_win_block_modifier << std::endl
+				<< "opponent_near_win_block_modifier = " << player.opponent_near_win_block_modifier << std::endl;
+	std::cout << "---------------\n";
+
+	return player;
 }
 
 int MinimaxBenchmark::runConfiguration(BenchmarkPlayer& player1, BenchmarkPlayer& player2) {
