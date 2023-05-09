@@ -70,6 +70,8 @@ struct CompareBenchmarkResults {
 
 class BenchmarkPlayer {
 public:
+	BenchmarkPlayer() = default;
+
 	BenchmarkPlayer(
 		int depth,
 		int player_no,

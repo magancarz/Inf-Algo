@@ -181,6 +181,87 @@ BenchmarkPlayer MinimaxBenchmark::testPlayerWithEveryConfiguration(BenchmarkPlay
 	return player;
 }
 
+void MinimaxBenchmark::geneticBenchmark() {
+	std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> values_dist(0, 3);
+    std::uniform_int_distribution<std::mt19937::result_type> depth_dist(1, 10);
+	
+	const std::vector<int> values = {1, 10, 100, 1000};
+	const int no_of_iterations = 20;
+
+	std::vector<BenchmarkPlayer> players(8);
+	for (int i = 0; i < players.size(); ++i) {
+		players[i] = BenchmarkPlayer(depth_dist(rng), 1, values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], nullptr);
+	}
+
+	for (int i = 0; i < no_of_iterations; ++i) {
+		std::cout << "Iteration no. " << i << std::endl;
+		auto iteration_result = iterateGenetic(players);
+		players = iteration_result;
+	}
+
+	saveResultsToFile(players);
+}
+
+std::vector<BenchmarkPlayer> MinimaxBenchmark::iterateGenetic(std::vector<BenchmarkPlayer>& players) {
+
+	std::vector<BenchmarkResult> iteration_results(players.size());
+
+	for (int i = 0; i < iteration_results.size(); ++i) {
+		auto benchmark_result = testPlayerWithEveryPlayerInGroup(players[i], players);
+		iteration_results[i] = benchmark_result;
+	}
+
+	std::sort(iteration_results.begin(), iteration_results.end(),
+		[&](const BenchmarkResult& first, const BenchmarkResult& second) { return first.win_count > second.win_count; });
+
+	for (int i = iteration_results.size() / 2; i < iteration_results.size(); ++i) {
+		players[i] = mixTwoPlayersStatistics(iteration_results[i - iteration_results.size() / 2], iteration_results[i - iteration_results.size() / 2 + 1]);
+	}
+
+	std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> values_dist(0, 3);
+    std::uniform_int_distribution<std::mt19937::result_type> depth_dist(1, 10);
+	
+	const std::vector<int> values = {1, 10, 100, 1000};
+
+	players[iteration_results.size() - 2] = BenchmarkPlayer(depth_dist(rng), 1, values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], nullptr);
+	players[iteration_results.size() - 1] = BenchmarkPlayer(depth_dist(rng), 1, values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], values[values_dist(rng)], nullptr);
+
+	return players;
+}
+
+BenchmarkResult MinimaxBenchmark::testPlayerWithEveryPlayerInGroup(BenchmarkPlayer& player, std::vector<BenchmarkPlayer>& players) {
+
+	unsigned long long win_count = 0;
+
+	for (auto& second_player : players) {
+		if (runConfiguration(player, second_player) == 1) ++win_count;
+	}
+
+	return {win_count, player.depth, player.player_win_modifier, player.player_lose_modifier, player.opponent_win_modifier, player.opponent_lose_modifier, player.player_near_win_block_modifier, player.opponent_near_win_block_modifier};
+}
+
+BenchmarkPlayer MinimaxBenchmark::mixTwoPlayersStatistics(BenchmarkResult& player1, BenchmarkResult& player2) {
+	std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> values_dist(0, 1);
+
+	BenchmarkPlayer new_player;
+	new_player.depth = values_dist(rng) ? player1.depth : player2.depth;
+	new_player.player_win_modifier = values_dist(rng) ? player1.player_win_modifier : player2.player_win_modifier;
+	new_player.player_lose_modifier = values_dist(rng) ? player1.player_lose_modifier : player2.player_lose_modifier;
+	new_player.opponent_win_modifier = values_dist(rng) ? player1.opponent_win_modifier : player2.opponent_win_modifier;
+	new_player.opponent_lose_modifier = values_dist(rng) ? player1.opponent_lose_modifier : player2.opponent_lose_modifier;
+	new_player.player_near_win_block_modifier = values_dist(rng) ? player1.player_near_win_block_modifier : player2.player_near_win_block_modifier;
+	new_player.opponent_near_win_block_modifier = values_dist(rng) ? player1.opponent_near_win_block_modifier : player2.opponent_near_win_block_modifier;
+	new_player.board = nullptr;
+
+	return new_player;
+}
+
 int MinimaxBenchmark::runConfiguration(BenchmarkPlayer& player1, BenchmarkPlayer& player2) {
 
 	//std::cout << "Testing two players configuration:\n";
@@ -256,10 +337,47 @@ void MinimaxBenchmark::saveResultsToFile(std::vector<BenchmarkResult>& benchmark
 	std::sort(benchmark_results.begin(), benchmark_results.end(),
 		[&](const BenchmarkResult& first, const BenchmarkResult& second) { return first.win_count > second.win_count; });
 
-	std::ofstream output_file_stream("test.txt");
+	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+	
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    std::tm* now_tm = std::localtime(&now_c);
+    std::ostringstream oss;
+    oss << std::put_time(now_tm, "%Y-%m-%d %H:%M:%S");
+    std::string now_str = oss.str();
+
+	std::ofstream output_file_stream("benchmark-" + now_str);
 	if (output_file_stream.is_open()) {
 		for (const auto& benchmark_result : benchmark_results) {
 			output_file_stream << "win count: " << benchmark_result.win_count << std::endl;
+			output_file_stream << "depth: " << benchmark_result.depth << std::endl;
+			output_file_stream << "player win modifier: " << benchmark_result.player_win_modifier << std::endl;
+			output_file_stream << "player lose modifier: " << benchmark_result.player_lose_modifier << std::endl;
+			output_file_stream << "opponent win modifier: " << benchmark_result.opponent_win_modifier << std::endl;
+			output_file_stream << "opponent lose modifier: " << benchmark_result.opponent_lose_modifier << std::endl;
+			output_file_stream << "player near win block modifier: " << benchmark_result.player_near_win_block_modifier << std::endl;
+			output_file_stream << "opponent near win block modifier: " << benchmark_result.opponent_near_win_block_modifier << std::endl;
+			output_file_stream << "-----------------------\n";
+		}
+
+		output_file_stream.close();
+	}
+}
+
+void MinimaxBenchmark::saveResultsToFile(std::vector<BenchmarkPlayer>& benchmark_results) {
+	std::cout << "-----------------------\n";
+	std::cout << "Saving results to file.\n";
+
+	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+	
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    std::tm* now_tm = std::localtime(&now_c);
+    std::ostringstream oss;
+    oss << std::put_time(now_tm, "%Y-%m-%d %H:%M:%S");
+    std::string now_str = oss.str();
+
+	std::ofstream output_file_stream("benchmark-" + now_str);
+	if (output_file_stream.is_open()) {
+		for (const auto& benchmark_result : benchmark_results) {
 			output_file_stream << "depth: " << benchmark_result.depth << std::endl;
 			output_file_stream << "player win modifier: " << benchmark_result.player_win_modifier << std::endl;
 			output_file_stream << "player lose modifier: " << benchmark_result.player_lose_modifier << std::endl;
