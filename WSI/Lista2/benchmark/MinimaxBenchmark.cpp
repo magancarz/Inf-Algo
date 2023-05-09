@@ -337,15 +337,7 @@ void MinimaxBenchmark::saveResultsToFile(std::vector<BenchmarkResult>& benchmark
 	std::sort(benchmark_results.begin(), benchmark_results.end(),
 		[&](const BenchmarkResult& first, const BenchmarkResult& second) { return first.win_count > second.win_count; });
 
-	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-	
-    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-    std::tm* now_tm = std::localtime(&now_c);
-    std::ostringstream oss;
-    oss << std::put_time(now_tm, "%Y-%m-%d %H:%M:%S");
-    std::string now_str = oss.str();
-
-	std::ofstream output_file_stream("benchmark-" + now_str);
+	std::ofstream output_file_stream("benchmark");
 	if (output_file_stream.is_open()) {
 		for (const auto& benchmark_result : benchmark_results) {
 			output_file_stream << "win count: " << benchmark_result.win_count << std::endl;
@@ -366,16 +358,8 @@ void MinimaxBenchmark::saveResultsToFile(std::vector<BenchmarkResult>& benchmark
 void MinimaxBenchmark::saveResultsToFile(std::vector<BenchmarkPlayer>& benchmark_results) {
 	std::cout << "-----------------------\n";
 	std::cout << "Saving results to file.\n";
-
-	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 	
-    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-    std::tm* now_tm = std::localtime(&now_c);
-    std::ostringstream oss;
-    oss << std::put_time(now_tm, "%Y-%m-%d %H:%M:%S");
-    std::string now_str = oss.str();
-
-	std::ofstream output_file_stream("benchmark-" + now_str);
+	std::ofstream output_file_stream("benchmark");
 	if (output_file_stream.is_open()) {
 		for (const auto& benchmark_result : benchmark_results) {
 			output_file_stream << "depth: " << benchmark_result.depth << std::endl;
