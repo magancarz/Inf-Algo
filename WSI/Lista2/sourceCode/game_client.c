@@ -75,7 +75,7 @@ int evaluateBoard(int player) {
 }
 
 int minmax(int depth, int player, int alpha, int beta) {
-  if (depth == 0 || winCheck(1) || winCheck(2) || loseCheck(1) || loseCheck(2) || nearWinBlockCheck(1) || nearWinBlockCheck(2))
+  if (depth == 0 || winCheck(1) || winCheck(2) || loseCheck(1) || loseCheck(2))
     return evaluateBoard(player);
 
   int winLoseStats = 0;

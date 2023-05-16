@@ -12,56 +12,31 @@
 void MinimaxBenchmark::benchmark() {
 	int max_win_count = 0;
 
-	const auto values = {1, 10, 100, 1000};//, 1000, 10000};
-	const int count_of_steps = 4;
+	const auto values = {1, 10, 100, 1000, 10000};//, 1000, 10000};
+	const int count_of_steps = 5;
 
 	std::vector<BenchmarkResult> benchmark_results;
-	benchmark_results.reserve(std::pow(count_of_steps, 4));
+	benchmark_results.reserve(std::pow(count_of_steps, 5));
 
-	std::unordered_map<uint8_t, std::unordered_map<uint8_t, uint8_t>> results;
-	int x_step = count_of_steps * count_of_steps * count_of_steps;
-	int y_step = count_of_steps * count_of_steps;
-	int z_step = count_of_steps;
-	int w_step = 1;
-
-	int x = 0;
 	for (const auto& player_win_modifier : values) {
-		int y = 0;
 		for (const auto& opponent_win_modifier : values) {
-			int z = 0;
 			for (const auto& opponent_near_win_block_modifier : values) {
-				int w = 0;
 				for (const auto& player_near_win_block_modifier : values) {
-					auto player1 = BenchmarkPlayer(9, 1, player_win_modifier, player_win_modifier, opponent_win_modifier, opponent_win_modifier, player_near_win_block_modifier, opponent_near_win_block_modifier, nullptr);
+					auto player1 = BenchmarkPlayer(4, 1, player_win_modifier, player_win_modifier, opponent_win_modifier, opponent_win_modifier, player_near_win_block_modifier, opponent_near_win_block_modifier, nullptr);
 					uint64_t win_count = 0;
 
 					const auto start = std::chrono::steady_clock::now();
-
-					int i = 0;
+					
 					for (const auto& second_player_win_modifier : values) {
-						int j = 0;
 						for (const auto& second_opponent_win_modifier : values) {
-							int k = 0;
 							for (const auto& second_opponent_near_win_block_modifier : values) {
-								int l = 0;
 								for (const auto& second_player_near_win_block_modifier : values) {
-									if (results[x * x_step + y * y_step + z * z_step + w][i * x_step + j * y_step + k * z_step + l] == 1) {
-										++win_count;
-									} else if (results[x * x_step + y * y_step + z * z_step + w][i * x_step + j * y_step + k * z_step + l] == 2) {
-										continue;
-									} else {
-										auto player2 = BenchmarkPlayer(9, 2, second_player_win_modifier, second_player_win_modifier, second_opponent_win_modifier, second_opponent_win_modifier, second_player_near_win_block_modifier, second_opponent_near_win_block_modifier, nullptr);
-										int result = runConfiguration(player1, player2);
-										if (result == 1) ++win_count;
-										results[i * x_step + j * y_step + k * z_step + l][x * x_step + y * y_step + z * z_step + w] = 3 - result;
-									}
-									++l;
+									auto player2 = BenchmarkPlayer(4, 2, second_player_win_modifier, second_player_win_modifier, second_opponent_win_modifier, second_opponent_win_modifier, second_player_near_win_block_modifier, second_opponent_near_win_block_modifier, nullptr);
+									int result = runConfiguration(player1, player2);
+									if (result == 1) ++win_count;
 								}
-								++k;
 							}
-							++j;
 						}
-						++i;
 					}
 
 					if (win_count > max_win_count) {
@@ -85,13 +60,9 @@ void MinimaxBenchmark::benchmark() {
 						player1.opponent_lose_modifier,
 						player1.player_near_win_block_modifier,
 						player1.opponent_near_win_block_modifier});
-					++w;	
 				}
-				++z;
 			}
-			++y;
 		}
-		++x;
 	}
 
 	std::cout << std::endl;
@@ -309,13 +280,13 @@ int MinimaxBenchmark::runConfiguration(BenchmarkPlayer& player1, BenchmarkPlayer
 		if (no_of_moves >= 25) break;
 
 		//printBoard(board);
-		if (no_of_moves >= 7 && winCheck(board, player1.currentPlayer)) {
+		if (no_of_moves >= 7 && winCheck(board, player2.currentPlayer)) {
 			//std::cout << "Player 2 won!\n";
 			result = 2;
 			break;
 		}
 
-		if (no_of_moves >= 5 && loseCheck(board, player1.currentPlayer)) {
+		if (no_of_moves >= 5 && loseCheck(board, player2.currentPlayer)) {
 			//std::cout << "Player 2 lost!\n";
 			result = 1;
 			break;
@@ -337,7 +308,7 @@ void MinimaxBenchmark::saveResultsToFile(std::vector<BenchmarkResult>& benchmark
 	std::sort(benchmark_results.begin(), benchmark_results.end(),
 		[&](const BenchmarkResult& first, const BenchmarkResult& second) { return first.win_count > second.win_count; });
 
-	std::ofstream output_file_stream("benchmark");
+	std::ofstream output_file_stream("benchmark.txt");
 	if (output_file_stream.is_open()) {
 		for (const auto& benchmark_result : benchmark_results) {
 			output_file_stream << "win count: " << benchmark_result.win_count << std::endl;
