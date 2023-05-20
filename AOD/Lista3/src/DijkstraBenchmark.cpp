@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#include <execution>
 
 #include "dijkstra/Dijkstra.h"
 
@@ -96,20 +97,25 @@ namespace aod {
 	}
 
 	DijkstraBenchmark::DijkstraBenchmark(aod::Graph& graph, DijkstraBenchmarkSources sources)
-		: graph(graph), sources(sources) {
+		: graph(graph), benchmark_sources(sources) {
 		sourcesBenchmark();
 	}
 
-	void DijkstraBenchmark::sourcesBenchmark() {
-		{
-			for (const auto& source : sources.sources) {
+	void DijkstraBenchmark::sourcesBenchmark()
+	{
+		std::for_each(std::execution::par, benchmark_sources.sources.begin(), benchmark_sources.sources.end(),
+			[&](int source) 
+			{
 				const auto start = std::chrono::steady_clock::now();
 
-				//aod::dijkstraWithOnlyDistances(graph, source);
+				aod::dijkstraWithOnlyDistances(graph, source);
 
 				const auto end = std::chrono::steady_clock::now();
-				std::cout << "(Dijkstra sources benchmark) source: " + std::to_string(source) + ", time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds." << std::endl;
-			}
-		}
+				std::cout << "(Dijkstra sources benchmark) source: "
+					+ std::to_string(source)
+					+ ", time elapsed: "
+					<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+					<< " milliseconds." << std::endl;
+			});
 	}
 }

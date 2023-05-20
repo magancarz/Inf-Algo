@@ -14,7 +14,7 @@ LIB      = ../../lib/
 all: potTrans.exe
 
 potTrans.exe: potTrans.c $(LIB)random.c
-	$(CC) $(CFLAGS) -o potTrans.exe potTrans.c $(LOADLIBS) -I$(LIB)
+	$(CC) $(CFLAGS) -o potTrans.exe potTrans.c-I$(LIB) $(LOADLIBS)
 
 clean:
 	rm -f *~ potTrans.exe

@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <queue>
+#include <bitset>
 
 #include "../Graph.h"
 
@@ -40,26 +41,38 @@ namespace aod {
 	};
 
 	struct RadixHeap {
-		std::unordered_map<unsigned int, std::list<Node>> buckets;
-		int min_value;
+		std::vector<std::priority_queue<Node, std::vector<Node>, NodeComparator>> buckets;
+		unsigned int min_value;
 
-	    void push(Node x) {
-			int key = x.distance;
+		RadixHeap() : buckets(32), min_value(std::numeric_limits<unsigned int>::max()) {}
+
+		void push(Node x) {
+			unsigned int key = x.distance;
+			std::bitset<32> test{ key };
+			int nearest_pow_of_two = 31;
+			while (nearest_pow_of_two > 0 && test[nearest_pow_of_two] != 1) --nearest_pow_of_two;
 			min_value = std::min(min_value, key);
-	        buckets[key].push_back(x);
-	    }
+			buckets[nearest_pow_of_two].push(x);
+		}
 
-	    Node pop() {
-	        unsigned int i = 0;
-	        while (buckets[i].empty()) ++i;
-	        const Node res = buckets[i].front();
-			buckets[i].pop_front();
-	        return res;
-	    }
+		Node pop() {
+			unsigned int i = min_value;
+			while (buckets[i].empty()) {
+				++i;
+			}
+			min_value = i;
+			const Node res = buckets[i].top();
+			buckets[i].pop();
+			return res;
+		}
 
-	    bool empty() {
-			return std::ranges::all_of(buckets.begin(), buckets.end(), [] (const std::pair<unsigned int, std::list<Node>>& bucket) { return bucket.second.empty(); });
-	    }
+		bool empty() const {
+			for (const auto& bucket : buckets) {
+				if (!bucket.empty())
+					return false;
+			}
+			return true;
+		}
 	};
 
 	unsigned int findMaxWeightInGraph(const Graph& graph);

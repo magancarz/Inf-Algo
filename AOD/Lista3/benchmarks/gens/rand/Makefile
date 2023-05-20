@@ -23,7 +23,7 @@ LIB      = ../../lib/
 all: sprand.exe
 
 sprand.exe: sprand.c $(LIB)random.c $(LIB)permute.c
-	$(CC) $(CFLAGS) -o sprand.exe sprand.c $(LOADLIBS) ../../lib/ll-core/src/*.c
+	$(CC) $(CFLAGS) -o sprand.exe sprand.c ../../lib/ll-core/src/*.c $(LOADLIBS)
 
 clean:
 	rm -f *~ sprand.exe

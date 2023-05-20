@@ -1,8 +1,11 @@
 #include <iostream>
 #include <queue>
 #include <ranges>
+#include <map>
 
 #include "Dijkstra.h"
+
+#define DEBUG 1
 
 namespace aod {
 
@@ -67,12 +70,12 @@ namespace aod {
 		return {};
 	}
 
-	std::vector<int> dijkstraWithOnlyDistances(Graph& graph, int src) {
+	std::vector<unsigned int> dijkstraWithOnlyDistances(Graph& graph, unsigned int src) {
 
 		auto& [n, m, adjacency_list] = graph;
 
-		constexpr int inf = std::numeric_limits<int>::max();
-		std::vector<int> dist(n + 1, inf);
+		constexpr int inf = std::numeric_limits<unsigned int>::max();
+		std::vector<unsigned int> dist(n + 1, inf);
 
 		std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>> pq;
 
@@ -166,59 +169,62 @@ namespace aod {
 	    }
 	}
 
-	std::vector<unsigned int> dijkstraDialWithOnlyDistances(Graph& graph, unsigned int src) {
-
+	std::vector<unsigned int> dijkstraDialWithOnlyDistances(Graph& graph, unsigned int src)
+	{
 		auto& [n, m, adjacency_list] = graph;
-		const unsigned int max_weight = findMaxWeightInGraph(graph);
+		std::vector<unsigned int> dist(graph.v + 1, std::numeric_limits<unsigned int>::max());
 
-		std::vector<std::pair<unsigned int, std::list<unsigned int>::iterator>> dist(n + 1);
-	 
-	    for (int i = 0; i <= n; i++)
-	        dist[i].first = std::numeric_limits<unsigned int>::max();
-	 
-		std::unordered_map<unsigned int, std::list<unsigned int>> buckets(max_weight * n + 1);
+		unsigned int multiplier = 50000000;
+		std::map<unsigned int, std::list<unsigned int>> buckets;
+		unsigned int current_bucket_idx_iter = 0;
 
-	    buckets[0].push_back(src);
-	    dist[src].first = 0;
+		auto max_weight = findMaxWeightInGraph(graph);
+#if DEBUG 1
+		std::cout << "Running dial algorithm with "
+			<< n << " vertices, "
+			<< m << " edges and with max weight C of "
+			<< max_weight << ".\n";
+#endif
 
-	    unsigned int idx = 0;
-	    while (true) {
-	        while (buckets[idx].empty() && idx < max_weight*n)
-	            idx++;
-	 
-	        if (idx == max_weight * n)
-	            break;
-	 
-	        unsigned int u = buckets[idx].front();
-	        buckets[idx].pop_front();
-	 
-	        for (const auto& [v, weight] : adjacency_list[u]) {
+		dist[src] = 0;
+		buckets[0].push_back(src);
 
-	            const unsigned int du = dist[u].first;
-	            unsigned int dv = dist[v].first;
-	 
-	            if (du + weight < dv) {
-	                if (dv != std::numeric_limits<unsigned int>::max())
-	                    buckets[dv].erase(dist[v].second);
-	 
-	                dist[v].first = du + weight;
-	                dv = dist[v].first;
-	 
-	                buckets[dv].push_front(v);
-	 
-	                dist[v].second = buckets[dv].begin();
-	            }
-	        }
-	    }
-	 
-	    std::vector<unsigned int> distances(n + 1);
-		std::ranges::transform(
-			dist.begin(),
-			dist.end(),
-			distances.begin(),
-			[&] (const std::pair<unsigned int, std::list<unsigned int>::iterator>& el) -> unsigned int { return el.first; });
+		unsigned int current_bucket = 0;
+		while (true)
+		{
+			auto it = buckets.begin();
+			if (it == buckets.end()) break;
+			current_bucket = (*it).first;
+			if (buckets[current_bucket].empty()) {
+				buckets.erase(current_bucket);
+				continue;
+			}
 
-		return distances;
+			if (current_bucket % 1000000 == 0) 
+			{
+				std::cout << "Bucket no. " << current_bucket << std::endl;
+			}
+
+			unsigned int u = buckets[current_bucket].front();
+			buckets[current_bucket].pop_front();
+
+			for (const auto& [v, w] : adjacency_list[u]) {
+				const unsigned int du = dist[u];
+				const unsigned int dv = dist[v];
+
+				if (du + w < dv)
+				{
+					if (dv != std::numeric_limits<unsigned int>::max())
+					{
+						buckets[dv].erase(std::find(buckets[dv].begin(), buckets[dv].end(), v));
+					}
+					dist[v] = du + w;
+					buckets[dist[v]].push_front(v);
+				}
+			}
+		}
+
+		return dist;
 	}
 
 	std::vector<unsigned int> dijkstraRadix(Graph& graph, unsigned int from, unsigned int to) {
@@ -278,17 +284,21 @@ namespace aod {
 	    distances[s] = 0;
 	    RadixHeap q;
 	    q.push(Node(0, s, 0));
-	    while (!q.empty()) {
+	    while (!q.empty())
+		{
 	        auto x = q.pop();
 
 	        if (x.distance != distances[x.node]) continue;
-	        for (const auto& e : adjacency_list[x.node]) {
-	                distances[e.first] = distances[x.node] + e.second;
-	            if (distances[e.first] > distances[x.node] + e.second) {
-	                q.push(Node(0, e.first, distances[e.first]));
-	            }
-	        }
+			for (const auto& e : adjacency_list[x.node])
+			{
+				if (distances[e.first] > x.distance + e.second)
+				{
+					distances[e.first] = x.distance + e.second;
+					q.push(Node(0, e.first, distances[e.first]));
+				}
+			}
 	    }
+
 	    return distances;
 	}
 }

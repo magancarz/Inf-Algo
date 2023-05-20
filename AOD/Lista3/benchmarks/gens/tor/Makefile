@@ -20,7 +20,7 @@ LIB      = ../../lib/
 all: tor.exe
 
 tor.exe: tor.c $(LIB)random.c $(LIB)permute.c
-	$(CC) $(CFLAGS) -o tor.exe tor.c $(LOADLIBS) -I$(LIB) ../../lib/ll-core/src/*.c
+	$(CC) $(CFLAGS) -o tor.exe tor.c -I$(LIB) ../../lib/ll-core/src/*.c $(LOADLIBS)
 
 clean:
 	rm -f *~ tor.exe

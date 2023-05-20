@@ -24,7 +24,7 @@ LIB      = ../../lib/
 all: spgrid.exe
 
 spgrid.exe: spgrid.c $(LIB)random.c $(LIB)permute.c
-	$(CC) $(CFLAGS) -o spgrid.exe spgrid.c $(LOADLIBS) -I$(LIB) ../../lib/ll-core/src/*.c
+	$(CC) $(CFLAGS) -o spgrid.exe spgrid.c -I$(LIB) ../../lib/ll-core/src/*.c $(LOADLIBS)
 
 clean:
 	rm -f *~ spgrid.exe

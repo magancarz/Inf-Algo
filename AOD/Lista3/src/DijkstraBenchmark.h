@@ -24,6 +24,6 @@ namespace aod {
 
 	private:
 		aod::Graph& graph;
-		DijkstraBenchmarkSources& sources;
+		DijkstraBenchmarkSources& benchmark_sources;
 	};
 }

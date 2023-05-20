@@ -3,3 +3,4 @@ x64/*
 Release/*
 Lista3.vcxproj.filters
 Lista3.vcxproj.user
+benchmarks/inputs/*
