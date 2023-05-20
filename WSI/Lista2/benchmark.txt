@@ -1,59 +1,5 @@
-win count: 14
-depth: 5
-player win modifier: 10
-player lose modifier: 10
-opponent win modifier: 10
-opponent lose modifier: 10
-player near win block modifier: 1
-opponent near win block modifier: 0
------------------------
-win count: 12
-depth: 5
-player win modifier: 1
-player lose modifier: 1
-opponent win modifier: 1
-opponent lose modifier: 10
-player near win block modifier: 1
-opponent near win block modifier: 0
------------------------
-win count: 12
-depth: 5
-player win modifier: 1
-player lose modifier: 1
-opponent win modifier: 1
-opponent lose modifier: 10
-player near win block modifier: 10
-opponent near win block modifier: 0
------------------------
-win count: 12
-depth: 5
-player win modifier: 10
-player lose modifier: 1
-opponent win modifier: 1
-opponent lose modifier: 10
-player near win block modifier: 1
-opponent near win block modifier: 0
------------------------
-win count: 12
-depth: 5
-player win modifier: 10
-player lose modifier: 1
-opponent win modifier: 1
-opponent lose modifier: 10
-player near win block modifier: 10
-opponent near win block modifier: 0
------------------------
-win count: 10
-depth: 5
-player win modifier: 10
-player lose modifier: 10
-opponent win modifier: 10
-opponent lose modifier: 1
-player near win block modifier: 1
-opponent near win block modifier: 0
------------------------
-win count: 6
-depth: 5
+win count: 0
+depth: 4
 player win modifier: 1
 player lose modifier: 1
 opponent win modifier: 1
@@ -61,8 +7,26 @@ opponent lose modifier: 1
 player near win block modifier: 1
 opponent near win block modifier: 0
 -----------------------
-win count: 6
-depth: 5
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 10
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 100
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
 player win modifier: 1
 player lose modifier: 1
 opponent win modifier: 1
@@ -70,8 +34,215 @@ opponent lose modifier: 1
 player near win block modifier: 10
 opponent near win block modifier: 0
 -----------------------
-win count: 6
-depth: 5
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 10
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 100
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 1
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 10
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 100
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 1
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 10
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 100
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 1
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 10
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 100
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 1
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 10
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 100
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 1
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 10
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 100
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 1
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 10
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 100
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 1
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 10
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 1
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 100
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
 player win modifier: 10
 player lose modifier: 1
 opponent win modifier: 1
@@ -79,8 +250,26 @@ opponent lose modifier: 1
 player near win block modifier: 1
 opponent near win block modifier: 0
 -----------------------
-win count: 6
-depth: 5
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 10
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 100
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
 player win modifier: 10
 player lose modifier: 1
 opponent win modifier: 1
@@ -88,8 +277,80 @@ opponent lose modifier: 1
 player near win block modifier: 10
 opponent near win block modifier: 0
 -----------------------
-win count: 6
-depth: 5
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 10
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 100
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 1
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 10
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 100
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 1
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 10
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 100
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
 player win modifier: 10
 player lose modifier: 10
 opponent win modifier: 10
@@ -97,8 +358,8 @@ opponent lose modifier: 1
 player near win block modifier: 10
 opponent near win block modifier: 0
 -----------------------
-win count: 6
-depth: 5
+win count: 0
+depth: 4
 player win modifier: 10
 player lose modifier: 10
 opponent win modifier: 10
@@ -106,39 +367,363 @@ opponent lose modifier: 10
 player near win block modifier: 10
 opponent near win block modifier: 0
 -----------------------
-win count: 4
-depth: 5
-player win modifier: 1
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 100
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 1
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 10
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 100
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 1
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 10
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 100
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 1
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 10
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 100
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 1
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 10
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 10
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 100
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 1
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 10
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 100
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 1
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 10
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 100
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 1
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 10
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 1
+opponent win modifier: 1
+opponent lose modifier: 100
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
 player lose modifier: 10
 opponent win modifier: 10
 opponent lose modifier: 1
 player near win block modifier: 1
 opponent near win block modifier: 0
 -----------------------
-win count: 4
-depth: 5
-player win modifier: 1
+win count: 0
+depth: 4
+player win modifier: 100
 player lose modifier: 10
 opponent win modifier: 10
 opponent lose modifier: 10
 player near win block modifier: 1
 opponent near win block modifier: 0
 -----------------------
-win count: 3
-depth: 5
-player win modifier: 1
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 100
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
 player lose modifier: 10
 opponent win modifier: 10
 opponent lose modifier: 1
 player near win block modifier: 10
 opponent near win block modifier: 0
 -----------------------
-win count: 3
-depth: 5
-player win modifier: 1
+win count: 0
+depth: 4
+player win modifier: 100
 player lose modifier: 10
 opponent win modifier: 10
 opponent lose modifier: 10
 player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 100
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 1
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 10
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 10
+opponent win modifier: 10
+opponent lose modifier: 100
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 1
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 10
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 100
+player near win block modifier: 1
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 1
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 10
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 100
+player near win block modifier: 10
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 1
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 10
+player near win block modifier: 100
+opponent near win block modifier: 0
+-----------------------
+win count: 0
+depth: 4
+player win modifier: 100
+player lose modifier: 100
+opponent win modifier: 100
+opponent lose modifier: 100
+player near win block modifier: 100
 opponent near win block modifier: 0
 -----------------------

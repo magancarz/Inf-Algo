@@ -110,7 +110,7 @@ public:
 	}
 
 	int minmax(int depth, int player, int alpha, int beta) {
-	  if (depth == 0 || winCheck(board, 1) || winCheck(board, 2) || loseCheck(board, 1) || loseCheck(board, 2))
+	  if (depth == 0 || winCheck(board, 1) || winCheck(board, 2) || loseCheck(board, 1) || loseCheck(board, 2) || nearWinBlockCheck(board, 1) || nearWinBlockCheck(board, 2))
 	    return evaluateBoard(player);
 
 	  int winLoseStats = 0;

@@ -12,11 +12,11 @@
 void MinimaxBenchmark::benchmark() {
 	int max_win_count = 0;
 
-	const auto values = {1, 10, 100, 1000, 10000};//, 1000, 10000};
-	const int count_of_steps = 5;
+	const auto values = {1, 10, 100};//, 1000, 10000};
+	const int count_of_steps = 3;
 
 	std::vector<BenchmarkResult> benchmark_results;
-	benchmark_results.reserve(std::pow(count_of_steps, 5));
+	benchmark_results.reserve(std::pow(count_of_steps, 3));
 
 	for (const auto& player_win_modifier : values) {
 		for (const auto& opponent_win_modifier : values) {
@@ -33,7 +33,9 @@ void MinimaxBenchmark::benchmark() {
 								for (const auto& second_player_near_win_block_modifier : values) {
 									auto player2 = BenchmarkPlayer(4, 2, second_player_win_modifier, second_player_win_modifier, second_opponent_win_modifier, second_opponent_win_modifier, second_player_near_win_block_modifier, second_opponent_near_win_block_modifier, nullptr);
 									int result = runConfiguration(player1, player2);
-									if (result == 1) ++win_count;
+									if (result == 1) {
+										++win_count;
+									}
 								}
 							}
 						}

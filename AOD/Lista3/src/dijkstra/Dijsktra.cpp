@@ -9,7 +9,7 @@ namespace aod {
 	unsigned int findMaxWeightInGraph(Graph& graph) {
 
 		int max_weight = 0;
-		for (const auto& node : std::ranges::views::iota(1, graph.v)) {
+		for (const auto& node : std::ranges::views::iota(1, static_cast<int>(graph.v))) {
 			for (const auto& [v, weight] : graph.adjacency_list[node]) {
 				max_weight = std::max(max_weight, weight);
 			}
@@ -63,6 +63,8 @@ namespace aod {
 				++path_element_idx;
 	        }
 	    }
+
+		return {};
 	}
 
 	std::vector<int> dijkstraWithOnlyDistances(Graph& graph, int src) {
@@ -115,8 +117,8 @@ namespace aod {
 	 
 	    unsigned int idx = 0;
 	    while (true) {
-	        while (buckets[idx].empty() && idx < max_weight*n)
-	            idx++;
+	        while (buckets[idx].empty() && idx < max_weight * n)
+	            ++idx;
 	 
 	        if (idx == max_weight * n)
 	            break;
@@ -267,8 +269,8 @@ namespace aod {
 	    }
 	}
 
-	std::vector<unsigned int> dijkstraRadixWithOnlyDistances(Graph& graph, unsigned int s) {
-
+	std::vector<unsigned int> dijkstraRadixWithOnlyDistances(Graph& graph, unsigned int s)
+	{
 		auto& [n, m, adjacency_list] = graph;
 		const unsigned int max_weight = findMaxWeightInGraph(graph);
 

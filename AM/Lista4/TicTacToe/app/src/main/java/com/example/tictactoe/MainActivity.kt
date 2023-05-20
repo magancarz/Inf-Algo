@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TicTacToeTheme {
                 Scaffold() {
-                    Surface(color = MaterialTheme.colors.background) {
+                    Surface(color = MaterialTheme.colors.background) {ą
                         Column(
                             modifier = Modifier.fillMaxHeight(),
                             verticalArrangement = Arrangement.SpaceAround,

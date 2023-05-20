@@ -23,7 +23,7 @@ namespace aod {
 
 		Node() = default;
 		Node(int node, unsigned int distance)
-			: node(node), distance(distance) {}
+			: path_element(0), node(node), distance(distance) {}
 
 		Node(uint64_t path_element, int node, unsigned int distance)
 			: path_element(path_element), node(node), distance(distance) {}
@@ -41,9 +41,12 @@ namespace aod {
 
 	struct RadixHeap {
 		std::unordered_map<unsigned int, std::list<Node>> buckets;
+		int min_value;
 
 	    void push(Node x) {
-	        buckets[x.distance].push_back(x);
+			int key = x.distance;
+			min_value = std::min(min_value, key);
+	        buckets[key].push_back(x);
 	    }
 
 	    Node pop() {
@@ -59,7 +62,7 @@ namespace aod {
 	    }
 	};
 
-	unsigned int findMaxWeightInGraph(Graph& graph);
+	unsigned int findMaxWeightInGraph(const Graph& graph);
 
 	std::vector<unsigned int> dijkstra(Graph& graph, unsigned int from, unsigned int to);
 	std::vector<unsigned int> dijkstraWithOnlyDistances(Graph& graph, unsigned int src);
