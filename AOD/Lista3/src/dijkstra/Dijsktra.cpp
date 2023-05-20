@@ -5,7 +5,7 @@
 
 #include "Dijkstra.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 namespace aod {
 
@@ -110,7 +110,7 @@ namespace aod {
 	        dist[i].first = std::numeric_limits<unsigned int>::max();
 	    }
 
-		std::unordered_map<unsigned int, std::list<Node>> buckets;
+		std::map<unsigned int, std::list<Node>> buckets;
 
 	    buckets[0].push_back(Node(0, from, 0));
 	    dist[from].first = 0;
@@ -120,11 +120,13 @@ namespace aod {
 	 
 	    unsigned int idx = 0;
 	    while (true) {
-	        while (buckets[idx].empty() && idx < max_weight * n)
-	            ++idx;
-	 
-	        if (idx == max_weight * n)
-	            break;
+			auto it = buckets.begin();
+			if (it == buckets.end()) break;
+			idx = (*it).first;
+			if (buckets[idx].empty()) {
+				buckets.erase(idx);
+				continue;
+			}
 	 
 	        auto u = buckets[idx].front();
 	        buckets[idx].pop_front();
@@ -174,9 +176,7 @@ namespace aod {
 		auto& [n, m, adjacency_list] = graph;
 		std::vector<unsigned int> dist(graph.v + 1, std::numeric_limits<unsigned int>::max());
 
-		unsigned int multiplier = 50000000;
 		std::map<unsigned int, std::list<unsigned int>> buckets;
-		unsigned int current_bucket_idx_iter = 0;
 
 		auto max_weight = findMaxWeightInGraph(graph);
 #if DEBUG 1

@@ -28,15 +28,14 @@ namespace aod {
 					iss >> sp;
 					iss >> ss;
 					iss >> no_of_sources;
+				}
 
-					for (int i = 0; i < std::stoi(no_of_sources); ++i) {
-						getline(file_stream, line);
-						std::stringstream iss(line);
-						std::string s, source;
-						iss >> s;
-						iss >> source;
-						benchmark_sources.sources.push_back(std::stoi(source));
-					}
+				if (line[0] == 's') {
+					std::stringstream iss(line);
+					std::string s, source;
+					iss >> s;
+					iss >> source;
+					benchmark_sources.sources.push_back(std::stoi(source));
 				}
 
 				if (line[0] == 'c') {
