@@ -1,0 +1,189 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:weightSum="10"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/hours"
+            android:layout_gravity="clip_horizontal"
+            android:layout_width="0dp"
+            android:paddingLeft="10dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_weight="2"
+            android:text="Hours"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="20dp"/>
+
+        <SeekBar
+            android:id="@+id/sliderHours"
+            android:layout_width="0dp"
+            android:layout_gravity="clip_vertical"
+            android:layout_height="wrap_content"
+            android:max="23"
+            android:layout_weight="7"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:thumbTint="@color/purple_200"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/purple_500"
+            android:progress="0"
+            android:splitTrack="false" />
+
+
+        <TextView
+            android:id="@+id/sliderValueHours"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="0"
+            android:layout_gravity="clip_horizontal"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/minutes"
+            android:layout_gravity="clip_horizontal"
+            android:layout_width="0dp"
+            android:paddingLeft="10dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_weight="2"
+            android:text="Minutes"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="20dp"/>
+
+        <SeekBar
+            android:id="@+id/sliderMinutes"
+            android:layout_width="0dp"
+            android:layout_gravity="clip_vertical"
+            android:layout_height="wrap_content"
+            android:max="59"
+            android:layout_weight="7"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:thumbTint="@color/purple_200"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/purple_500"
+            android:progress="0"
+            android:splitTrack="false" />
+
+
+        <TextView
+            android:id="@+id/sliderValueMinutes"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="0"
+            android:layout_gravity="clip_horizontal"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/seconds"
+            android:layout_gravity="clip_horizontal"
+            android:layout_width="0dp"
+            android:paddingLeft="10dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_weight="2"
+            android:text="Seconds"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="20dp"/>
+
+        <SeekBar
+            android:id="@+id/sliderSeconds"
+            android:layout_width="0dp"
+            android:layout_gravity="clip_vertical"
+            android:layout_height="wrap_content"
+            android:max="59"
+            android:layout_weight="7"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:thumbTint="@color/purple_200"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/purple_500"
+            android:progress="0"
+            android:splitTrack="false" />
+
+
+        <TextView
+            android:id="@+id/sliderValueSeconds"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="0"
+            android:layout_gravity="clip_horizontal"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+
+    <com.example.customprogressbar.views.CustomView
+        android:id="@+id/progressBar"
+        android:layout_weight="5"
+        android:layout_width="200dp"
+        android:layout_height="0dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/button"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_height="match_parent"
+            android:onClick="startProgress"
+            android:text="Start" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/cancel"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_height="match_parent"
+            android:onClick="cancelTimer"
+            android:text="Cancel" />
+    </LinearLayout>
+
+</LinearLayout>
