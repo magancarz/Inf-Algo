@@ -39,9 +39,11 @@ model.compile(
 
 model.fit(
     ds_train,
-    epochs=5,
+    epochs=15,
     validation_data=ds_test,
 )
+
+model.save("trained_model")
 
 test_loss, test_acc = model.evaluate(ds_test)
 print('Test accuracy:', test_acc)
