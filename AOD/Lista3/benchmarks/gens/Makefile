@@ -19,9 +19,9 @@
 
 all: 
 	cd ./grid;    $(MAKE)
-	cd ./rand;    $(MAKE)
-	cd ./local_q; $(MAKE)
-	cd ./tor;     $(MAKE)
+	#cd ./rand;    $(MAKE)
+	#cd ./local_q; $(MAKE)
+	#cd ./tor;     $(MAKE)
 
 clean:
 	cd ./grid;    $(MAKE) clean

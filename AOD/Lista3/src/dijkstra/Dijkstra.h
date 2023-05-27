@@ -15,8 +15,6 @@ namespace aod {
 		unsigned int node;
 	};
 
-	inline std::vector<PathElement> path_elements;
-
 	struct Node {
 		uint64_t path_element;
 		unsigned int node;
@@ -40,13 +38,15 @@ namespace aod {
 		}
 	};
 
-	struct RadixHeap {
+	struct RadixHeap
+	{
 		std::vector<std::priority_queue<Node, std::vector<Node>, NodeComparator>> buckets;
 		unsigned int min_value;
 
 		RadixHeap() : buckets(32), min_value(std::numeric_limits<unsigned int>::max()) {}
 
-		void push(Node x) {
+		void push(Node x)
+		{
 			unsigned int key = x.distance;
 			std::bitset<32> test{ key };
 			int nearest_pow_of_two = 31;
@@ -55,14 +55,13 @@ namespace aod {
 			buckets[nearest_pow_of_two].push(x);
 		}
 
-		Node pop() {
-			unsigned int i = min_value;
-			while (buckets[i].empty()) {
-				++i;
-			}
-			min_value = i;
+		Node pop()
+		{
+			unsigned int i = 0;
+			while (buckets[i].empty()) ++i;
 			const Node res = buckets[i].top();
 			buckets[i].pop();
+
 			return res;
 		}
 

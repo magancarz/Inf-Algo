@@ -11,15 +11,15 @@
 
 int main()
 {
-	auto dijkstra_benchmark = aod::DijkstraBenchmark(
-		"benchmarks/inputs/USA-road-d/USA-road-d.NY.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NY.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NY.p2p");
-
 	/*auto dijkstra_benchmark = aod::DijkstraBenchmark(
-		"benchmarks/inputs/USA-road-t/USA-road-d.NY.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NY.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NY.p2p");*/
+		"benchmarks/inputs/USA-road-d/USA-road-d.CTR.gr",
+		"benchmarks/inputs/USA-road-d/USA-road-d.CTR.ss",
+		"benchmarks/inputs/USA-road-d/USA-road-d.CTR.p2p");*/
+
+	auto dijkstra_benchmark = aod::DijkstraBenchmark(
+		"benchmarks/inputs/Random4-n/Random4-n.14.0.gr",
+		"benchmarks/inputs/Random4-n/Random4-n.14.0.ss",
+		"benchmarks/inputs/Random4-n/Random4-n.14.0.p2p");
 
 	/*auto dijkstra_benchmark = aod::DijkstraBenchmark(
 		"tests/aod.txt",
@@ -61,19 +61,4 @@ int main()
 		<< " milliseconds."
 		<< std::endl;
 #endif
-
-	if (dijkstra_result == dial_dijkstra_result)
-	{
-		std::cout << "Essa1\n";
-	}
-
-	if (dijkstra_result == radix_dijkstra_result)
-	{
-		std::cout << "Essa2\n";
-	}
-
-	if (dial_dijkstra_result == radix_dijkstra_result)
-	{
-		std::cout << "Essa3\n";
-	}
 }
