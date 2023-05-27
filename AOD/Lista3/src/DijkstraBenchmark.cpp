@@ -174,27 +174,37 @@ namespace aod {
 		std::vector<std::vector<unsigned int>> paths;
 		paths.reserve(benchmark_pairs.path_goals.size());
 
-		std::mutex mtx;
-		std::for_each(std::execution::par, benchmark_pairs.path_goals.begin(), benchmark_pairs.path_goals.end(),
-		[&](std::pair<int, int> path_goal)
+		std::vector<int> blocks_iter(NO_OF_THREADS);
+		const int block_size = benchmark_pairs.path_goals.size() / NO_OF_THREADS;
+		for (int i = 0; i < blocks_iter.size(); ++i)
 		{
-			const auto start = std::chrono::steady_clock::now();
+			blocks_iter[i] = i;
+		}
 
-			const auto result = dijkstra_implementation(graph, path_goal.first, path_goal.second);
-
+		std::mutex mtx;
+		std::for_each(std::execution::par, blocks_iter.begin(), blocks_iter.end(),
+		[&](int it)
+		{
+			for (int i = it * block_size; i < std::min((it + 1) * block_size, static_cast<int>(benchmark_pairs.path_goals.size())); ++i)
 			{
-				std::lock_guard<std::mutex> lock(mtx);
-				paths.push_back(result);
-			}
+				const auto start = std::chrono::steady_clock::now();
 
-			const auto end = std::chrono::steady_clock::now();
+				const auto result = dijkstra_implementation(graph, benchmark_pairs.path_goals[i].first, benchmark_pairs.path_goals[i].second);
+
+				{
+					std::lock_guard<std::mutex> lock(mtx);
+					paths.push_back(result);
+				}
+
+				const auto end = std::chrono::steady_clock::now();
 
 #if DEBUG 1
-			std::cout << "Time elapsed: "
-				<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-				<< " milliseconds."
-				<< std::endl;
+				std::cout << "Time elapsed: "
+					<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+					<< " milliseconds."
+					<< std::endl;
 #endif
+			}
 		});
 
 		return paths;

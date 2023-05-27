@@ -2,6 +2,8 @@
 
 #include "Graph.h"
 
+#define NO_OF_THREADS 8
+
 namespace aod {
 
 	struct DijkstraBenchmarkSources {
