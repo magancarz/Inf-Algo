@@ -7,9 +7,13 @@
 
 #include "dijkstra/Dijkstra.h"
 
+#define DEBUG 0
+
 namespace aod {
 
-	DijkstraBenchmarkSources loadSourcesFromFile(const std::string& filename) {
+	DijkstraBenchmarkSources loadSourcesFromFile(const std::string& filename)
+	{
+		if (filename.empty()) return {};
 
 		std::ifstream file_stream(filename);
 		if (file_stream.is_open()) {
@@ -51,7 +55,9 @@ namespace aod {
 		throw std::runtime_error("Error: unable to open sources file!");
 	}
 
-	DijkstraBenchmarkPathsGoals loadPathGoalsFromFile(const std::string& filename) {
+	DijkstraBenchmarkPathsGoals loadPathGoalsFromFile(const std::string& filename)
+	{
+		if (filename.empty()) return {};
 
 		std::ifstream file_stream(filename);
 		if (file_stream.is_open()) {
@@ -70,16 +76,15 @@ namespace aod {
 					iss >> sp;
 					iss >> p2p;
 					iss >> no_of_path_goals;
+				}
 
-					for (int i = 0; i < std::stoi(no_of_path_goals); ++i) {
-						getline(file_stream, line);
-
-						std::stringstream iss(line);
-						std::string from, to;
-						iss >> from;
-						iss >> to;
-						benchmark_paths_goals.path_goals.push_back({ std::stoi(from), std::stoi(to) });
-					}
+				if (line[0] == 'q') {
+					std::stringstream iss(line);
+					std::string p, from, to;
+					iss >> p;
+					iss >> from;
+					iss >> to;
+					benchmark_paths_goals.path_goals.push_back({ std::stoi(from), std::stoi(to) });
 				}
 
 				if (line[0] == 'c') {
@@ -95,26 +100,92 @@ namespace aod {
 		throw std::runtime_error("Error: unable to open paths goals file!");
 	}
 
-	DijkstraBenchmark::DijkstraBenchmark(aod::Graph& graph, DijkstraBenchmarkSources sources)
-		: graph(graph), benchmark_sources(sources) {
-		sourcesBenchmark();
+	DijkstraBenchmark::DijkstraBenchmark(const std::string& graph_filename, const std::string& sources_filename, const std::string& paths_filename)
+	{
+		graph = loadGraphFromFile(graph_filename);
+		benchmark_sources = loadSourcesFromFile(sources_filename);
+		benchmark_pairs = loadPathGoalsFromFile(paths_filename);
 	}
 
-	void DijkstraBenchmark::sourcesBenchmark()
+	std::vector<std::vector<unsigned int>> DijkstraBenchmark::normalDijkstraSourcesBenchmark()
 	{
-		std::for_each(std::execution::par, benchmark_sources.sources.begin(), benchmark_sources.sources.end(),
-			[&](int source) 
-			{
-				const auto start = std::chrono::steady_clock::now();
+		return dijkstraSourcesBenchmark(&aod::dijkstraWithOnlyDistances);
+	}
 
-				aod::dijkstraWithOnlyDistances(graph, source);
+	std::vector<std::vector<unsigned int>> DijkstraBenchmark::dialDijkstraSourcesBenchmark()
+	{
+		return dijkstraSourcesBenchmark(&aod::dijkstraDialWithOnlyDistances);
+	}
 
-				const auto end = std::chrono::steady_clock::now();
-				std::cout << "(Dijkstra sources benchmark) source: "
-					+ std::to_string(source)
-					+ ", time elapsed: "
-					<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-					<< " milliseconds." << std::endl;
-			});
+	std::vector<std::vector<unsigned int>> DijkstraBenchmark::radixHeapDijkstraSourcesBenchmark()
+	{
+		return dijkstraSourcesBenchmark(&aod::dijkstraRadixWithOnlyDistances);
+	}
+
+	std::vector<std::vector<unsigned int>> DijkstraBenchmark::normalDijkstraPathsBenchmark()
+	{
+		return dijkstraPathsBenchmark(&aod::dijkstra);
+	}
+
+	std::vector<std::vector<unsigned int>> DijkstraBenchmark::dialDijkstraPathsBenchmark()
+	{
+		return dijkstraPathsBenchmark(&aod::dijkstraDial);
+	}
+
+	std::vector<std::vector<unsigned int>> DijkstraBenchmark::radixHeapDijkstraPathsBenchmark()
+	{
+		return dijkstraPathsBenchmark(&aod::dijkstraRadix);
+	}
+
+	std::vector<std::vector<unsigned int>> DijkstraBenchmark::dijkstraSourcesBenchmark(std::vector<unsigned int>(*dijkstra_implementation)(Graph& graph, unsigned int src))
+	{
+		std::vector<std::vector<unsigned int>> distances;
+		distances.reserve(benchmark_sources.sources.size());
+
+		std::for_each(benchmark_sources.sources.begin(), benchmark_sources.sources.end(),
+		[&](int source)
+		{
+			const auto start = std::chrono::steady_clock::now();
+
+			const auto result = dijkstra_implementation(graph, source);
+			distances.push_back(result);
+
+			const auto end = std::chrono::steady_clock::now();
+#if DEBUG 1
+			std::cout << "(Dijkstra sources benchmark) source: "
+				+ std::to_string(source)
+				+ ", time elapsed: "
+				<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+				<< " milliseconds."
+				<< std::endl;
+#endif
+		});
+
+		return distances;
+	}
+
+	std::vector<std::vector<unsigned int>> DijkstraBenchmark::dijkstraPathsBenchmark(std::vector<unsigned int>(*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to))
+	{
+		std::vector<std::vector<unsigned int>> paths;
+		paths.reserve(benchmark_pairs.path_goals.size());
+
+		std::for_each(benchmark_pairs.path_goals.begin(), benchmark_pairs.path_goals.end(),
+		[&](std::pair<int, int> path_goal)
+		{
+			const auto start = std::chrono::steady_clock::now();
+
+			const auto result = dijkstra_implementation(graph, path_goal.first, path_goal.second);
+			paths.push_back(result);
+
+			const auto end = std::chrono::steady_clock::now();
+#if DEBUG 1
+			std::cout << "Time elapsed: "
+				<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+				<< " milliseconds."
+				<< std::endl;
+#endif
+		});
+
+		return paths;
 	}
 }

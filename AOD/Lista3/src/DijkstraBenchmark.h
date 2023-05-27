@@ -18,12 +18,24 @@ namespace aod {
 
 	class DijkstraBenchmark {
 	public:
-		DijkstraBenchmark(aod::Graph& graph, DijkstraBenchmarkSources sources);
+		DijkstraBenchmark(
+			const std::string& graph_filename,
+			const std::string& sources_filename,
+			const std::string& paths_filename);
 
-		void sourcesBenchmark();
+		std::vector<std::vector<unsigned int>> normalDijkstraSourcesBenchmark();
+		std::vector<std::vector<unsigned int>> dialDijkstraSourcesBenchmark();
+		std::vector<std::vector<unsigned int>> radixHeapDijkstraSourcesBenchmark();
 
-	private:
-		aod::Graph& graph;
-		DijkstraBenchmarkSources& benchmark_sources;
+		std::vector<std::vector<unsigned int>> normalDijkstraPathsBenchmark();
+		std::vector<std::vector<unsigned int>> dialDijkstraPathsBenchmark();
+		std::vector<std::vector<unsigned int>> radixHeapDijkstraPathsBenchmark();
+
+		std::vector<std::vector<unsigned int>> dijkstraSourcesBenchmark(std::vector<unsigned int> (*dijkstra_implementation)(Graph& graph, unsigned int src));
+		std::vector<std::vector<unsigned int>> dijkstraPathsBenchmark(std::vector<unsigned int> (*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to));
+
+		Graph graph;
+		DijkstraBenchmarkSources benchmark_sources;
+		DijkstraBenchmarkPathsGoals benchmark_pairs;
 	};
 }
