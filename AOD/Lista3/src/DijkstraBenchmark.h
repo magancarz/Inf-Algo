@@ -2,7 +2,7 @@
 
 #include "Graph.h"
 
-#define NO_OF_THREADS 8
+#define NO_OF_THREADS 4
 
 namespace aod {
 
@@ -29,12 +29,12 @@ namespace aod {
 		std::vector<std::vector<unsigned int>> dialDijkstraSourcesBenchmark();
 		std::vector<std::vector<unsigned int>> radixHeapDijkstraSourcesBenchmark();
 
-		std::vector<std::vector<unsigned int>> normalDijkstraPathsBenchmark();
-		std::vector<std::vector<unsigned int>> dialDijkstraPathsBenchmark();
-		std::vector<std::vector<unsigned int>> radixHeapDijkstraPathsBenchmark();
+		std::vector<unsigned int> normalDijkstraPathsBenchmark();
+		std::vector<unsigned int> dialDijkstraPathsBenchmark();
+		std::vector<unsigned int> radixHeapDijkstraPathsBenchmark();
 
 		std::vector<std::vector<unsigned int>> dijkstraSourcesBenchmark(std::vector<unsigned int> (*dijkstra_implementation)(Graph& graph, unsigned int src));
-		std::vector<std::vector<unsigned int>> dijkstraPathsBenchmark(std::vector<unsigned int> (*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to));
+		std::vector<unsigned int> dijkstraPathsBenchmark(unsigned int (*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to));
 
 		Graph graph;
 		DijkstraBenchmarkSources benchmark_sources;

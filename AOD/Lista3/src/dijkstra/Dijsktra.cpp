@@ -21,8 +21,8 @@ namespace aod {
 		return max_weight;
 	}
 
-	std::vector<unsigned int> dijkstra(Graph& graph, unsigned int from, unsigned int to) {
-
+	unsigned int dijkstra(Graph& graph, unsigned int from, unsigned int to)
+	{
 		auto& [n, m, adjacency_list] = graph;
 
 		std::vector<uint64_t> distances(n + 1, std::numeric_limits<uint64_t>::max());
@@ -30,30 +30,14 @@ namespace aod {
 		std::priority_queue<Node, std::vector<Node>, NodeComparator> q;
 		q.push(Node(0, from, 0));
 
-		std::vector<PathElement> path_elements;
-		path_elements.push_back({ 0, from });
-		uint64_t path_element_idx = 1;
-
-		while (!q.empty()) {
+		while (!q.empty())
+		{
 			auto x = q.top();
 			q.pop();
 
-			if (x.node == to) {
-				std::vector<unsigned int> path;
-
-				uint64_t current_path_element = x.path_element;
-				while (current_path_element != 0) {
-					path.push_back(path_elements[current_path_element].node);
-					current_path_element = path_elements[current_path_element].parent;
-				}
-
-				path.push_back(from);
-
-				std::ranges::reverse(path);
-
-				path_elements.clear();
-
-				return path;
+			if (x.node == to)
+			{
+				return x.path_iter;
 			}
 
 			if (x.distance != distances[x.node]) continue;
@@ -62,9 +46,7 @@ namespace aod {
 				if (distances[e.first] > distances[x.node] + e.second) {
 					distances[e.first] = distances[x.node] + e.second;
 
-					path_elements.push_back(PathElement(x.path_element, e.first));
-					q.push(Node(path_element_idx, e.first, distances[e.first]));
-					++path_element_idx;
+					q.push(Node(x.path_iter + 1, e.first, distances[e.first]));
 				}
 			}
 		}
@@ -81,14 +63,17 @@ namespace aod {
 		dist[src] = 0;
 		pq.push({ 0, src });
 
-		while (!pq.empty()) {
+		while (!pq.empty())
+		{
 			const auto [d, u] = pq.top();
 			pq.pop();
 
 			if (d > dist[u]) continue;
 
-			for (const auto& [v, w] : adjacency_list[u]) {
-				if (dist[u] + w < dist[v]) {
+			for (const auto& [v, w] : adjacency_list[u])
+			{
+				if (dist[u] + w < dist[v])
+				{
 					if (dist[v] + w >= std::numeric_limits<uint64_t>::max()) std::cout << "Damn\n";
 					dist[v] = dist[u] + w;
 					pq.push({ dist[v], v});
@@ -99,26 +84,17 @@ namespace aod {
 		return dist;
 	}
 
-	std::vector<unsigned int> dijkstraDial(Graph& graph, unsigned int from, unsigned int to) {
+	unsigned int dijkstraDial(Graph& graph, unsigned int from, unsigned int to) {
 
 		auto& [n, m, adjacency_list] = graph;
-		const unsigned int max_weight = findMaxWeightInGraph(graph);
 
-		std::vector<std::pair<unsigned int, std::list<Node>::iterator>> dist(n + 1);
+		std::vector<unsigned int> dist(n + 1, std::numeric_limits<unsigned int>::max());
 	 
-	    for (int i = 0; i <= n; i++) {
-	        dist[i].first = std::numeric_limits<unsigned int>::max();
-	    }
+		std::map<unsigned int, std::priority_queue<Node, std::vector<Node>, NodeComparator>> buckets;
 
-		std::map<unsigned int, std::list<Node>> buckets;
+	    buckets[0].push(Node(0, from, 0));
+	    dist[from] = 0;
 
-	    buckets[0].push_back(Node(0, from, 0));
-	    dist[from].first = 0;
-
-		std::vector<PathElement> path_elements;
-		path_elements.push_back({ 0, from });
-		uint64_t path_element_idx = 1;
-	 
 	    unsigned int idx = 0;
 	    while (true) {
 			auto it = buckets.begin();
@@ -129,45 +105,24 @@ namespace aod {
 				continue;
 			}
 	 
-	        auto u = buckets[idx].front();
-	        buckets[idx].pop_front();
+	        auto u = buckets[idx].top();
+	        buckets[idx].pop();
 
 			if (u.node == to) {
-				std::vector<unsigned int> path;
-
-				uint64_t current_path_element = u.path_element;
-				while (current_path_element != 0) {
-					path.push_back(path_elements[current_path_element].node);
-					current_path_element = path_elements[current_path_element].parent;
-				}
-
-				path.push_back(from);
-
-				std::ranges::reverse(path);
-
-				path_elements.clear();
-
-	            return path;
+	            return u.path_iter;
 	        }
 
-	        for (const auto& [v, weight] : adjacency_list[u.node]) {
-
-	            const unsigned int du = dist[u.node].first;
-	            unsigned int dv = dist[v].first;
+	        for (const auto& [v, weight] : adjacency_list[u.node])
+			{
+	            const unsigned int du = dist[u.node];
+	            unsigned int dv = dist[v];
 	 
-	            if (du + weight < dv) {
-	                if (dv != std::numeric_limits<unsigned int>::max())
-	                    buckets[dv].erase(dist[v].second);
-					if (dist[u.node].first + weight >= std::numeric_limits<uint64_t>::max()) std::cout << "Damn\n";
-	 
-	                dist[v].first = du + weight;
-	                dv = dist[v].first;
+	            if (du + weight < dv)
+				{
+	                dist[v] = du + weight;
+	                dv = dist[v];
 
-					path_elements.push_back(PathElement(u.path_element, v));
-	                buckets[dv].push_front(Node(path_element_idx, v, du + weight));
-					++path_element_idx;
-
-	                dist[v].second = buckets[dv].begin();
+	                buckets[dv].push(Node(u.path_iter + 1, v, du + weight));
 	            }
 	        }
 	    }
@@ -224,7 +179,7 @@ namespace aod {
 		return dist;
 	}
 
-	std::vector<unsigned int> dijkstraRadix(Graph& graph, unsigned int from, unsigned int to)
+	unsigned int dijkstraRadix(Graph& graph, unsigned int from, unsigned int to)
 	{
 		auto& [n, m, adjacency_list] = graph;
 
@@ -233,29 +188,11 @@ namespace aod {
 	    std::unique_ptr<RadixHeap> q = std::make_unique<RadixHeap>();
 	    q->push(Node(0, from, 0));
 
-		std::vector<PathElement> path_elements;
-		path_elements.push_back({ 0, from });
-		uint64_t path_element_idx = 1;
-
 	    while (!q->empty()) {
 	        auto x = q->pop();
 
 			if (x.node == to) {
-				std::vector<unsigned int> path;
-
-				uint64_t current_path_element = x.path_element;
-				while (current_path_element != 0) {
-					path.push_back(path_elements[current_path_element].node);
-					current_path_element = path_elements[current_path_element].parent;
-				}
-
-				path.push_back(from);
-
-				std::ranges::reverse(path);
-
-				path_elements.clear();
-
-	            return path;
+	            return x.node;
 	        }
 
 	        if (x.distance != distances[x.node]) continue;
@@ -265,9 +202,7 @@ namespace aod {
 					if (distances[x.node] + e.second >= std::numeric_limits<uint64_t>::max()) std::cout << "Damn\n";
 	                distances[e.first] = distances[x.node] + e.second;
 
-					path_elements.push_back(PathElement(x.path_element, e.first));
-	                q->push(Node(path_element_idx, e.first, distances[e.first]));
-					++path_element_idx;
+	                q->push(Node(x.path_iter + 1, e.first, distances[e.first]));
 	            }
 	        }
 	    }

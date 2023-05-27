@@ -10,22 +10,17 @@
 
 namespace aod {
 
-	struct PathElement {
-		uint64_t parent;
-		unsigned int node;
-	};
-
 	struct Node {
-		uint64_t path_element;
+		unsigned int path_iter;
 		unsigned int node;
 		unsigned int distance;
 
 		Node() = default;
 		Node(int node, unsigned int distance)
-			: path_element(0), node(node), distance(distance) {}
+			: path_iter(0), node(node), distance(distance) {}
 
-		Node(uint64_t path_element, int node, unsigned int distance)
-			: path_element(path_element), node(node), distance(distance) {}
+		Node(unsigned int path_iter, int node, unsigned int distance)
+			: path_iter(path_iter), node(node), distance(distance) {}
 
 		bool operator<(const Node& other) const {
 			return distance > other.distance;
@@ -76,12 +71,12 @@ namespace aod {
 
 	unsigned int findMaxWeightInGraph(const Graph& graph);
 
-	std::vector<unsigned int> dijkstra(Graph& graph, unsigned int from, unsigned int to);
+	unsigned int dijkstra(Graph& graph, unsigned int from, unsigned int to);
 	std::vector<unsigned int> dijkstraWithOnlyDistances(Graph& graph, unsigned int src);
 
-	std::vector<unsigned int> dijkstraDial(Graph& graph, unsigned int from, unsigned int to);
+	unsigned int dijkstraDial(Graph& graph, unsigned int from, unsigned int to);
 	std::vector<unsigned int> dijkstraDialWithOnlyDistances(Graph& graph, unsigned int src);
 
-	std::vector<unsigned int> dijkstraRadix(Graph& graph, unsigned int from, unsigned int to);
+	unsigned int dijkstraRadix(Graph& graph, unsigned int from, unsigned int to);
 	std::vector<unsigned int> dijkstraRadixWithOnlyDistances(Graph& graph, unsigned int s);
 }

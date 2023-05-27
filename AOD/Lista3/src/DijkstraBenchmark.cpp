@@ -122,17 +122,17 @@ namespace aod {
 		return dijkstraSourcesBenchmark(&aod::dijkstraRadixWithOnlyDistances);
 	}
 
-	std::vector<std::vector<unsigned int>> DijkstraBenchmark::normalDijkstraPathsBenchmark()
+	std::vector<unsigned int> DijkstraBenchmark::normalDijkstraPathsBenchmark()
 	{
 		return dijkstraPathsBenchmark(&aod::dijkstra);
 	}
 
-	std::vector<std::vector<unsigned int>> DijkstraBenchmark::dialDijkstraPathsBenchmark()
+	std::vector<unsigned int> DijkstraBenchmark::dialDijkstraPathsBenchmark()
 	{
 		return dijkstraPathsBenchmark(&aod::dijkstraDial);
 	}
 
-	std::vector<std::vector<unsigned int>> DijkstraBenchmark::radixHeapDijkstraPathsBenchmark()
+	std::vector<unsigned int> DijkstraBenchmark::radixHeapDijkstraPathsBenchmark()
 	{
 		return dijkstraPathsBenchmark(&aod::dijkstraRadix);
 	}
@@ -169,9 +169,9 @@ namespace aod {
 		return distances;
 	}
 
-	std::vector<std::vector<unsigned int>> DijkstraBenchmark::dijkstraPathsBenchmark(std::vector<unsigned int>(*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to))
+	std::vector<unsigned int> DijkstraBenchmark::dijkstraPathsBenchmark(unsigned int(*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to))
 	{
-		std::vector<std::vector<unsigned int>> paths;
+		std::vector<unsigned int> paths;
 		paths.reserve(benchmark_pairs.path_goals.size());
 
 		std::vector<int> blocks_iter(NO_OF_THREADS);
