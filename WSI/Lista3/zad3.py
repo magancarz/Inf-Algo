@@ -55,7 +55,7 @@ class TwoLayerNN:
 
 # Non-normalized data
 X = np.array([[0.8, -0.6], [-0.4, 0.2], [0.3, 0.9]])
-Y = np.array([[1], [0], [1]])
+Y = np.array([[1], [1], [0]])
 
 model = TwoLayerNN()
 model.train(X, Y)
