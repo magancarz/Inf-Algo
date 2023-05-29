@@ -9,6 +9,9 @@ import tensorflow_datasets as tfds
     with_info=True,
 )
 
+train_size = tf.data.experimental.cardinality(ds_train).numpy()
+print("Number of training examples:", train_size)
+
 def normalize_img(image, label):
   """Normalizes images: `uint8` -> `float32`."""
   return tf.cast(image, tf.float32) / 255., label
