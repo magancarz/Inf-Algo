@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Notepad App - Notatka</title>
+  <link rel="stylesheet" type="text/css" href="/styles3.css">
+
+</head>
+<body>
+  <h1>Notatka</h1>
+
+  <div class="note-container">
+      <div class="button-container">
+        <form method="POST" action="/note/<%= note._id %>?_method=PUT">
+          <label for="title">Tytuł:</label>
+          <input type="text" id="title" name="title" value="<%= note.title %>" required>
+          <label for="content">Treść:</label>
+          <textarea id="content" name="content" required><%= note.content %></textarea>
+          <button type="submit">Edytuj</button>
+        </form>
+        
+        <form method="POST" action="/note/<%= note._id %>?_method=DELETE">
+          <button type="submit">Usuń notatkę</button>
+        </form>
+        <form method="GET" action="/note">
+          <button type="submit">Pokaż notatki</button>
+        </form>
+        <form method="GET" action="/">
+          <button type="submit">Dodaj notatkę</button>
+        </form>
+      </div>
+    
+  </div>
+</body>
+</html>

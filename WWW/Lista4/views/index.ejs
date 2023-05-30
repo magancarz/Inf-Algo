@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Notepad App</title>
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Notepad App</h1>
+
+    <% if (successMessage) { %>
+      <p id="successMessage" class="success-message"><%= successMessage %></p>
+    <% } %>
+    
+    <!--required wymaga aby pole było niepuste-->
+    <form id="noteForm" method="POST" action="/">
+      <input type="text" name="title" placeholder="Tytuł" required>
+      <textarea name="content" placeholder="Treść" required></textarea>
+      <button type="submit">Dodaj notatkę</button>
+    </form>
+
+    <form id="noteForm2" method="GET" action="/note">
+      <button type="submit">Pokaż notatki</button>
+    </form>
+  </div>
+  
+  <script>
+    const successMessageElement = document.getElementById('successMessage');
+  
+    if (successMessage) {
+      // Dodaj klasę show, aby wyświetlić dymek
+      successMessageElement.classList.add('show');
+  
+      // Po chwili usuń klasę show, powodując jego zniknięcie
+      setTimeout(() => {
+        successMessageElement.classList.remove('show');
+      }, 1200);
+    }
+  </script>
+  
+</body>
+</html>

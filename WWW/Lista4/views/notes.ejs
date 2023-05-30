@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Notepad App - Notatki</title>
+  <link rel="stylesheet" type="text/css" href="/styles2.css">
+</head>
+<body>
+  <h1>Notatki</h1>
+
+  <form id="noteForm" method="GET" action="/">
+    <button type="submit">Dodaj notatkę</button>
+  </form>
+  <br>
+
+  <div class="notes-container">
+    <% if (notes && notes.length > 0) { %>
+      <% notes.forEach((note) => { %>
+        <div class="note-container" onclick="showNote('<%= note._id %>')">
+          <h2 class="note-title"><%= note.title %></h2>
+          <p class="note-content"><%= note.content %></p>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p>Brak notatek do wyświetlenia.</p>
+    <% } %>
+  </div>
+
+  <script>
+    function showNote(noteId) {
+      window.location.href = "/note/" + noteId;
+    }
+  </script>
+</body>
+</html>
