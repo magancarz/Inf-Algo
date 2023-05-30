@@ -2,7 +2,7 @@
 
 #include "Graph.h"
 
-#define NO_OF_THREADS 4
+#define NO_OF_THREADS 1
 
 namespace aod {
 
@@ -18,8 +18,17 @@ namespace aod {
 
 	DijkstraBenchmarkPathsGoals loadPathGoalsFromFile(const std::string& filename);
 
+	struct PathResult
+	{
+		unsigned int from;
+		unsigned int to;
+		unsigned int length;
+	};
+
 	class DijkstraBenchmark {
 	public:
+		DijkstraBenchmark() = default;
+
 		DijkstraBenchmark(
 			const std::string& graph_filename,
 			const std::string& sources_filename,
@@ -29,12 +38,15 @@ namespace aod {
 		std::vector<std::vector<unsigned int>> dialDijkstraSourcesBenchmark();
 		std::vector<std::vector<unsigned int>> radixHeapDijkstraSourcesBenchmark();
 
-		std::vector<unsigned int> normalDijkstraPathsBenchmark();
-		std::vector<unsigned int> dialDijkstraPathsBenchmark();
-		std::vector<unsigned int> radixHeapDijkstraPathsBenchmark();
+		std::vector<PathResult> normalDijkstraPathsBenchmark();
+		std::vector<PathResult> dialDijkstraPathsBenchmark();
+		std::vector<PathResult> radixHeapDijkstraPathsBenchmark();
 
 		std::vector<std::vector<unsigned int>> dijkstraSourcesBenchmark(std::vector<unsigned int> (*dijkstra_implementation)(Graph& graph, unsigned int src));
-		std::vector<unsigned int> dijkstraPathsBenchmark(unsigned int (*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to));
+		std::vector<PathResult> dijkstraPathsBenchmark(unsigned int (*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to));
+
+		void saveSourcesBenchmarkResults(const std::string& filename, const std::string& algo_type, const std::vector<unsigned int>&dijkstra_result, const std::vector<unsigned int>& dial_dijkstra_result, const std::vector<unsigned int>& radix_dijkstra_result);
+		void savePathsBenchmarkResults(const std::string& filename, const std::string& algo_type, const std::vector<unsigned int>& dijkstra_result, const std::vector<unsigned int>& dial_dijkstra_result, const std::vector<unsigned int>& radix_dijkstra_result);
 
 		Graph graph;
 		DijkstraBenchmarkSources benchmark_sources;

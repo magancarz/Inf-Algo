@@ -131,14 +131,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\dial.cpp" />
     <ClCompile Include="src\DijkstraBenchmark.cpp" />
-    <ClCompile Include="src\dijkstra\Dijsktra.cpp" />
+    <ClCompile Include="src\dijkstraImpl\Dijsktra.cpp" />
     <ClCompile Include="src\Graph.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\dijkstra.cpp" />
+    <ClCompile Include="src\radixheap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DijkstraBenchmark.h" />
-    <ClInclude Include="src\dijkstra\Dijkstra.h" />
+    <ClInclude Include="src\dijkstraImpl\Dijkstra.h" />
     <ClInclude Include="src\Graph.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

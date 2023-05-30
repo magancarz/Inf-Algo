@@ -4,10 +4,9 @@
 #include <iostream>
 #include <fstream>
 #include <execution>
+#include <sstream>
 
-#include "dijkstra/Dijkstra.h"
-
-#define DEBUG 0
+#include "dijkstraImpl/Dijkstra.h"
 
 namespace aod {
 
@@ -122,17 +121,17 @@ namespace aod {
 		return dijkstraSourcesBenchmark(&aod::dijkstraRadixWithOnlyDistances);
 	}
 
-	std::vector<unsigned int> DijkstraBenchmark::normalDijkstraPathsBenchmark()
+	std::vector<PathResult> DijkstraBenchmark::normalDijkstraPathsBenchmark()
 	{
 		return dijkstraPathsBenchmark(&aod::dijkstra);
 	}
 
-	std::vector<unsigned int> DijkstraBenchmark::dialDijkstraPathsBenchmark()
+	std::vector<PathResult> DijkstraBenchmark::dialDijkstraPathsBenchmark()
 	{
 		return dijkstraPathsBenchmark(&aod::dijkstraDial);
 	}
 
-	std::vector<unsigned int> DijkstraBenchmark::radixHeapDijkstraPathsBenchmark()
+	std::vector<PathResult> DijkstraBenchmark::radixHeapDijkstraPathsBenchmark()
 	{
 		return dijkstraPathsBenchmark(&aod::dijkstraRadix);
 	}
@@ -150,28 +149,22 @@ namespace aod {
 
 			const auto result = dijkstra_implementation(graph, source);
 
+				std::cout << source << std::endl;
+
 			{
 				std::lock_guard<std::mutex> lock(mtx);
 				distances.push_back(result);
 			}
 
 			const auto end = std::chrono::steady_clock::now();
-#if DEBUG 1
-			std::cout << "(Dijkstra sources benchmark) source: "
-				+ std::to_string(source)
-				+ ", time elapsed: "
-				<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-				<< " milliseconds."
-				<< std::endl;
-#endif
 		});
 
 		return distances;
 	}
 
-	std::vector<unsigned int> DijkstraBenchmark::dijkstraPathsBenchmark(unsigned int(*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to))
+	std::vector<PathResult> DijkstraBenchmark::dijkstraPathsBenchmark(unsigned int(*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to))
 	{
-		std::vector<unsigned int> paths;
+		std::vector<PathResult> paths;
 		paths.reserve(benchmark_pairs.path_goals.size());
 
 		std::vector<int> blocks_iter(NO_OF_THREADS);
@@ -189,21 +182,18 @@ namespace aod {
 			{
 				const auto start = std::chrono::steady_clock::now();
 
-				const auto result = dijkstra_implementation(graph, benchmark_pairs.path_goals[i].first, benchmark_pairs.path_goals[i].second);
+				unsigned int from = benchmark_pairs.path_goals[i].first;
+				unsigned int to = benchmark_pairs.path_goals[i].second;
+				const auto result = dijkstra_implementation(graph, from, to);
+
+				std::cout << i << std::endl;
 
 				{
 					std::lock_guard<std::mutex> lock(mtx);
-					paths.push_back(result);
+					paths.push_back({ from, to, result });
 				}
 
 				const auto end = std::chrono::steady_clock::now();
-
-#if DEBUG 1
-				std::cout << "Time elapsed: "
-					<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-					<< " milliseconds."
-					<< std::endl;
-#endif
 			}
 		});
 
