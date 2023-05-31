@@ -13,47 +13,38 @@ int main()
 {
 	std::vector<std::string> graph_inputs =
 	{
-		"benchmarks/inputs/USA-road-d/USA-road-d.NY.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.BAY.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.COL.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.FLA.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NW.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NE.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.CAL.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.LKS.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.E.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.W.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.CTR.gr"
+		"benchmarks/inputs/Square-n/Square-n.14.0.gr",
+		"benchmarks/inputs/Square-n/Square-n.15.0.gr",
+		"benchmarks/inputs/Square-n/Square-n.16.0.gr",
+		"benchmarks/inputs/Square-n/Square-n.17.0.gr",
+		"benchmarks/inputs/Square-n/Square-n.18.0.gr",
+		"benchmarks/inputs/Square-n/Square-n.19.0.gr",
+		"benchmarks/inputs/Square-n/Square-n.20.0.gr",
+		"benchmarks/inputs/Square-n/Square-n.21.0.gr"
 	};
 
 	std::vector<std::string> sources_inputs =
 	{
-		"benchmarks/inputs/USA-road-d/USA-road-d.NY.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.BAY.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.COL.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.FLA.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NW.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NE.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.CAL.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.LKS.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.E.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.W.ss",
-		"benchmarks/inputs/USA-road-d/USA-road-d.CTR.ss"
+		"benchmarks/inputs/Square-n/Square-n.14.0.ss",
+		"benchmarks/inputs/Square-n/Square-n.15.0.ss",
+		"benchmarks/inputs/Square-n/Square-n.16.0.ss",
+		"benchmarks/inputs/Square-n/Square-n.17.0.ss",
+		"benchmarks/inputs/Square-n/Square-n.18.0.ss",
+		"benchmarks/inputs/Square-n/Square-n.19.0.ss",
+		"benchmarks/inputs/Square-n/Square-n.20.0.ss",
+		"benchmarks/inputs/Square-n/Square-n.21.0.ss"
 	};
 
 	std::vector<std::string> paths_inputs =
 	{
-		"benchmarks/inputs/USA-road-d/USA-road-d.NY.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.BAY.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.COL.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.FLA.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NW.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.NE.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.CAL.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.LKS.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.E.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.W.p2p",
-		"benchmarks/inputs/USA-road-d/USA-road-d.CTR.p2p"
+		"benchmarks/inputs/Square-n/Square-n.14.0.p2p",
+		"benchmarks/inputs/Square-n/Square-n.15.0.p2p",
+		"benchmarks/inputs/Square-n/Square-n.16.0.p2p",
+		"benchmarks/inputs/Square-n/Square-n.17.0.p2p",
+		"benchmarks/inputs/Square-n/Square-n.18.0.p2p",
+		"benchmarks/inputs/Square-n/Square-n.19.0.p2p",
+		"benchmarks/inputs/Square-n/Square-n.20.0.p2p",
+		"benchmarks/inputs/Square-n/Square-n.21.0.p2p"
 	};
 
 	std::vector<unsigned int> dijkstra_results;
@@ -107,7 +98,7 @@ int main()
 		radix_results.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 	}
 
-	std::ofstream results_file("paths_benchmark_results.txt");
+	std::ofstream results_file("square_n_paths_benchmark_results.txt");
 	if (results_file.is_open())
 	{
 		results_file << "Dijkstra paths results: (from graphs increasing in size)\n";
