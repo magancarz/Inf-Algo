@@ -136,6 +136,7 @@
     <ClCompile Include="src\dijkstraImpl\Dijsktra.cpp" />
     <ClCompile Include="src\Graph.cpp" />
     <ClCompile Include="src\dijkstra.cpp" />
+    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\radixheap.cpp" />
   </ItemGroup>
   <ItemGroup>

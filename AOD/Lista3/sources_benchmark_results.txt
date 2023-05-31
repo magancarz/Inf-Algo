@@ -1,0 +1,12 @@
+Dijkstra sources results: (from graphs increasing in size)
+4622
+4571
+4700
+Dial sources results: (from graphs increasing in size)
+12514
+11798
+11763
+Radix Heap sources results: (from graphs increasing in size)
+6925
+6478
+6504

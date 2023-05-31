@@ -149,8 +149,6 @@ namespace aod {
 
 			const auto result = dijkstra_implementation(graph, source);
 
-				std::cout << source << std::endl;
-
 			{
 				std::lock_guard<std::mutex> lock(mtx);
 				distances.push_back(result);
@@ -185,8 +183,6 @@ namespace aod {
 				unsigned int from = benchmark_pairs.path_goals[i].first;
 				unsigned int to = benchmark_pairs.path_goals[i].second;
 				const auto result = dijkstra_implementation(graph, from, to);
-
-				std::cout << i << std::endl;
 
 				{
 					std::lock_guard<std::mutex> lock(mtx);
