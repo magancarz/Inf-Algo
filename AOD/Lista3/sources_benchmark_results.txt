@@ -1,12 +1,38 @@
 Dijkstra sources results: (from graphs increasing in size)
-4622
-4571
-4700
+4544
+4444
+4716
+4906
+5493
+5923
+6090
+6001
+6494
+7078
+9397
+
 Dial sources results: (from graphs increasing in size)
-12514
-11798
-11763
+13292
+11770
+11793
+12005
+12856
+13077
+13242
+13597
+14133
+14974
+17810
+
 Radix Heap sources results: (from graphs increasing in size)
-6925
-6478
-6504
+6596
+5968
+6471
+6662
+7292
+7986
+8449
+8235
+8838
+8940
+11893

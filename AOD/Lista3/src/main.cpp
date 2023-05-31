@@ -16,14 +16,14 @@ int main()
 		"benchmarks/inputs/USA-road-d/USA-road-d.NY.gr",
 		"benchmarks/inputs/USA-road-d/USA-road-d.BAY.gr",
 		"benchmarks/inputs/USA-road-d/USA-road-d.COL.gr",
-		/*"benchmarks/inputs/USA-road-d/USA-road-d.FLA.gr",
+		"benchmarks/inputs/USA-road-d/USA-road-d.FLA.gr",
 		"benchmarks/inputs/USA-road-d/USA-road-d.NW.gr",
 		"benchmarks/inputs/USA-road-d/USA-road-d.NE.gr",
 		"benchmarks/inputs/USA-road-d/USA-road-d.CAL.gr",
 		"benchmarks/inputs/USA-road-d/USA-road-d.LKS.gr",
 		"benchmarks/inputs/USA-road-d/USA-road-d.E.gr",
 		"benchmarks/inputs/USA-road-d/USA-road-d.W.gr",
-		"benchmarks/inputs/USA-road-d/USA-road-d.CTR.gr"*/
+		"benchmarks/inputs/USA-road-d/USA-road-d.CTR.gr"
 	};
 
 	std::vector<std::string> sources_inputs =
@@ -69,7 +69,7 @@ int main()
 
 		auto start = std::chrono::steady_clock::now();
 
-		auto dijkstra_result = dijkstra_benchmark.normalDijkstraSourcesBenchmark();
+		auto dijkstra_result = dijkstra_benchmark.normalDijkstraPathsBenchmark();
 
 		auto end = std::chrono::steady_clock::now();
 	#if DEBUG 1
@@ -82,7 +82,7 @@ int main()
 
 		start = std::chrono::steady_clock::now();
 
-		auto dial_dijkstra_result = dijkstra_benchmark.dialDijkstraSourcesBenchmark();
+		auto dial_dijkstra_result = dijkstra_benchmark.dialDijkstraPathsBenchmark();
 
 		end = std::chrono::steady_clock::now();
 	#if DEBUG 1
@@ -95,7 +95,7 @@ int main()
 
 		start = std::chrono::steady_clock::now();
 
-		auto radix_dijkstra_result = dijkstra_benchmark.radixHeapDijkstraSourcesBenchmark();
+		auto radix_dijkstra_result = dijkstra_benchmark.radixHeapDijkstraPathsBenchmark();
 
 		end = std::chrono::steady_clock::now();
 	#if DEBUG 1
@@ -107,24 +107,24 @@ int main()
 		radix_results.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 	}
 
-	std::ofstream results_file("sources_benchmark_results.txt");
+	std::ofstream results_file("paths_benchmark_results.txt");
 	if (results_file.is_open())
 	{
-		results_file << "Dijkstra sources results: (from graphs increasing in size)\n";
+		results_file << "Dijkstra paths results: (from graphs increasing in size)\n";
 		for (auto& result : dijkstra_results)
 		{
 			results_file << result << std::endl;
 		}
 		results_file << std::endl;
 
-		results_file << "Dial sources results: (from graphs increasing in size)\n";
+		results_file << "Dial paths results: (from graphs increasing in size)\n";
 		for (auto& result : dial_results)
 		{
 			results_file << result << std::endl;
 		}
 		results_file << std::endl;
 
-		results_file << "Radix Heap sources results: (from graphs increasing in size)\n";
+		results_file << "Radix Heap paths results: (from graphs increasing in size)\n";
 		for (auto& result : radix_results)
 		{
 			results_file << result << std::endl;
