@@ -1,0 +1,29 @@
+Dijkstra paths results: (from graphs increasing in size)
+886
+631
+870
+1313
+1817
+2321
+2425
+2885
+
+Dial paths results: (from graphs increasing in size)
+3870
+3433
+3751
+4029
+4858
+5535
+5950
+7963
+
+Radix Heap paths results: (from graphs increasing in size)
+982
+962
+1430
+1878
+2643
+2994
+3252
+4697

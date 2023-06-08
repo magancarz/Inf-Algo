@@ -8,7 +8,7 @@
 
 namespace aod {
 
-	unsigned int findMaxWeightInGraph(Graph& graph)
+	uint64_t findMaxWeightInGraph(Graph& graph)
 	{
 		int max_weight = 0;
 		for (const auto& node : std::ranges::views::iota(1, static_cast<int>(graph.v)))
@@ -22,7 +22,7 @@ namespace aod {
 		return max_weight;
 	}
 
-	unsigned int findMinWeightInGraph(Graph& graph)
+	uint64_t findMinWeightInGraph(Graph& graph)
 	{
 		int max_weight = std::numeric_limits<int>::max();
 		for (const auto& node : std::ranges::views::iota(1, static_cast<int>(graph.v)))
@@ -36,7 +36,7 @@ namespace aod {
 		return max_weight;
 	}
 
-	unsigned int dijkstra(Graph& graph, unsigned int from, unsigned int to)
+	uint64_t dijkstra(Graph& graph, unsigned int from, unsigned int to)
 	{
 		auto& [n, m, adjacency_list] = graph;
 
@@ -67,13 +67,13 @@ namespace aod {
 		}
 	}
 
-	std::vector<unsigned int> dijkstraWithOnlyDistances(Graph& graph, unsigned int src)
+	std::vector<uint64_t> dijkstraWithOnlyDistances(Graph& graph, unsigned int src)
 	{
 		auto& [n, m, adjacency_list] = graph;
 
-		std::vector<unsigned int> dist(n + 1, std::numeric_limits<unsigned int>::max());
+		std::vector<uint64_t> dist(n + 1, std::numeric_limits<uint64_t>::max());
 
-		std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>> pq;
+		std::priority_queue<std::pair<uint64_t, uint64_t>, std::vector<std::pair<uint64_t, uint64_t>>, std::greater<>> pq;
 
 		dist[src] = 0;
 		pq.push({ 0, src });
@@ -89,7 +89,6 @@ namespace aod {
 			{
 				if (dist[u] + w < dist[v])
 				{
-					if (dist[v] + w >= std::numeric_limits<uint64_t>::max()) std::cout << "Damn\n";
 					dist[v] = dist[u] + w;
 					pq.push({ dist[v], v});
 				}
@@ -99,13 +98,13 @@ namespace aod {
 		return dist;
 	}
 
-	unsigned int dijkstraDial(Graph& graph, unsigned int from, unsigned int to) {
+	uint64_t dijkstraDial(Graph& graph, unsigned int from, unsigned int to) {
 
 		auto& [n, m, adjacency_list] = graph;
 
-		std::vector<unsigned int> dist(n + 1, std::numeric_limits<unsigned int>::max());
+		std::vector<uint64_t> dist(n + 1, std::numeric_limits<uint64_t>::max());
 	 
-		std::map<unsigned int, std::priority_queue<Node, std::vector<Node>, NodeComparator>> buckets;
+		std::map<uint64_t, std::priority_queue<Node, std::vector<Node>, NodeComparator>> buckets;
 
 	    buckets[0].push(Node(0, from, 0));
 	    dist[from] = 0;
@@ -129,8 +128,8 @@ namespace aod {
 
 	        for (const auto& [v, weight] : adjacency_list[u.node])
 			{
-	            const unsigned int du = dist[u.node];
-	            unsigned int dv = dist[v];
+	            const uint64_t du = dist[u.node];
+	            uint64_t dv = dist[v];
 	 
 	            if (du + weight < dv)
 				{
@@ -143,17 +142,17 @@ namespace aod {
 	    }
 	}
 
-	std::vector<unsigned int> dijkstraDialWithOnlyDistances(Graph& graph, unsigned int src)
+	std::vector<uint64_t> dijkstraDialWithOnlyDistances(Graph& graph, unsigned int src)
 	{
 		auto& [n, m, adjacency_list] = graph;
-		std::vector<unsigned int> dist(graph.v + 1, std::numeric_limits<unsigned int>::max());
+		std::vector<uint64_t> dist(graph.v + 1, std::numeric_limits<uint64_t>::max());
 
-		std::map<unsigned int, std::list<unsigned int>> buckets;
+		std::map<uint64_t, std::list<uint64_t>> buckets;
 
 		dist[src] = 0;
 		buckets[0].push_back(src);
 
-		unsigned int current_bucket = 0;
+		uint64_t current_bucket = 0;
 		while (true)
 		{
 			auto it = buckets.begin();
@@ -164,16 +163,16 @@ namespace aod {
 				continue;
 			}
 
-			unsigned int u = buckets[current_bucket].front();
+			uint64_t u = buckets[current_bucket].front();
 			buckets[current_bucket].pop_front();
 
 			for (const auto& [v, w] : adjacency_list[u]) {
-				const unsigned int du = dist[u];
-				const unsigned int dv = dist[v];
+				const uint64_t du = dist[u];
+				const uint64_t dv = dist[v];
 
 				if (du + w < dv)
 				{
-					if (dv != std::numeric_limits<unsigned int>::max())
+					if (dv != std::numeric_limits<uint64_t>::max())
 					{
 						buckets[dv].erase(std::find(buckets[dv].begin(), buckets[dv].end(), v));
 					}
@@ -186,7 +185,7 @@ namespace aod {
 		return dist;
 	}
 
-	unsigned int dijkstraRadix(Graph& graph, unsigned int from, unsigned int to)
+	uint64_t dijkstraRadix(Graph& graph, unsigned int from, unsigned int to)
 	{
 		auto& [n, m, adjacency_list] = graph;
 
@@ -206,7 +205,6 @@ namespace aod {
 
 	        for (const auto& e : adjacency_list[x.node]) {
 	            if (distances[e.first] > distances[x.node] + e.second) {
-					if (distances[x.node] + e.second >= std::numeric_limits<uint64_t>::max()) std::cout << "Damn\n";
 	                distances[e.first] = distances[x.node] + e.second;
 
 	                q->push(Node(x.path_iter + 1, e.first, distances[e.first]));
@@ -215,12 +213,12 @@ namespace aod {
 	    }
 	}
 
-	std::vector<unsigned int> dijkstraRadixWithOnlyDistances(Graph& graph, unsigned int s)
+	std::vector<uint64_t> dijkstraRadixWithOnlyDistances(Graph& graph, unsigned int s)
 	{
 		auto& [n, m, adjacency_list] = graph;
-		const unsigned int max_weight = findMaxWeightInGraph(graph);
+		const uint64_t max_weight = findMaxWeightInGraph(graph);
 
-		std::vector<unsigned int> distances(n + 1, std::numeric_limits<unsigned int>::max());
+		std::vector<uint64_t> distances(n + 1, std::numeric_limits<uint64_t>::max());
 	    distances[s] = 0;
 	    RadixHeap q;
 	    q.push(Node(0, s, 0));

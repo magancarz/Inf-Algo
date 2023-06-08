@@ -141,6 +141,7 @@ class MainActivity : AppCompatActivity() {
         sliderValueHours.text = "0"
         sliderValueMinutes.text = "0"
         sliderValueSeconds.text = "0"
+
         handler.removeCallbacks(updateProgressRunnable)
 
         cancelButton.isEnabled = false

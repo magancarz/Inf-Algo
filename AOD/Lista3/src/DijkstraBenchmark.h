@@ -2,7 +2,7 @@
 
 #include "Graph.h"
 
-#define NO_OF_THREADS 8
+#define NO_OF_THREADS 12
 
 namespace aod {
 
@@ -20,9 +20,9 @@ namespace aod {
 
 	struct PathResult
 	{
-		unsigned int from;
-		unsigned int to;
-		unsigned int length;
+		uint64_t from;
+		uint64_t to;
+		uint64_t length;
 	};
 
 	class DijkstraBenchmark {
@@ -34,19 +34,19 @@ namespace aod {
 			const std::string& sources_filename,
 			const std::string& paths_filename);
 
-		std::vector<std::vector<unsigned int>> normalDijkstraSourcesBenchmark();
-		std::vector<std::vector<unsigned int>> dialDijkstraSourcesBenchmark();
-		std::vector<std::vector<unsigned int>> radixHeapDijkstraSourcesBenchmark();
+		std::vector<std::vector<uint64_t>> normalDijkstraSourcesBenchmark();
+		std::vector<std::vector<uint64_t>> dialDijkstraSourcesBenchmark();
+		std::vector<std::vector<uint64_t>> radixHeapDijkstraSourcesBenchmark();
 
 		std::vector<PathResult> normalDijkstraPathsBenchmark();
 		std::vector<PathResult> dialDijkstraPathsBenchmark();
 		std::vector<PathResult> radixHeapDijkstraPathsBenchmark();
 
-		std::vector<std::vector<unsigned int>> dijkstraSourcesBenchmark(std::vector<unsigned int> (*dijkstra_implementation)(Graph& graph, unsigned int src));
-		std::vector<PathResult> dijkstraPathsBenchmark(unsigned int (*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to));
+		std::vector<std::vector<uint64_t>> dijkstraSourcesBenchmark(std::vector<uint64_t> (*dijkstra_implementation)(Graph& graph, unsigned int src));
+		std::vector<PathResult> dijkstraPathsBenchmark(uint64_t (*dijkstra_implementation)(Graph& graph, unsigned int from, unsigned int to));
 
-		void saveSourcesBenchmarkResults(const std::string& filename, const std::string& algo_type, const std::vector<unsigned int>&dijkstra_result, const std::vector<unsigned int>& dial_dijkstra_result, const std::vector<unsigned int>& radix_dijkstra_result);
-		void savePathsBenchmarkResults(const std::string& filename, const std::string& algo_type, const std::vector<unsigned int>& dijkstra_result, const std::vector<unsigned int>& dial_dijkstra_result, const std::vector<unsigned int>& radix_dijkstra_result);
+		void saveSourcesBenchmarkResults(const std::string& filename, const std::string& algo_type, const std::vector<uint64_t>&dijkstra_result, const std::vector<unsigned int>& dial_dijkstra_result, const std::vector<unsigned int>& radix_dijkstra_result);
+		void savePathsBenchmarkResults(const std::string& filename, const std::string& algo_type, const std::vector<uint64_t>& dijkstra_result, const std::vector<unsigned int>& dial_dijkstra_result, const std::vector<unsigned int>& radix_dijkstra_result);
 
 		Graph graph;
 		DijkstraBenchmarkSources benchmark_sources;

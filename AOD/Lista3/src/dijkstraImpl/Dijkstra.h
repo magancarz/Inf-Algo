@@ -12,15 +12,15 @@
 namespace aod {
 
 	struct Node {
-		unsigned int path_iter;
-		unsigned int node;
-		unsigned int distance;
+		uint64_t path_iter;
+		uint64_t node;
+		uint64_t distance;
 
 		Node() = default;
-		Node(int node, unsigned int distance)
+		Node(uint64_t node, uint64_t distance)
 			: path_iter(0), node(node), distance(distance) {}
 
-		Node(unsigned int path_iter, int node, unsigned int distance)
+		Node(uint64_t path_iter, uint64_t node, uint64_t distance)
 			: path_iter(path_iter), node(node), distance(distance) {}
 
 		bool operator<(const Node& other) const {
@@ -37,13 +37,13 @@ namespace aod {
 	struct RadixHeap
 	{
 		std::vector<std::priority_queue<Node, std::vector<Node>, NodeComparator>> buckets;
-		unsigned int min_value;
+		uint64_t min_value;
 
-		RadixHeap() : buckets(32), min_value(std::numeric_limits<unsigned int>::max()) {}
+		RadixHeap() : buckets(32), min_value(std::numeric_limits<uint64_t>::max()) {}
 
 		void push(Node x)
 		{
-			unsigned int key = x.distance;
+			uint64_t key = x.distance;
 			std::bitset<32> test{ key };
 			int nearest_pow_of_two = 31;
 			while (nearest_pow_of_two > 0 && test[nearest_pow_of_two] != 1) --nearest_pow_of_two;
@@ -53,7 +53,7 @@ namespace aod {
 
 		Node pop()
 		{
-			unsigned int i = 0;
+			uint64_t i = 0;
 			while (buckets[i].empty()) ++i;
 			const Node res = buckets[i].top();
 			buckets[i].pop();
@@ -70,15 +70,15 @@ namespace aod {
 		}
 	};
 
-	unsigned int findMaxWeightInGraph(Graph& graph);
-	unsigned int findMinWeightInGraph(Graph& graph);
+	uint64_t findMaxWeightInGraph(Graph& graph);
+	uint64_t findMinWeightInGraph(Graph& graph);
 
-	unsigned int dijkstra(Graph& graph, unsigned int from, unsigned int to);
-	std::vector<unsigned int> dijkstraWithOnlyDistances(Graph& graph, unsigned int src);
+	uint64_t dijkstra(Graph& graph, unsigned int from, unsigned int to);
+	std::vector<uint64_t> dijkstraWithOnlyDistances(Graph& graph, unsigned int src);
 
-	unsigned int dijkstraDial(Graph& graph, unsigned int from, unsigned int to);
-	std::vector<unsigned int> dijkstraDialWithOnlyDistances(Graph& graph, unsigned int src);
+	uint64_t dijkstraDial(Graph& graph, unsigned int from, unsigned int to);
+	std::vector<uint64_t> dijkstraDialWithOnlyDistances(Graph& graph, unsigned int src);
 
-	unsigned int dijkstraRadix(Graph& graph, unsigned int from, unsigned int to);
-	std::vector<unsigned int> dijkstraRadixWithOnlyDistances(Graph& graph, unsigned int s);
+	uint64_t dijkstraRadix(Graph& graph, unsigned int from, unsigned int to);
+	std::vector<uint64_t> dijkstraRadixWithOnlyDistances(Graph& graph, unsigned int s);
 }

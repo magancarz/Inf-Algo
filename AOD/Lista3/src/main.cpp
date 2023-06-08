@@ -13,6 +13,7 @@ int main()
 {
 	std::vector<std::string> graph_inputs =
 	{
+		
 		"benchmarks/inputs/Square-n/Square-n.14.0.gr",
 		"benchmarks/inputs/Square-n/Square-n.15.0.gr",
 		"benchmarks/inputs/Square-n/Square-n.16.0.gr",
@@ -60,7 +61,7 @@ int main()
 
 		auto start = std::chrono::steady_clock::now();
 
-		auto dijkstra_result = dijkstra_benchmark.normalDijkstraPathsBenchmark();
+		auto dijkstra_result = dijkstra_benchmark.normalDijkstraSourcesBenchmark();
 
 		auto end = std::chrono::steady_clock::now();
 	#if DEBUG 1
@@ -73,7 +74,7 @@ int main()
 
 		start = std::chrono::steady_clock::now();
 
-		auto dial_dijkstra_result = dijkstra_benchmark.dialDijkstraPathsBenchmark();
+		auto dial_dijkstra_result = dijkstra_benchmark.dialDijkstraSourcesBenchmark();
 
 		end = std::chrono::steady_clock::now();
 	#if DEBUG 1
@@ -86,7 +87,7 @@ int main()
 
 		start = std::chrono::steady_clock::now();
 
-		auto radix_dijkstra_result = dijkstra_benchmark.radixHeapDijkstraPathsBenchmark();
+		auto radix_dijkstra_result = dijkstra_benchmark.radixHeapDijkstraSourcesBenchmark();
 
 		end = std::chrono::steady_clock::now();
 	#if DEBUG 1
@@ -98,7 +99,7 @@ int main()
 		radix_results.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 	}
 
-	std::ofstream results_file("square_n_paths_benchmark_results.txt");
+	std::ofstream results_file("square_n_sources_benchmark_results.txt");
 	if (results_file.is_open())
 	{
 		results_file << "Dijkstra paths results: (from graphs increasing in size)\n";
