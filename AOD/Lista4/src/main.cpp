@@ -85,6 +85,83 @@ Graph generateHypercubeGraph(int k)
     return graph;
 }
 
+Graph generateRandomBipartiteGraph(int k, int i)
+{
+    int graph_size = (1 << k);
+    Graph graph(graph_size * 2 + 2);
+    std::vector<int> V1(graph_size);
+    std::vector<int> V2(graph_size);
+
+    for (int j = 1; j <= graph_size; ++j)
+        V1[j - 1] = j;
+    for (int j = 1; j <= graph_size; ++j)
+        V2[j - 1] = j + graph_size;
+
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_real_distribution<double> random(0.0, 1.0);
+	std::ranges::shuffle(V2.begin(), V2.end(), rng);
+
+    for (int j = 0; j < graph_size; ++j)
+    {
+        for (int l = 0; l < i; ++l)
+        {
+            const int source = V1[j];
+            int target;
+            auto edge_exist = std::vector<Edge*>::iterator();
+        	do
+            {
+        		target = V2[static_cast<int>(random(rng) * (V2.size() - 1))];
+                edge_exist = std::find_if(graph[source].begin(), graph[source].end(), [&](const Edge* edge)
+        		{
+        			return edge->source == source && edge->target == target;
+        		});
+            }
+        	while(edge_exist != graph[source].end());
+
+            Edge* edge = new Edge{source, target, 1};
+            graph[j + 1].push_back(edge);
+
+            std::cout << "Edge from " << source << " to " << target << std::endl;
+
+        	Edge* reverse_edge = new Edge{target, source, 0};
+            reverse_edge->reverse = edge;
+            edge->reverse = reverse_edge;
+            graph[target].push_back(reverse_edge);
+        }
+    }
+
+    for (int j = 0; j < graph_size; ++j)
+    {
+        const int source = 0;
+        const int target = V1[j];
+
+        Edge* edge = new Edge{source, target, 1};
+        graph[source].push_back(edge);
+
+        Edge* reverse_edge = new Edge{target, source, 0};
+        reverse_edge->reverse = edge;
+        edge->reverse = reverse_edge;
+        graph[target].push_back(reverse_edge);
+    }
+
+    for (int j = 0; j < graph_size; ++j)
+    {
+        const int source = V2[j];
+        const int target = graph_size * 2 + 1;
+
+        Edge* edge = new Edge{source, target, 1};
+        graph[source].push_back(edge);
+
+        Edge* reverse_edge = new Edge{target, source, 0};
+        reverse_edge->reverse = edge;
+        edge->reverse = reverse_edge;
+        graph[target].push_back(reverse_edge);
+    }
+
+    return graph;
+}
+
 int EdmondsKarp(Graph& graph, int source, int sink)
 {
     int flow = 0;
@@ -141,7 +218,7 @@ int EdmondsKarp(Graph& graph, int source, int sink)
 
 int main()
 {
-    int k = 2;
+    /*int k = 2;
     int num_vertices = pow(2, k);
     Graph graph = generateHypercubeGraph(k);
 
@@ -161,7 +238,13 @@ int main()
             std::bitset<32> other_vertex_one_count(edge->target);
             if (vertex_one_count.count() < other_vertex_one_count.count()) std::cout << "Edge from " << edge->source << " to " << edge->target << " has flow of " << -edge->flow << std::endl;
         }
-    }
+    }*/
+
+    int k = 2;
+    int num_vertices = 1 << k;
+    Graph graph = generateRandomBipartiteGraph(k, 2);
+
+    int result = EdmondsKarp(graph, 0, num_vertices * 2 + 1);
 
     for (int i = 0; i < num_vertices; ++i) {
         for (Edge* edge : graph[i]) {
