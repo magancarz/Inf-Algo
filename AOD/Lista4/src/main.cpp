@@ -122,7 +122,7 @@ Graph generateRandomBipartiteGraph(int k, int i)
             Edge* edge = new Edge{source, target, 1};
             graph[j + 1].push_back(edge);
 
-            std::cout << "Edge from " << source << " to " << target << std::endl;
+           // std::cout << "Edge from " << source << " to " << target << std::endl;
 
         	Edge* reverse_edge = new Edge{target, source, 0};
             reverse_edge->reverse = edge;
@@ -240,14 +240,33 @@ int main()
         }
     }*/
 
-    int k = 2;
+    int k = 10;
     int num_vertices = 1 << k;
-    Graph graph = generateRandomBipartiteGraph(k, 2);
+    Graph graph = generateRandomBipartiteGraph(k, 7);
 
+    const auto start = std::chrono::steady_clock::now();
     int result = EdmondsKarp(graph, 0, num_vertices * 2 + 1);
+    const auto end = std::chrono::steady_clock::now();
+    std::cerr << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << std::endl;
 
-    for (int i = 0; i < num_vertices; ++i) {
-        for (Edge* edge : graph[i]) {
+    int maximum_matching_set_count = 0;
+    for (int i = 1; i <= num_vertices; ++i)
+    {
+	    for (const auto edge : graph[i])
+	    {
+		    if (edge->flow > 0)
+		    {
+				//std::cout << "Edge from " << edge->source << " to " << edge->target << " belong to maximum matching set\n";
+                ++maximum_matching_set_count;
+		    }
+	    }
+    }
+    std::cerr << "Size of maximum matching set is " << maximum_matching_set_count << std::endl;
+
+    for (int i = 0; i < num_vertices; ++i)
+    {
+        for (Edge* edge : graph[i])
+        {
             delete edge;
         }
     }
