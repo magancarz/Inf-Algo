@@ -45,10 +45,14 @@ namespace aod {
 		std::priority_queue<Node, std::vector<Node>, NodeComparator> q;
 		q.push(Node(0, from, 0));
 
+		std::unordered_map<unsigned int, bool> visited_nodes;
+
 		while (!q.empty())
 		{
 			auto x = q.top();
 			q.pop();
+
+			visited_nodes[x.node] = true;
 
 			if (x.node == to)
 			{
@@ -58,10 +62,10 @@ namespace aod {
 			if (x.distance != distances[x.node]) continue;
 
 			for (const auto& e : adjacency_list[x.node]) {
-				if (distances[e.first] > distances[x.node] + e.second) {
+				if (!visited_nodes.contains(e.first) && distances[e.first] > distances[x.node] + e.second) {
 					distances[e.first] = distances[x.node] + e.second;
 
-					q.push(Node(x.path_iter + 1, e.first, distances[e.first]));
+					q.push(Node(x.path_iter + e.second, e.first, distances[e.first]));
 				}
 			}
 		}
@@ -110,11 +114,13 @@ namespace aod {
 	    dist[from] = 0;
 
 	    unsigned int idx = 0;
-	    while (true) {
+	    while (true)
+		{
 			auto it = buckets.begin();
 			if (it == buckets.end()) break;
 			idx = (*it).first;
-			if (buckets[idx].empty()) {
+			if (buckets[idx].empty())
+			{
 				buckets.erase(idx);
 				continue;
 			}
@@ -122,7 +128,8 @@ namespace aod {
 	        auto u = buckets[idx].top();
 	        buckets[idx].pop();
 
-			if (u.node == to) {
+			if (u.node == to) 
+			{
 	            return u.path_iter;
 	        }
 
@@ -136,7 +143,7 @@ namespace aod {
 	                dist[v] = du + weight;
 	                dv = dist[v];
 
-	                buckets[dv].push(Node(u.path_iter + 1, v, du + weight));
+	                buckets[dv].push(Node(u.path_iter + weight, v, du + weight));
 	            }
 	        }
 	    }
@@ -189,28 +196,38 @@ namespace aod {
 	{
 		auto& [n, m, adjacency_list] = graph;
 
+		auto max_weight = findMaxWeightInGraph(graph);
+		std::cout << graph.v * std::log(max_weight) << std::endl;
+
 		std::vector<uint64_t> distances(n + 1, std::numeric_limits<uint64_t>::max());
-	    distances[from] = 0;
-	    std::unique_ptr<RadixHeap> q = std::make_unique<RadixHeap>();
-	    q->push(Node(0, from, 0));
+		distances[from] = 0;
+		RadixHeap q;
+		q.push(Node(0, from, 0));
 
-	    while (!q->empty()) {
-	        auto x = q->pop();
+		std::unordered_map<unsigned int, bool> visited_nodes;
 
-			if (x.node == to) {
-	            return x.node;
-	        }
+		while (!q.empty())
+		{
+			auto x = q.pop();
 
-	        if (x.distance != distances[x.node]) continue;
+			visited_nodes[x.node] = true;
 
-	        for (const auto& e : adjacency_list[x.node]) {
-	            if (distances[e.first] > distances[x.node] + e.second) {
-	                distances[e.first] = distances[x.node] + e.second;
+			if (x.node == to)
+			{
+				std::cout << q.max_bucket << std::endl;
+				return x.path_iter;
+			}
 
-	                q->push(Node(x.path_iter + 1, e.first, distances[e.first]));
-	            }
-	        }
-	    }
+			if (x.distance != distances[x.node]) continue;
+
+			for (const auto& e : adjacency_list[x.node]) {
+				if (!visited_nodes.contains(e.first) && distances[e.first] > distances[x.node] + e.second) {
+					distances[e.first] = distances[x.node] + e.second;
+
+					q.push(Node(x.path_iter + e.second, e.first, distances[e.first]));
+				}
+			}
+		}
 	}
 
 	std::vector<uint64_t> dijkstraRadixWithOnlyDistances(Graph& graph, unsigned int s)
@@ -237,6 +254,7 @@ namespace aod {
 			}
 	    }
 
+		std::cout << q.max_bucket << std::endl;
 	    return distances;
 	}
 }

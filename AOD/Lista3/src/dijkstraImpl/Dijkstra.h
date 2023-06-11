@@ -26,6 +26,11 @@ namespace aod {
 		bool operator<(const Node& other) const {
 			return distance > other.distance;
 		}
+
+		bool operator==(const Node& other) const
+		{
+			return other.node == node;
+		}
 	};
 
 	struct NodeComparator {
@@ -38,6 +43,7 @@ namespace aod {
 	{
 		std::vector<std::priority_queue<Node, std::vector<Node>, NodeComparator>> buckets;
 		uint64_t min_value;
+		unsigned int max_bucket = 0;
 
 		RadixHeap() : buckets(32), min_value(std::numeric_limits<uint64_t>::max()) {}
 
@@ -57,12 +63,15 @@ namespace aod {
 			while (buckets[i].empty()) ++i;
 			const Node res = buckets[i].top();
 			buckets[i].pop();
+			max_bucket = i;
 
 			return res;
 		}
 
-		bool empty() const {
-			for (const auto& bucket : buckets) {
+		bool empty() const
+		{
+			for (const auto& bucket : buckets)
+			{
 				if (!bucket.empty())
 					return false;
 			}
