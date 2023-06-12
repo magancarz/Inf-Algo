@@ -19,7 +19,7 @@ namespace aod {
 			}
 		}
 
-		return max_weight;
+		return static_cast<uint64_t>(max_weight);
 	}
 
 	uint64_t findMinWeightInGraph(Graph& graph)
@@ -45,7 +45,7 @@ namespace aod {
 		std::priority_queue<Node, std::vector<Node>, NodeComparator> q;
 		q.push(Node(0, from, 0));
 
-		std::unordered_map<unsigned int, bool> visited_nodes;
+		std::unordered_map<unsigned int, bool> visited_nodes(graph.m);
 
 		while (!q.empty())
 		{
@@ -113,6 +113,8 @@ namespace aod {
 	    buckets[0].push(Node(0, from, 0));
 	    dist[from] = 0;
 
+		std::unordered_map<unsigned int, bool> visited_nodes(graph.m);
+
 	    unsigned int idx = 0;
 	    while (true)
 		{
@@ -128,6 +130,8 @@ namespace aod {
 	        auto u = buckets[idx].top();
 	        buckets[idx].pop();
 
+			visited_nodes[u.node] = true;
+
 			if (u.node == to) 
 			{
 	            return u.path_iter;
@@ -138,7 +142,7 @@ namespace aod {
 	            const uint64_t du = dist[u.node];
 	            uint64_t dv = dist[v];
 	 
-	            if (du + weight < dv)
+	            if (!visited_nodes.contains(v) && du + weight < dv)
 				{
 	                dist[v] = du + weight;
 	                dv = dist[v];
@@ -197,14 +201,13 @@ namespace aod {
 		auto& [n, m, adjacency_list] = graph;
 
 		auto max_weight = findMaxWeightInGraph(graph);
-		std::cout << graph.v * std::log(max_weight) << std::endl;
 
 		std::vector<uint64_t> distances(n + 1, std::numeric_limits<uint64_t>::max());
 		distances[from] = 0;
 		RadixHeap q;
 		q.push(Node(0, from, 0));
 
-		std::unordered_map<unsigned int, bool> visited_nodes;
+		std::unordered_map<unsigned int, bool> visited_nodes(graph.m);
 
 		while (!q.empty())
 		{
@@ -214,7 +217,6 @@ namespace aod {
 
 			if (x.node == to)
 			{
-				std::cout << q.max_bucket << std::endl;
 				return x.path_iter;
 			}
 
@@ -253,8 +255,7 @@ namespace aod {
 				}
 			}
 	    }
-
-		std::cout << q.max_bucket << std::endl;
+		
 	    return distances;
 	}
 }

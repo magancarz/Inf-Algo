@@ -145,16 +145,7 @@ namespace aod {
 		std::for_each(std::execution::par, benchmark_sources.sources.begin(), benchmark_sources.sources.end(),
 		[&](int source)
 		{
-			const auto start = std::chrono::steady_clock::now();
-
 			const auto result = dijkstra_implementation(graph, source);
-
-			{
-				std::lock_guard<std::mutex> lock(mtx);
-				distances.push_back(result);
-			}
-
-			const auto end = std::chrono::steady_clock::now();
 		});
 
 		return distances;
@@ -172,27 +163,18 @@ namespace aod {
 			blocks_iter[i] = i;
 		}
 
-		/*std::mutex mtx;
+		std::mutex mtx;
 		std::for_each(std::execution::par, blocks_iter.begin(), blocks_iter.end(),
 		[&](int it)
 		{
 			for (int i = it * block_size; i < std::min((it + 1) * block_size, static_cast<int>(benchmark_pairs.path_goals.size())); ++i)
 			{
-				
+
+				unsigned int from = benchmark_pairs.path_goals[i].first;
+				unsigned int to = benchmark_pairs.path_goals[i].second;
+				const auto result = dijkstra_implementation(graph, from, to);
 			}
-		});*/
-
-		const auto start = std::chrono::steady_clock::now();
-
-		unsigned int from = benchmark_pairs.path_goals[0].first;
-		unsigned int to = benchmark_pairs.path_goals[0].second;
-		const auto result = dijkstra_implementation(graph, from, to);
-
-		{
-			paths.push_back({ from, to, result });
-		}
-
-		const auto end = std::chrono::steady_clock::now();
+		});
 
 		return paths;
 	}
