@@ -23,16 +23,21 @@ struct SourcesResult
 	int m;
 	uint64_t max_weight;
 	int64_t time;
+	float avg_time;
 };
 
 int main()
 {
 	std::vector<BenchmarkInput> benchmark_inputs;
 
-	/*benchmark_inputs.push_back(BenchmarkInput
+	benchmark_inputs.push_back(BenchmarkInput
 	{
 		"square-n",
 		{
+			"benchmarks/inputs/Square-n/Square-n.10.0.gr",
+			"benchmarks/inputs/Square-n/Square-n.11.0.gr",
+			"benchmarks/inputs/Square-n/Square-n.12.0.gr",
+			"benchmarks/inputs/Square-n/Square-n.13.0.gr",
 			"benchmarks/inputs/Square-n/Square-n.14.0.gr",
 			"benchmarks/inputs/Square-n/Square-n.15.0.gr",
 			"benchmarks/inputs/Square-n/Square-n.16.0.gr",
@@ -43,6 +48,10 @@ int main()
 			"benchmarks/inputs/Square-n/Square-n.21.0.gr"
 		},
 		{
+			"benchmarks/inputs/Square-n/Square-n.10.0.ss",
+			"benchmarks/inputs/Square-n/Square-n.11.0.ss",
+			"benchmarks/inputs/Square-n/Square-n.12.0.ss",
+			"benchmarks/inputs/Square-n/Square-n.13.0.ss",
 			"benchmarks/inputs/Square-n/Square-n.14.0.ss",
 			"benchmarks/inputs/Square-n/Square-n.15.0.ss",
 			"benchmarks/inputs/Square-n/Square-n.16.0.ss",
@@ -53,6 +62,10 @@ int main()
 			"benchmarks/inputs/Square-n/Square-n.21.0.ss"
 		},
 		{
+			"benchmarks/inputs/Square-n/Square-n.10.0.p2p",
+			"benchmarks/inputs/Square-n/Square-n.11.0.p2p",
+			"benchmarks/inputs/Square-n/Square-n.12.0.p2p",
+			"benchmarks/inputs/Square-n/Square-n.13.0.p2p",
 			"benchmarks/inputs/Square-n/Square-n.14.0.p2p",
 			"benchmarks/inputs/Square-n/Square-n.15.0.p2p",
 			"benchmarks/inputs/Square-n/Square-n.16.0.p2p",
@@ -62,9 +75,9 @@ int main()
 			"benchmarks/inputs/Square-n/Square-n.20.0.p2p",
 			"benchmarks/inputs/Square-n/Square-n.21.0.p2p"
 		}
-	});*/
+	});
 
-	/*benchmark_inputs.push_back(BenchmarkInput
+	benchmark_inputs.push_back(BenchmarkInput
 	{
 		"square-c",
 		{
@@ -121,12 +134,16 @@ int main()
 			"benchmarks/inputs/Square-C/Square-C.14.0.p2p",
 			"benchmarks/inputs/Square-C/Square-C.15.0.p2p"
 		}
-	});*/
+	});
 
-	/*benchmark_inputs.push_back(BenchmarkInput
+	benchmark_inputs.push_back(BenchmarkInput
 	{
 		"random4-n",
 		{
+			"benchmarks/inputs/Random4-n/Random4-n.10.0.gr",
+			"benchmarks/inputs/Random4-n/Random4-n.11.0.gr",
+			"benchmarks/inputs/Random4-n/Random4-n.12.0.gr",
+			"benchmarks/inputs/Random4-n/Random4-n.13.0.gr",
 			"benchmarks/inputs/Random4-n/Random4-n.14.0.gr",
 			"benchmarks/inputs/Random4-n/Random4-n.15.0.gr",
 			"benchmarks/inputs/Random4-n/Random4-n.16.0.gr",
@@ -137,6 +154,10 @@ int main()
 			"benchmarks/inputs/Random4-n/Random4-n.21.0.gr"
 		},
 		{
+			"benchmarks/inputs/Random4-n/Random4-n.10.0.ss",
+			"benchmarks/inputs/Random4-n/Random4-n.11.0.ss",
+			"benchmarks/inputs/Random4-n/Random4-n.12.0.ss",
+			"benchmarks/inputs/Random4-n/Random4-n.13.0.ss",
 			"benchmarks/inputs/Random4-n/Random4-n.14.0.ss",
 			"benchmarks/inputs/Random4-n/Random4-n.15.0.ss",
 			"benchmarks/inputs/Random4-n/Random4-n.16.0.ss",
@@ -147,6 +168,10 @@ int main()
 			"benchmarks/inputs/Random4-n/Random4-n.21.0.ss"
 		},
 		{
+			"benchmarks/inputs/Random4-n/Random4-n.10.0.p2p",
+			"benchmarks/inputs/Random4-n/Random4-n.11.0.p2p",
+			"benchmarks/inputs/Random4-n/Random4-n.12.0.p2p",
+			"benchmarks/inputs/Random4-n/Random4-n.13.0.p2p",
 			"benchmarks/inputs/Random4-n/Random4-n.14.0.p2p",
 			"benchmarks/inputs/Random4-n/Random4-n.15.0.p2p",
 			"benchmarks/inputs/Random4-n/Random4-n.16.0.p2p",
@@ -156,7 +181,7 @@ int main()
 			"benchmarks/inputs/Random4-n/Random4-n.20.0.p2p",
 			"benchmarks/inputs/Random4-n/Random4-n.21.0.p2p"
 		}
-	});*/
+	});
 
 	benchmark_inputs.push_back(BenchmarkInput
 	{
@@ -218,7 +243,7 @@ int main()
 
 				auto start = std::chrono::steady_clock::now();
 
-				auto dijkstra_result = dijkstra_benchmark.normalDijkstraPathsBenchmark();
+				auto dijkstra_result = dijkstra_benchmark.normalDijkstraSourcesBenchmark();
 
 				auto end = std::chrono::steady_clock::now();
 			#if DEBUG 1
@@ -227,11 +252,19 @@ int main()
 					<< " milliseconds."
 					<< std::endl;
 			#endif
-				dijkstra_results.push_back(SourcesResult{dijkstra_benchmark.graph.v, dijkstra_benchmark.graph.m, aod::findMaxWeightInGraph(dijkstra_benchmark.graph), std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()});
+				dijkstra_results.push_back(
+					SourcesResult
+					{
+						dijkstra_benchmark.graph.v,
+						dijkstra_benchmark.graph.m,
+						aod::findMaxWeightInGraph(dijkstra_benchmark.graph),
+						std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
+						static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / dijkstra_benchmark.benchmark_sources.sources.size()
+					});
 
 				start = std::chrono::steady_clock::now();
 
-				auto dial_dijkstra_result = dijkstra_benchmark.dialDijkstraPathsBenchmark();
+				auto dial_dijkstra_result = dijkstra_benchmark.dialDijkstraSourcesBenchmark();
 
 				end = std::chrono::steady_clock::now();
 			#if DEBUG 1
@@ -240,11 +273,19 @@ int main()
 					<< " milliseconds."
 					<< std::endl;
 			#endif
-				dial_results.push_back(SourcesResult{dijkstra_benchmark.graph.v, dijkstra_benchmark.graph.m, aod::findMaxWeightInGraph(dijkstra_benchmark.graph), std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()});
+				dial_results.push_back(
+					SourcesResult
+					{
+						dijkstra_benchmark.graph.v,
+						dijkstra_benchmark.graph.m,
+						aod::findMaxWeightInGraph(dijkstra_benchmark.graph),
+						std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
+						static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / dijkstra_benchmark.benchmark_sources.sources.size()
+					});
 
 				start = std::chrono::steady_clock::now();
 
-				auto radix_dijkstra_result = dijkstra_benchmark.radixHeapDijkstraPathsBenchmark();
+				auto radix_dijkstra_result = dijkstra_benchmark.radixHeapDijkstraSourcesBenchmark();
 
 				end = std::chrono::steady_clock::now();
 			#if DEBUG 1
@@ -253,10 +294,18 @@ int main()
 					<< " milliseconds."
 					<< std::endl;
 			#endif
-				radix_results.push_back(SourcesResult{dijkstra_benchmark.graph.v, dijkstra_benchmark.graph.m, aod::findMaxWeightInGraph(dijkstra_benchmark.graph), std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()});
+				radix_results.push_back(
+					SourcesResult
+					{
+						dijkstra_benchmark.graph.v,
+						dijkstra_benchmark.graph.m,
+						aod::findMaxWeightInGraph(dijkstra_benchmark.graph),
+						std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
+						static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / dijkstra_benchmark.benchmark_sources.sources.size()
+					});
 			}
 
-			std::ofstream results_file(path_input.benchmark_name + "-paths-benchmark-results.txt");
+			std::ofstream results_file(path_input.benchmark_name + "-sources-benchmark-results.txt");
 			if (results_file.is_open())
 			{
 				for (int i = 0; i < dijkstra_results.size(); ++i)
@@ -266,8 +315,11 @@ int main()
 					<< dijkstra_results[i].m << " & "
 					<< dijkstra_results[i].max_weight << " & "
 					<< dijkstra_results[i].time << " & "
+					<< dijkstra_results[i].avg_time << " & "
 					<< dial_results[i].time << " & "
-					<< radix_results[i].time
+					<< dial_results[i].avg_time << " & "
+					<< radix_results[i].time << " & "
+					<< radix_results[i].avg_time
 					<< " \\\\"
 					<< " \\hline" << std::endl;
 				}
