@@ -2,7 +2,7 @@
 
 #include "Graph.h"
 
-#define NO_OF_THREADS 8
+#define NO_OF_THREADS 2
 
 namespace aod {
 

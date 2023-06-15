@@ -30,7 +30,7 @@ int main()
 {
 	std::vector<BenchmarkInput> benchmark_inputs;
 
-	benchmark_inputs.push_back(BenchmarkInput
+	/*benchmark_inputs.push_back(BenchmarkInput
 	{
 		"square-n",
 		{
@@ -75,17 +75,12 @@ int main()
 			"benchmarks/inputs/Square-n/Square-n.20.0.p2p",
 			"benchmarks/inputs/Square-n/Square-n.21.0.p2p"
 		}
-	});
+	});*/
 
 	benchmark_inputs.push_back(BenchmarkInput
 	{
 		"square-c",
 		{
-			"benchmarks/inputs/Square-C/Square-C.0.0.gr",
-			"benchmarks/inputs/Square-C/Square-C.1.0.gr",
-			"benchmarks/inputs/Square-C/Square-C.2.0.gr",
-			"benchmarks/inputs/Square-C/Square-C.3.0.gr",
-			"benchmarks/inputs/Square-C/Square-C.4.0.gr",
 			"benchmarks/inputs/Square-C/Square-C.5.0.gr",
 			"benchmarks/inputs/Square-C/Square-C.6.0.gr",
 			"benchmarks/inputs/Square-C/Square-C.7.0.gr",
@@ -99,11 +94,6 @@ int main()
 			"benchmarks/inputs/Square-C/Square-C.15.0.gr"
 		},
 		{
-			"benchmarks/inputs/Square-C/Square-C.0.0.ss",
-			"benchmarks/inputs/Square-C/Square-C.1.0.ss",
-			"benchmarks/inputs/Square-C/Square-C.2.0.ss",
-			"benchmarks/inputs/Square-C/Square-C.3.0.ss",
-			"benchmarks/inputs/Square-C/Square-C.4.0.ss",
 			"benchmarks/inputs/Square-C/Square-C.5.0.ss",
 			"benchmarks/inputs/Square-C/Square-C.6.0.ss",
 			"benchmarks/inputs/Square-C/Square-C.7.0.ss",
@@ -117,11 +107,6 @@ int main()
 			"benchmarks/inputs/Square-C/Square-C.15.0.ss"
 		},
 		{
-			"benchmarks/inputs/Square-C/Square-C.0.0.p2p",
-			"benchmarks/inputs/Square-C/Square-C.1.0.p2p",
-			"benchmarks/inputs/Square-C/Square-C.2.0.p2p",
-			"benchmarks/inputs/Square-C/Square-C.3.0.p2p",
-			"benchmarks/inputs/Square-C/Square-C.4.0.p2p",
 			"benchmarks/inputs/Square-C/Square-C.5.0.p2p",
 			"benchmarks/inputs/Square-C/Square-C.6.0.p2p",
 			"benchmarks/inputs/Square-C/Square-C.7.0.p2p",
@@ -136,7 +121,7 @@ int main()
 		}
 	});
 
-	benchmark_inputs.push_back(BenchmarkInput
+	/*benchmark_inputs.push_back(BenchmarkInput
 	{
 		"random4-n",
 		{
@@ -181,9 +166,9 @@ int main()
 			"benchmarks/inputs/Random4-n/Random4-n.20.0.p2p",
 			"benchmarks/inputs/Random4-n/Random4-n.21.0.p2p"
 		}
-	});
+	});*/
 
-	benchmark_inputs.push_back(BenchmarkInput
+	/*benchmark_inputs.push_back(BenchmarkInput
 	{
 		"usa-road-d",
 		{
@@ -225,104 +210,101 @@ int main()
 			"benchmarks/inputs/USA-road-d/USA-road-d.W.p2p",
 			"benchmarks/inputs/USA-road-d/USA-road-d.CTR.p2p",
 		}
-	});
+	});*/
 
 	std::for_each(benchmark_inputs.begin(), benchmark_inputs.end(), [&] (const auto& path_input)
 	{
-			std::vector<SourcesResult> dijkstra_results;
-			std::vector<SourcesResult> dial_results;
-			std::vector<SourcesResult> radix_results;
-			
-			for (int i = 0; i < path_input.graph_inputs.size(); ++i)
-			{
-				std::cout << "Running on " << path_input.graph_inputs[i] << std::endl;
-				auto dijkstra_benchmark = aod::DijkstraBenchmark(
-					path_input.graph_inputs[i],
-					path_input.sources_inputs[i],
-					path_input.paths_inputs[i]);
+		std::vector<SourcesResult> dijkstra_results;
+		std::vector<SourcesResult> dial_results;
+		std::vector<SourcesResult> radix_results;
 
-				auto start = std::chrono::steady_clock::now();
+		std::ofstream results_file(path_input.benchmark_name + "-paths-benchmark-results.txt");
+		for (int i = 0; i < path_input.graph_inputs.size(); ++i)
+		{
+			std::cout << "Running on " << path_input.graph_inputs[i] << std::endl;
+			auto dijkstra_benchmark = aod::DijkstraBenchmark(
+				path_input.graph_inputs[i],
+				path_input.sources_inputs[i],
+				path_input.paths_inputs[i]);
 
-				auto dijkstra_result = dijkstra_benchmark.normalDijkstraSourcesBenchmark();
+			auto start = std::chrono::steady_clock::now();
 
-				auto end = std::chrono::steady_clock::now();
-			#if DEBUG 1
-				std::cout << "(Dijkstra) time elapsed: "
-					<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-					<< " milliseconds."
-					<< std::endl;
-			#endif
-				dijkstra_results.push_back(
-					SourcesResult
-					{
-						dijkstra_benchmark.graph.v,
-						dijkstra_benchmark.graph.m,
-						aod::findMaxWeightInGraph(dijkstra_benchmark.graph),
-						std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
-						static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / dijkstra_benchmark.benchmark_sources.sources.size()
-					});
+			auto dijkstra_result = dijkstra_benchmark.normalDijkstraPathsBenchmark();
 
-				start = std::chrono::steady_clock::now();
+			auto end = std::chrono::steady_clock::now();
+		#if DEBUG 1
+			std::cout << "(Dijkstra) time elapsed: "
+				<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+				<< " milliseconds."
+				<< std::endl;
+		#endif
+			dijkstra_results.push_back(
+				SourcesResult
+				{
+					dijkstra_benchmark.graph.v,
+					dijkstra_benchmark.graph.m,
+					aod::findMaxWeightInGraph(dijkstra_benchmark.graph),
+					std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
+					static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / dijkstra_benchmark.benchmark_pairs.path_goals.size()
+				});
 
-				auto dial_dijkstra_result = dijkstra_benchmark.dialDijkstraSourcesBenchmark();
+			start = std::chrono::steady_clock::now();
 
-				end = std::chrono::steady_clock::now();
-			#if DEBUG 1
-				std::cout << "(Dijkstra Dial) time elapsed: "
-					<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-					<< " milliseconds."
-					<< std::endl;
-			#endif
-				dial_results.push_back(
-					SourcesResult
-					{
-						dijkstra_benchmark.graph.v,
-						dijkstra_benchmark.graph.m,
-						aod::findMaxWeightInGraph(dijkstra_benchmark.graph),
-						std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
-						static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / dijkstra_benchmark.benchmark_sources.sources.size()
-					});
+			auto dial_dijkstra_result = dijkstra_benchmark.dialDijkstraPathsBenchmark();
 
-				start = std::chrono::steady_clock::now();
+			end = std::chrono::steady_clock::now();
+		#if DEBUG 1
+			std::cout << "(Dijkstra Dial) time elapsed: "
+				<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+				<< " milliseconds."
+				<< std::endl;
+		#endif
+			dial_results.push_back(
+				SourcesResult
+				{
+					dijkstra_benchmark.graph.v,
+					dijkstra_benchmark.graph.m,
+					aod::findMaxWeightInGraph(dijkstra_benchmark.graph),
+					std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
+					static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / dijkstra_benchmark.benchmark_pairs.path_goals.size()
+				});
 
-				auto radix_dijkstra_result = dijkstra_benchmark.radixHeapDijkstraSourcesBenchmark();
+			start = std::chrono::steady_clock::now();
 
-				end = std::chrono::steady_clock::now();
-			#if DEBUG 1
-				std::cout << "(Dijkstra Radix Heap) time elapsed: "
-					<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-					<< " milliseconds."
-					<< std::endl;
-			#endif
-				radix_results.push_back(
-					SourcesResult
-					{
-						dijkstra_benchmark.graph.v,
-						dijkstra_benchmark.graph.m,
-						aod::findMaxWeightInGraph(dijkstra_benchmark.graph),
-						std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
-						static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / dijkstra_benchmark.benchmark_sources.sources.size()
-					});
-			}
+			auto radix_dijkstra_result = dijkstra_benchmark.radixHeapDijkstraPathsBenchmark();
 
-			std::ofstream results_file(path_input.benchmark_name + "-sources-benchmark-results.txt");
+			end = std::chrono::steady_clock::now();
+		#if DEBUG 1
+			std::cout << "(Dijkstra Radix Heap) time elapsed: "
+				<< std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+				<< " milliseconds."
+				<< std::endl;
+		#endif
+			radix_results.push_back(
+				SourcesResult
+				{
+					dijkstra_benchmark.graph.v,
+					dijkstra_benchmark.graph.m,
+					aod::findMaxWeightInGraph(dijkstra_benchmark.graph),
+					std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count(),
+					static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / dijkstra_benchmark.benchmark_pairs.path_goals.size()
+				});
+
 			if (results_file.is_open())
 			{
-				for (int i = 0; i < dijkstra_results.size(); ++i)
-				{
-					results_file
-					<< dijkstra_results[i].v << " & "
-					<< dijkstra_results[i].m << " & "
-					<< dijkstra_results[i].max_weight << " & "
-					<< dijkstra_results[i].time << " & "
-					<< dijkstra_results[i].avg_time << " & "
-					<< dial_results[i].time << " & "
-					<< dial_results[i].avg_time << " & "
-					<< radix_results[i].time << " & "
-					<< radix_results[i].avg_time
-					<< " \\\\"
-					<< " \\hline" << std::endl;
-				}
+				results_file
+				<< dijkstra_results[i].v << " & "
+				<< dijkstra_results[i].m << " & "
+				<< dijkstra_results[i].max_weight << " & "
+				<< dijkstra_results[i].time << " & "
+				<< dijkstra_results[i].avg_time << " & "
+				<< dial_results[i].time << " & "
+				<< dial_results[i].avg_time << " & "
+				<< radix_results[i].time << " & "
+				<< radix_results[i].avg_time
+				<< " \\\\"
+				<< " \\hline" << std::endl;
 			}
+		}
 	});
 }

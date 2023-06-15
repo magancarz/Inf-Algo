@@ -5,6 +5,7 @@
 #include <limits>
 #include <random>
 #include <chrono>
+#include <fstream>
 
 struct Edge
 {
@@ -68,7 +69,8 @@ Graph generateHypercubeGraph(int k)
                 
                 if (other_vertex_one_count > vertex_one_count)
                 {
-                    int random_flow_capacity = static_cast<int>(random(rng) * 100.0);
+                    float rand_rng = std::max(vertex_one_count, std::max(other_vertex_one_count, std::max(k - vertex_one_count, k - other_vertex_one_count))) - 1.0;
+                    int random_flow_capacity = static_cast<int>(random(rng) * rand_rng) + 1;
                     
                     Edge* edge = new Edge(vertex, other_vertex, 0);
                     graph[vertex].push_back(edge);
@@ -162,12 +164,22 @@ Graph generateRandomBipartiteGraph(int k, int i)
     return graph;
 }
 
-int EdmondsKarp(Graph& graph, int source, int sink)
+struct EdmondsKarpResult
 {
+	float num_of_augmenting_paths;
+    float avg_time;
+    float max_flow;
+};
+
+EdmondsKarpResult EdmondsKarp(Graph& graph, int source, int sink)
+{
+	EdmondsKarpResult result{};
+
     int flow = 0;
     const auto num_vertices = graph.size();
     int road_counter = 0;
 
+	const auto start = std::chrono::steady_clock::now();
     while (true)
     {
         std::vector<Edge*> pred(num_vertices, nullptr);
@@ -208,68 +220,168 @@ int EdmondsKarp(Graph& graph, int source, int sink)
         }
     	else
         {
-            std::cerr << "Number of augmenting paths: " << road_counter << std::endl;
+            //std::cerr << "Number of augmenting paths: " << road_counter << std::endl;
+            result.num_of_augmenting_paths = road_counter;
             break;
         }
     }
+	const auto end = std::chrono::steady_clock::now();
+	//std::cerr << "Time elapsed: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " microseconds" << std::endl;
 
-    return flow;
+    result.avg_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    result.max_flow = flow;
+    return result;
+}
+
+void testEx1()
+{
+	std::vector<float> augmenting_paths_result;
+	std::vector<float> flow_result;
+	std::vector<float> time_result;
+
+	for (int i = 1; i <= 16; ++i)
+	{
+        std::cout << i << std::endl;
+        float avg_augmenting_paths = 0;
+        float avg_flow = 0;
+        float avg_time = 0;
+		for (int j = 0; j < 20; ++j)
+		{
+			int k = i;
+		    int num_vertices = pow(2, k);
+		    Graph graph = generateHypercubeGraph(k);
+
+		    int source = num_vertices - 1;
+		    int sink = 0;
+		    auto [augmenting_paths, flow, time] = EdmondsKarp(graph, source, sink);
+            avg_augmenting_paths += augmenting_paths;
+            avg_flow += flow;
+            avg_time += time;
+
+		    /*for (int i = 0; i < graph.size(); ++i)
+		    {
+		        for (const Edge* edge : graph[i])
+		        {
+		            std::bitset<32> vertex_one_count(edge->source);
+		            std::bitset<32> other_vertex_one_count(edge->target);
+		            if (vertex_one_count.count() < other_vertex_one_count.count()) std::cout << "Edge from " << edge->source << " to " << edge->target << " has flow of " << -edge->flow << std::endl;
+		        }
+		    }*/
+
+		    for (int i = 0; i < num_vertices; ++i)
+		    {
+		        for (Edge* edge : graph[i])
+		        {
+		            delete edge;
+		        }
+		    }
+		}
+        
+        augmenting_paths_result.push_back(avg_augmenting_paths / 20.0f);
+        flow_result.push_back(avg_flow / 20.0f);
+        time_result.push_back(avg_time / 20.0f);
+	}
+
+    std::vector<int> indexes = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+    std::ofstream file("src/data1.csv");
+    if (file.is_open()) {
+        for (size_t i = 0; i < indexes.size(); ++i) {
+            file << indexes[i] << "," << augmenting_paths_result[i] << "\n";
+        }
+        file.close();
+    }
+
+    std::ofstream file1("src/data2.csv");
+    if (file1.is_open()) {
+        for (size_t i = 0; i < indexes.size(); ++i) {
+            file1 << indexes[i] << "," << flow_result[i] << "\n";
+        }
+        file1.close();
+    }
+
+    std::ofstream file2("src/data3.csv");
+    if (file2.is_open()) {
+        for (size_t i = 0; i < indexes.size(); ++i) {
+            file2 << indexes[i] << "," << time_result[i] << "\n";
+        }
+        file2.close();
+    }
+}
+
+void testEx2()
+{
+	std::vector<std::vector<float>> maximum_matching_set_count_result(8, std::vector<float>(10));
+	std::vector<std::vector<float>> time_result(10, std::vector<float>(8));
+
+	for (int k = 3; k <= 10; ++k)
+	{
+        std::cout << "k = " << k << std::endl;
+        std::vector<float> maximum_matching_set_count_result_k_avg(10, 0);
+		std::vector<float> time_i_avg(10, 0);
+        float avg_augmenting_paths = 0;
+		int num_vertices = 1 << k;
+		for (int i = 1; i <= k; ++i)
+		{
+            std::cout << "i = " << i << std::endl;
+			float avg_time = 0;
+		    for (int y = 0; y < 20; ++y)
+		    {
+			    Graph graph = generateRandomBipartiteGraph(k, i);
+
+			    const auto start = std::chrono::steady_clock::now();
+			    int maximum_matching_set_count = EdmondsKarp(graph, 0, num_vertices * 2 + 1).max_flow;
+			    const auto end = std::chrono::steady_clock::now();
+			    //std::cerr << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << std::endl;
+			    //std::cerr << "Size of maximum matching set is " << maximum_matching_set_count << std::endl;
+
+                avg_augmenting_paths += maximum_matching_set_count;
+                avg_time += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+			    for (int j = 0; j < num_vertices; ++j)
+			    {
+			        for (Edge* edge : graph[j])
+			        {
+			            delete edge;
+			        }
+			    }
+		    }
+
+            maximum_matching_set_count_result[k - 3][i - 1] = avg_augmenting_paths / 20.0;
+            time_result[i - 1][k - 3] = avg_time / 20.0;
+		}
+	}
+
+    std::vector<int> k_indexes = {3,4,5,6,7,8,9,10};
+    for (int j = 0; j < maximum_matching_set_count_result.size(); ++j)
+    {
+        std::string filename = "src/k" + std::to_string(k_indexes[j]) + ".csv";
+	    std::ofstream file(filename);
+	    if (file.is_open()) {
+	        for (size_t i = 0; i < 10; ++i) {
+	            file << i << "," << maximum_matching_set_count_result[j][i] << "\n";
+	        }
+	        file.close();
+	    }
+    }
+
+    std::vector<int> i_indexes = {1,2,3,4,5,6,7,8,9,10};
+    for (int j = 0; j < time_result.size(); ++j)
+    {
+        std::string filename = "src/i" + std::to_string(i_indexes[j]) + ".csv";
+	    std::ofstream file(filename);
+	    if (file.is_open()) {
+	        for (size_t i = 3; i <= 10; ++i) {
+	            file << i << "," << time_result[j][i-3] << "\n";
+	        }
+	        file.close();
+	    }
+    }
 }
 
 int main()
 {
-    /*int k = 2;
-    int num_vertices = pow(2, k);
-    Graph graph = generateHypercubeGraph(k);
-
-    int source = num_vertices - 1;
-    int sink = 0;
-    const auto start = std::chrono::steady_clock::now();
-    int maxFlow = EdmondsKarp(graph, source, sink);
-    const auto end = std::chrono::steady_clock::now();
-    std::cerr << "Time elapsed: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " microseconds" << std::endl;
-
-    std::cout << "Max Flow: " << maxFlow << std::endl;
-    for (int i = 0; i < graph.size(); ++i)
-    {
-        for (const Edge* edge : graph[i])
-        {
-            std::bitset<32> vertex_one_count(edge->source);
-            std::bitset<32> other_vertex_one_count(edge->target);
-            if (vertex_one_count.count() < other_vertex_one_count.count()) std::cout << "Edge from " << edge->source << " to " << edge->target << " has flow of " << -edge->flow << std::endl;
-        }
-    }*/
-
-    int k = 10;
-    int num_vertices = 1 << k;
-    Graph graph = generateRandomBipartiteGraph(k, 7);
-
-    const auto start = std::chrono::steady_clock::now();
-    int result = EdmondsKarp(graph, 0, num_vertices * 2 + 1);
-    const auto end = std::chrono::steady_clock::now();
-    std::cerr << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << std::endl;
-
-    int maximum_matching_set_count = 0;
-    for (int i = 1; i <= num_vertices; ++i)
-    {
-	    for (const auto edge : graph[i])
-	    {
-		    if (edge->flow > 0)
-		    {
-				//std::cout << "Edge from " << edge->source << " to " << edge->target << " belong to maximum matching set\n";
-                ++maximum_matching_set_count;
-		    }
-	    }
-    }
-    std::cerr << "Size of maximum matching set is " << maximum_matching_set_count << std::endl;
-
-    for (int i = 0; i < num_vertices; ++i)
-    {
-        for (Edge* edge : graph[i])
-        {
-            delete edge;
-        }
-    }
+    //testEx1();
+    testEx2();
 
     return 0;
 }
