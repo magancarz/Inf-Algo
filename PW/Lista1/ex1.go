@@ -3,7 +3,6 @@ package main
 import (
     "fmt"
     "math/rand"
-    "sync"
     "time"
 )
 
@@ -19,109 +18,119 @@ type traveler struct {
     x, y int
 }
 
-type move_track struct {
+type Request struct {
+    t *traveler
+    move [2]int
+    leave bool
+}
+
+type Response struct {
+    allowed bool
+}
+
+type node struct {
+    traveler *traveler
+    occupied bool
     from_below int
     from_side  int
+    requests chan Request
+    responses chan Response
 }
 
-var mutex sync.Mutex
-
-func (t *traveler) move(grid *[][]int, move_grid *[][]move_track) {
-    mutex.Lock()
-    defer mutex.Unlock()
-
+func (t *traveler) move(grid *[][]node) {
     directions := [][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
-    var move [2]int
-    var newX, newY int
-    num_of_iterations := 0
-    for num_of_iterations < 10 {
-        move = directions[rand.Intn(4)]
-        newX, newY = t.x + move[0], t.y + move[1]
-        if newX >= 0 && newX < m && newY >= 0 && newY < n && (*grid)[newX][newY] != 1 {
-            break
-        }
-        num_of_iterations++
-    }
-
-    if num_of_iterations >= 10 {
-        return
-    }
-
-    if newX >= 0 && newX < m && newY >= 0 && newY < n {
-        if move[0] != 0 {
-            var min int
-            if (t.x < newX) {
-                min = t.x
-            } else {
-                min = newX
+    for {
+        var move = directions[rand.Intn(4)]
+        var newX, newY = t.x + move[0], t.y + move[1]
+        var oldX, oldY = t.x, t.y
+        if newX >= 0 && newX < m && newY >= 0 && newY < n {
+            (*grid)[newX][newY].requests <- Request{t, move, false}
+            var response = <- (*grid)[newX][newY].responses
+            if response.allowed {
+                (*grid)[oldX][oldY].requests <- Request{t, move, true}
+                <- (*grid)[oldX][oldY].responses
+                return
             }
-
-            (*move_grid)[min][t.y].from_below = 1
-        } else {
-            var min int
-            if (t.y < newY) {
-                min = t.y
-            } else {
-                min = newY
-            }
-
-            (*move_grid)[t.x][min].from_side = 1
         }
-        (*grid)[t.x][t.y] = -1
-        t.x, t.y = newX, newY
-        (*grid)[t.x][t.y] = (*t).id
     }
 }
 
-func travelerMovement(traveler *traveler, grid *[][]int, move_grid *[][]move_track, moves int, wg *sync.WaitGroup) {
-    defer wg.Done()
+func server(node *node) {
+    for {
+        var request = <- (*node).requests
+        if request.leave {
+            (*node).occupied = false
+            (*node).responses <- Response{true}
+        } else {
+            if (*node).occupied {
+                (*node).responses <- Response{false}
+            } else {
+                (*node).occupied = true
+                (*node).traveler = request.t
 
+                // var newX, newY = request.t.x + request.move[0], request.t.y + request.move[1]
+
+                // if request.move[0] != 0 {
+                //     if (request.t.x < newX) {
+                //         (*node).from_below = 1
+                //     }
+
+                // } else {
+                //     if (request.t.y < newY) {
+                //         (*node).from_side = 1
+                //     }
+
+                // }
+                (*node).responses <- Response{true}
+            }
+        }
+    }
+}
+
+func travelerMovement(traveler *traveler, grid *[][]node, moves int) {
     for move := 0; move < moves; move++ {
-        traveler.move(grid, move_grid)
+        traveler.move(grid)
         time.Sleep(time.Duration(rand.Intn(10)) * 50 * time.Millisecond)
     }
 }
 
-func spawnTraveler(travelers *[]traveler, grid *[][]int, next_free_id *int) {
-    mutex.Lock()
-    defer mutex.Unlock()
-
+func spawnTraveler(travelers *[]traveler, grid *[][]node, next_free_id *int) {
     var x, y int
     for {
         x = rand.Intn(m)
         y = rand.Intn(n)
-        if (*grid)[x][y] == -1 {
+        if !(*grid)[x][y].occupied {
             break
         }
     }
-    (*grid)[x][y] = (*next_free_id)
     (*travelers)[(*next_free_id)] = traveler{id: (*next_free_id), x: x, y: y}
+    (*grid)[x][y].traveler = &(*travelers)[(*next_free_id)]
     (*next_free_id)++
 }
 
-func spawnTravelers(travelers *[]traveler, grid *[][]int, next_free_id *int, wg *sync.WaitGroup) {
-    defer wg.Done()
+func spawnTravelers(travelers *[]traveler, grid *[][]node, next_free_id *int) {
+    // defer wg.Done()
 
-    for i := 0; i < 10; i++ {
-        if (*next_free_id) < (m * n - 1) && rand.Intn(100) < 30 {
-            spawnTraveler(travelers, grid, next_free_id)
-        }
-        time.Sleep(time.Duration(100 * time.Millisecond))
-    }
+    // for i := 0; i < 10; i++ {
+    //     if (*next_free_id) < (m * n - 1) && rand.Intn(100) < 30 {
+    //         spawnTraveler(travelers, grid, next_free_id)
+    //     }
+    //     time.Sleep(time.Duration(100 * time.Millisecond))
+    // }
 }
 
-func snap(move int, travelers *[]traveler, move_grid *[][]move_track, grid *[][]int, moves int, wg *sync.WaitGroup) {
+func snap(move int, travelers *[]traveler, grid *[][]node, moves int) {
     fmt.Println("Move:", move)
 
     for i := 0; i < m; i++ {
         for j := 0; j < n; j++ {
             fmt.Print("\x1b[0m")
-            if (*grid)[i][j] == -1 {
-                fmt.Print("  ")
+            if (*grid)[i][j].occupied {
+                fmt.Printf("%2d", (*grid)[i][j].traveler.id)
             } else {
-                fmt.Printf("%2d", (*grid)[i][j])
+                fmt.Print("  ")
             }
-            if (*move_grid)[i][j].from_side == 1 {
+            if (*grid)[i][j].from_side == 1 {
                 fmt.Print("\x1b[31m")
             } else {
                 fmt.Print("\x1b[0m")
@@ -130,7 +139,7 @@ func snap(move int, travelers *[]traveler, move_grid *[][]move_track, grid *[][]
         }
         fmt.Println()
         for k := 0; k < n; k++ {
-            if (*move_grid)[i][k].from_below == 1 {
+            if (*grid)[i][k].from_below == 1 {
                 fmt.Print("\x1b[31m")
             } else {
                 fmt.Print("\x1b[0m")
@@ -143,17 +152,15 @@ func snap(move int, travelers *[]traveler, move_grid *[][]move_track, grid *[][]
     
     for i := 0; i < m; i++ {
         for j := 0; j < n; j++ {
-            (*move_grid)[i][j].from_side = -1
-            (*move_grid)[i][j].from_below = -1
+            (*grid)[i][j].from_side = -1
+            (*grid)[i][j].from_below = -1
         }
     }
 }
 
-func snapshot(travelers *[]traveler, move_grid *[][]move_track, grid *[][]int, moves int, wg *sync.WaitGroup) {
-    defer wg.Done()
-
+func snapshot(travelers *[]traveler, grid *[][]node, moves int) {
     for move := 0; move < moves; move++ {
-        snap(move, travelers, move_grid, grid, maxMoves, wg)
+        snap(move, travelers, grid, maxMoves)
         time.Sleep(100 * time.Millisecond)
     }
 }
@@ -161,20 +168,20 @@ func snapshot(travelers *[]traveler, move_grid *[][]move_track, grid *[][]int, m
 func main() {
     rand.Seed(time.Now().UnixNano())
 
-    grid := make([][]int, m)
+    grid := make([][]node, m)
     for i := range grid {
-        grid[i] = make([]int, n)
+        grid[i] = make([]node, n)
     }
 
     for i := 0; i < m; i++ {
         for j := 0; j < n; j++ {
-            grid[i][j] = -1
+            var requests = make(chan Request)
+            var responses = make(chan Response)
+            grid[i][j].requests = requests
+            grid[i][j].responses = responses
+            grid[i][j].occupied = false
+            go server(&grid[i][j])
         }
-    }
-
-    move_grid := make([][]move_track, m)
-    for i := range move_grid {
-        move_grid[i] = make([]move_track, n)
     }
 
     var next_free_id = 0
@@ -183,18 +190,11 @@ func main() {
         spawnTraveler(&travelers, &grid, &next_free_id)
     }
 
-    var wg sync.WaitGroup
-
     for i := 0; i < k; i++ {
-        wg.Add(1)
-        go travelerMovement(&travelers[i], &grid, &move_grid, maxMoves, &wg)
+        go travelerMovement(&travelers[i], &grid, maxMoves)
     }
 
-    wg.Add(1)
-    go snapshot(&travelers, &move_grid, &grid, maxMoves, &wg)
+    go snapshot(&travelers, &grid, maxMoves)
 
-    wg.Add(1)
-    go spawnTravelers(&travelers, &grid, &next_free_id, &wg)
-
-    wg.Wait()
+    time.Sleep(10 * time.Second)
 }
