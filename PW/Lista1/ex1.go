@@ -30,8 +30,8 @@ type Response struct {
 
 type node struct {
     traveler *traveler
-    x, y int
     occupied bool
+    x, y int
     from_below int
     from_side  int
     requests chan Request
@@ -62,28 +62,36 @@ func server(node *node) {
         if request.leave {
             (*node).occupied = false
             (*node).responses <- Response{allowed: true}
+
+            if request.move[0] != 0 {
+                if (node.x < request.t.x) {
+                    (*node).from_side = 1
+                }
+            } else {
+                if (node.y < request.t.y) {
+                    (*node).from_below = 1
+                }
+            }
         } else {
             if node.occupied {
                 (*node).responses <- Response{allowed: false}
             } else {
                 (*node).occupied = true
                 (*node).traveler = request.t
-                request.t.x = node.x
-                request.t.y = node.y
 
-                // var newX, newY = request.t.x + request.move[0], request.t.y + request.move[1]
+                var oldX, oldY = (*node).traveler.x, (*node).traveler.y
+                (*node).traveler.x = node.x
+                (*node).traveler.y = node.y
 
-                // if request.move[0] != 0 {
-                //     if (request.t.x < newX) {
-                //         (*node).from_below = 1
-                //     }
-
-                // } else {
-                //     if (request.t.y < newY) {
-                //         (*node).from_side = 1
-                //     }
-
-                // }
+                if request.move[0] != 0 {
+                    if (node.x < oldX) {
+                        (*node).from_side = 1
+                    }
+                } else {
+                    if (node.y < oldY) {
+                        (*node).from_below = 1
+                    }
+                }
                 (*node).responses <- Response{allowed: true}
             }
         }
@@ -99,28 +107,29 @@ func travelerMovement(traveler *traveler, grid *[][]node, moves int) {
 
 func spawnTraveler(travelers *[]traveler, grid *[][]node, next_free_id *int) {
     var x, y int
+    (*travelers)[(*next_free_id)] = traveler{id: (*next_free_id), x: x, y: y}
+    var t  = &(*travelers)[(*next_free_id)]
     for {
-        x = rand.Intn(m)
-        y = rand.Intn(n)
-        if !(*grid)[y][x].occupied {
+        (*t).x = rand.Intn(m)
+        (*t).y = rand.Intn(n)
+        (*grid)[t.y][t.x].requests <- Request{t, [2]int{0, 0}, false}
+        var response = <- (*grid)[t.y][t.x].responses
+        if response.allowed {
             break
         }
     }
-    (*travelers)[(*next_free_id)] = traveler{id: (*next_free_id), x: x, y: y}
-    (*grid)[y][x].traveler = &(*travelers)[(*next_free_id)]
-    (*grid)[y][x].occupied = true
     (*next_free_id)++
+
+    go travelerMovement(t, grid, maxMoves)
 }
 
 func spawnTravelers(travelers *[]traveler, grid *[][]node, next_free_id *int) {
-    // defer wg.Done()
-
-    // for i := 0; i < 10; i++ {
-    //     if (*next_free_id) < (m * n - 1) && rand.Intn(100) < 30 {
-    //         spawnTraveler(travelers, grid, next_free_id)
-    //     }
-    //     time.Sleep(time.Duration(100 * time.Millisecond))
-    // }
+    for {
+        if (*next_free_id) < (m * n - 1) && rand.Intn(100) < 30 {
+            spawnTraveler(travelers, grid, next_free_id)
+        }
+        time.Sleep(time.Duration(100 * time.Millisecond))
+    }
 }
 
 func snap(move int, grid *[][]node) {
@@ -201,6 +210,8 @@ func main() {
     }
 
     go snapshot(&grid, maxMoves)
+
+    go spawnTravelers(&travelers, &grid, &next_free_id)
 
     time.Sleep(1 * time.Second)
 }
