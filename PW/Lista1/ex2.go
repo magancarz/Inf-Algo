@@ -7,8 +7,8 @@ import (
 )
 
 const (
-    m        = 8
-    n        = 8
+    m        = 4
+    n        = 4
     k        = 5
     maxMoves = 10
 )
@@ -136,14 +136,12 @@ func server(node *node, grid *[][]node) {
                     (*node).bomb.is_alive = false
                     (*node).bomb = nil
 
-                    var oldX, oldY = request.t.x, request.t.x
-
                     if request.move[0] != 0 {
-                        if (node.x < oldX) {
+                        if (request.move[0] == -1) {
                             (*node).from_side = 1
                         }
                     } else if request.move[1] != 0 {
-                        if (node.y < oldY) {
+                        if (request.move[1] == -1) {
                             (*node).from_below = 1
                         }
                     }
@@ -200,7 +198,7 @@ func travelerMovement(traveler *traveler, grid *[][]node, moves int) {
             traveler.move(grid)
             time.Sleep(time.Duration(rand.Intn(10)) * 50 * time.Millisecond)
         } else {
-
+            return
         }
     }
 }
@@ -235,7 +233,7 @@ func spawnTravelers(travelers *[]traveler, grid *[][]node, next_free_id *int) {
 
 func spawnWildLocators(wild_locators *[]wild_locator, grid *[][]node) {
     for {
-        if rand.Intn(100) < 30 {
+        if rand.Intn(100) < 50 {
             index := -1
             for i := 0; i < len((*wild_locators)); i++ {
                 if !(*wild_locators)[i].is_alive {
@@ -278,7 +276,7 @@ func wildLocatorLifetime(wild_locator *wild_locator, wild_locators *[]wild_locat
 
 func spawnBombs(bombs *[]bomb, grid *[][]node) {
     for {
-        if rand.Intn(100) < 30 {
+        if rand.Intn(100) < 50 {
             index := -1
             for i := 0; i < len((*bombs)); i++ {
                 if !(*bombs)[i].is_alive {
@@ -320,8 +318,6 @@ func bombLifetime(bomb *bomb, bombs *[]bomb, index int, grid *[][]node) {
 }
 
 func snap(move int, grid [][]node) {
-    fmt.Println("Move:", move)
-
     for i := 0; i < m; i++ {
         for j := 0; j < n; j++ {
             fmt.Print("\x1b[0m")
