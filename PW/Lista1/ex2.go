@@ -111,13 +111,11 @@ func server(node *node, grid *[][]node) {
                             if response.allowed {
                                 fmt.Printf("Wild locator was moved!\n")
                                 (*node).occupied = false
-                                (*node).traveler = nil
                                 (*node).wild_locator = nil
-                                (*node).bomb = nil
 
-                                if (request.move[0] == -1) {
+                                if (direction[0] == 1) {
                                     (*node).from_side = 1
-                                } else if (request.move[1] == -1) {
+                                } else if (direction[1] == 1) {
                                     (*node).from_below = 1
                                 }
 
