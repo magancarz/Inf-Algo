@@ -7,8 +7,8 @@ import (
 )
 
 const (
-    m        = 3
-    n        = 3
+    m        = 8
+    n        = 8
     k        = 5
     maxMoves = 10
 )
@@ -319,18 +319,18 @@ func bombLifetime(bomb *bomb, bombs *[]bomb, index int, grid *[][]node) {
     (*bombs)[index].is_alive = false
 }
 
-func snap(move int, grid *[][]node) {
+func snap(move int, grid [][]node) {
     fmt.Println("Move:", move)
 
     for i := 0; i < m; i++ {
         for j := 0; j < n; j++ {
             fmt.Print("\x1b[0m")
-            if (*grid)[i][j].occupied {
-                fmt.Printf("%2c", rune((*grid)[i][j].mark))
+            if grid[i][j].occupied {
+                fmt.Printf("%2c", rune(grid[i][j].mark))
             } else {
                 fmt.Print("  ")
             }
-            if (*grid)[i][j].from_side == 1 {
+            if grid[i][j].from_side == 1 {
                 fmt.Print("\x1b[31m")
             } else {
                 fmt.Print("\x1b[0m")
@@ -339,7 +339,7 @@ func snap(move int, grid *[][]node) {
         }
         fmt.Println()
         for k := 0; k < n; k++ {
-            if (*grid)[i][k].from_below == 1 {
+            if grid[i][k].from_below == 1 {
                 fmt.Print("\x1b[31m")
             } else {
                 fmt.Print("\x1b[0m")
@@ -354,7 +354,13 @@ func snap(move int, grid *[][]node) {
 func snapshot(grid *[][]node, moves int) {
     for move := 0; move < moves; move++ {
         time.Sleep(100 * time.Millisecond)
-        snap(move, grid)
+        snap(move, *grid)
+        for i := 0; i < m; i++ {
+            for j := 0; j < n; j++ {
+                (*grid)[i][j].from_side = -1
+                (*grid)[i][j].from_below = -1
+            }
+        }
     }
 }
 
