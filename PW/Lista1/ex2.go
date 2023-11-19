@@ -10,7 +10,8 @@ const (
     m        = 4
     n        = 4
     k        = 5
-    maxMoves = 10
+    maxMoves = 40
+    snap_sleep = 25
 )
 
 type traveler struct {
@@ -85,69 +86,68 @@ func server(node *node, grid *[][]node) {
             (*node).wild_locator = nil
             (*node).bomb = nil
 
-            if request.move[0] != 0 {
-                if (request.move[0] == 1) {
-                    (*node).from_side = 1
-                }
-            } else if request.move[1] != 0 {
-                if (request.move[1] == 1) {
-                    (*node).from_below = 1
-                }
+            if (request.move[0] == 1) {
+                (*node).from_side = 1
+            } else if (request.move[1] == 1) {
+                (*node).from_below = 1
             }
 
             request.response <- Response{allowed: true}
         } else {
-            if node.occupied && request.t != nil {
-                if node.wild_locator != nil {
-                    directions := [][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
-                    var wild_locator_moved = false
-                    for _, direction := range directions {
-                        var newX, newY = node.y + direction[1], node.x + direction[0]
-                        if (newX < 0 || newX >= m || newY < 0 || newY >= n) {
-                            continue
-                        }
-
-                        response_channel := make(chan Response)
-                        (*grid)[newY][newX].requests <- Request{response_channel, nil, node.wild_locator, nil, direction, false}
-                        var response = <- response_channel
-                        if response.allowed {
-                            if request.move[0] != 0 {
-                                if (request.move[0] == 1) {
-                                    (*node).from_side = 1
-                                }
-                            } else if request.move[1] != 0 {
-                                if (request.move[1] == 1) {
-                                    (*node).from_below = 1
-                                }
+            if node.occupied {
+                if request.t != nil {
+                    if node.wild_locator != nil {
+                        directions := [][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+                        var wild_locator_moved = false
+                        for _, direction := range directions {
+                            var newX, newY = node.x + direction[0], node.y + direction[1]
+                            if (newX < 0 || newX >= m || newY < 0 || newY >= n) {
+                                continue
                             }
 
-                            wild_locator_moved = true
-                            break
+                            response_channel := make(chan Response)
+                            (*grid)[newY][newX].requests <- Request{response_channel, nil, node.wild_locator, nil, direction, false}
+                            var response = <- response_channel
+                            if response.allowed {
+                                fmt.Printf("Wild locator was moved!\n")
+                                (*node).occupied = false
+                                (*node).traveler = nil
+                                (*node).wild_locator = nil
+                                (*node).bomb = nil
+
+                                if (request.move[0] == -1) {
+                                    (*node).from_side = 1
+                                } else if (request.move[1] == -1) {
+                                    (*node).from_below = 1
+                                }
+
+                                wild_locator_moved = true
+                                break
+                            }
                         }
-                    }
 
-                    if wild_locator_moved {
-                        moveTravelerIntoNode(node, request)
-                        continue
-                    }
-                } else if node.bomb != nil {
-                    (*node).occupied = false
-                    request.t.is_alive = false
-                    (*node).bomb.is_alive = false
-                    (*node).bomb = nil
+                        if wild_locator_moved {
+                            moveTravelerIntoNode(node, request)
+                            continue
+                        }
+                    } else if node.bomb != nil {
+                        fmt.Printf("%d was bombed!\n", request.t.id)
+                        request.t.is_alive = false
+                        (*node).bomb.is_alive = false
+                        (*node).occupied = false
+                        (*node).traveler = nil
+                        (*node).wild_locator = nil
+                        (*node).bomb = nil
 
-                    if request.move[0] != 0 {
                         if (request.move[0] == -1) {
                             (*node).from_side = 1
-                        }
-                    } else if request.move[1] != 0 {
-                        if (request.move[1] == -1) {
+                        } else if (request.move[1] == -1) {
                             (*node).from_below = 1
                         }
-                    }
 
-                    request.response <- Response{allowed: true}
-                    continue
+                        request.response <- Response{allowed: true}
+                        continue
+                    }
                 }
 
                 request.response <- Response{allowed: false}
@@ -217,6 +217,9 @@ func spawnTraveler(travelers *[]traveler, grid *[][]node, next_free_id *int) {
             break
         }
     }
+
+    fmt.Printf("%d was spawned!\n", (*next_free_id))
+
     (*next_free_id)++
 
     go travelerMovement(t, grid, maxMoves)
@@ -251,7 +254,7 @@ func spawnWildLocators(wild_locators *[]wild_locator, grid *[][]node) {
 }
 
 func spawnWildLocator(wild_locators *[]wild_locator, index int, grid *[][]node) {
-    (*wild_locators)[index] = wild_locator{d: time.Duration(rand.Intn(5)) * 100 * time.Millisecond, x: 0, y: 0, is_alive: true}
+    (*wild_locators)[index] = wild_locator{d: time.Duration(rand.Intn(10)) * 100 * time.Millisecond, x: 0, y: 0, is_alive: true}
     var wl = &(*wild_locators)[index]
     response_channel := make(chan Response)
     for {
@@ -263,6 +266,9 @@ func spawnWildLocator(wild_locators *[]wild_locator, index int, grid *[][]node) 
             break
         }
     }
+
+    fmt.Printf("Wild locator has spawned!\n")
+
     go wildLocatorLifetime(wl, wild_locators, index, grid)
 }
 
@@ -272,11 +278,12 @@ func wildLocatorLifetime(wild_locator *wild_locator, wild_locators *[]wild_locat
     (*grid)[wild_locator.y][wild_locator.x].requests <- Request{response_channel, nil, wild_locator, nil, [2]int{0, 0}, true}
     <- response_channel
     (*wild_locators)[index].is_alive = false
+    fmt.Printf("Wild locator is gone!\n")
 }
 
 func spawnBombs(bombs *[]bomb, grid *[][]node) {
     for {
-        if rand.Intn(100) < 50 {
+        if rand.Intn(100) < 75 {
             index := -1
             for i := 0; i < len((*bombs)); i++ {
                 if !(*bombs)[i].is_alive {
@@ -294,7 +301,7 @@ func spawnBombs(bombs *[]bomb, grid *[][]node) {
 }
 
 func spawnBomb(bombs *[]bomb, index int, grid *[][]node) {
-    (*bombs)[index] = bomb{d: time.Duration(100) * 100 * time.Millisecond, x: 0, y: 0, is_alive: true}
+    (*bombs)[index] = bomb{d: time.Duration(10) * 100 * time.Millisecond, x: 0, y: 0, is_alive: true}
     var b = &(*bombs)[index]
     response_channel := make(chan Response)
     for {
@@ -306,6 +313,9 @@ func spawnBomb(bombs *[]bomb, index int, grid *[][]node) {
             break
         }
     }
+
+    fmt.Printf("Bomb has spawned!\n")
+
     go bombLifetime(b, bombs, index, grid)
 }
 
@@ -315,6 +325,7 @@ func bombLifetime(bomb *bomb, bombs *[]bomb, index int, grid *[][]node) {
     (*grid)[bomb.y][bomb.x].requests <- Request{response_channel, nil, nil, bomb, [2]int{0, 0}, true}
     <- response_channel
     (*bombs)[index].is_alive = false
+    fmt.Printf("Bomb was destroyed!\n")
 }
 
 func snap(move int, grid [][]node) {
@@ -349,7 +360,7 @@ func snap(move int, grid [][]node) {
 
 func snapshot(grid *[][]node, moves int) {
     for move := 0; move < moves; move++ {
-        time.Sleep(100 * time.Millisecond)
+        time.Sleep(snap_sleep * time.Millisecond)
         snap(move, *grid)
         for i := 0; i < m; i++ {
             for j := 0; j < n; j++ {
