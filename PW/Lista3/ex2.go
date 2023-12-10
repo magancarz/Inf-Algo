@@ -8,15 +8,18 @@ import (
 
 const (
     n = 5
+    m = 2
 )
 
 type Monitor struct {
-    forks     [n]int
-    ok_to_eat [n]chan int
-    lock      chan int
+    ok_to_read  chan int
+    ok_to_write chan int
+    readers     int
+    writing     bool
+    lock        chan int
 }
 
-func (m *Monitor) takeFork(i int) {
+func (m *Monitor) startRead(i int) {
     m.lock <- 1
     if m.forks[i] != 2 {
         <- m.lock
@@ -35,7 +38,48 @@ func (m *Monitor) takeFork(i int) {
     <- m.lock
 }
 
-func (m *Monitor) releaseFork(i int) {
+func (m *Monitor) stopRead(i int) {
+    m.lock <- 1
+    m.forks[(i + 1) % n] += 1
+    m.forks[(i - 1 + n) % n] += 1
+
+    if m.forks[(i + 1) % n] == 2 {
+        select {
+        case m.ok_to_eat[(i + 1) % n] <- 1:
+        default:
+        }
+    }
+
+    if m.forks[(i - 1 + n) % n] == 2 {
+        select {
+        case m.ok_to_eat[(i - 1 + n) % n] <- 1:
+        default:
+        }
+    }
+
+    <- m.lock
+}
+
+func (m *Monitor) startWrite(i int) {
+    m.lock <- 1
+    if m.forks[i] != 2 {
+        <- m.lock
+        for {
+            <-m.ok_to_eat[i]
+            m.lock <- 1
+            if m.forks[i] == 2 {
+                break
+            }
+            <- m.lock
+        }
+    }
+
+    m.forks[(i + 1) % n] -= 1
+    m.forks[(i - 1 + n) % n] -= 1
+    <- m.lock
+}
+
+func (m *Monitor) stopWrite(i int) {
     m.lock <- 1
     m.forks[(i + 1) % n] += 1
     m.forks[(i - 1 + n) % n] += 1
