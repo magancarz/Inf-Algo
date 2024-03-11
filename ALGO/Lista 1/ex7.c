@@ -27,7 +27,19 @@ void rabinKarpSearch(char pattern[], char text[])
     {
         if (pattern_hash == text_hash)
         {
-            printf("Pattern found at index %d\n", i);
+            int j;
+            for (j = 0; j < pattern_length; j++)
+            {
+                if (text[i + j] != pattern[j])
+                {
+                    break;
+                }
+            }
+
+            if (j == pattern_length)
+            {
+                printf("Pattern found at index %d\n", i);
+            }
         }
 
         if (i < text_length - pattern_length)
@@ -43,7 +55,7 @@ void rabinKarpSearch(char pattern[], char text[])
 }
 
 int main() {
-    char text[] = "ababcababcabcabc";
+    char text[] = "aabcababcabcabc";
     char pattern[] = "abc";
 
     rabinKarpSearch(pattern, text);
